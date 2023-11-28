@@ -1,0 +1,7 @@
+C:\Users\pjanv\OneDrive\Рабочий стол\Study\ВУЗ\5 семестр\ПП\GostProject\GostProjectAPI\obj\Debug\net6.0\GostProjectAPI.csproj.AssemblyReference.cache
+C:\Users\pjanv\OneDrive\Рабочий стол\Study\ВУЗ\5 семестр\ПП\GostProject\GostProjectAPI\obj\Debug\net6.0\GostProjectAPI.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\pjanv\OneDrive\Рабочий стол\Study\ВУЗ\5 семестр\ПП\GostProject\GostProjectAPI\obj\Debug\net6.0\GostProjectAPI.AssemblyInfoInputs.cache
+C:\Users\pjanv\OneDrive\Рабочий стол\Study\ВУЗ\5 семестр\ПП\GostProject\GostProjectAPI\obj\Debug\net6.0\GostProjectAPI.AssemblyInfo.cs
+C:\Users\pjanv\OneDrive\Рабочий стол\Study\ВУЗ\5 семестр\ПП\GostProject\GostProjectAPI\obj\Debug\net6.0\GostProjectAPI.csproj.CoreCompileInputs.cache
+C:\Users\pjanv\OneDrive\Рабочий стол\Study\ВУЗ\5 семестр\ПП\GostProject\GostProjectAPI\obj\Debug\net6.0\GostProjectAPI.MvcApplicationPartsAssemblyInfo.cs
+C:\Users\pjanv\OneDrive\Рабочий стол\Study\ВУЗ\5 семестр\ПП\GostProject\GostProjectAPI\obj\Debug\net6.0\GostProjectAPI.MvcApplicationPartsAssemblyInfo.cache
