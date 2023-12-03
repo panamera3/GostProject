@@ -1,9 +1,11 @@
 {
   "version": 2,
-  "dgSpecHash": "sweYLBjpceYt2ttOBLzfd8Bwk6js6OMockCCqSSiImyQnU8GHWgZSwqwWQPJ8pajz8XmcrsIaHYwkj+ICMDiag==",
+  "dgSpecHash": "6j9TqMAYPMeWB7a4UQBKM+G/8aNNZUtr+ScgIo/OOeibXI3rU6F82T68XBjtsizBQEG5pw0YfDsq9iMQq6QaIA==",
   "success": true,
   "projectFilePath": "C:\\Users\\pjanv\\OneDrive\\Рабочий стол\\Study\\ВУЗ\\5 семестр\\ПП\\GostProject\\GostProjectAPI\\GostProjectAPI.csproj",
   "expectedPackageFiles": [
+    "C:\\Users\\pjanv\\.nuget\\packages\\automapper\\12.0.1\\automapper.12.0.1.nupkg.sha512",
+    "C:\\Users\\pjanv\\.nuget\\packages\\microsoft.csharp\\4.7.0\\microsoft.csharp.4.7.0.nupkg.sha512",
     "C:\\Users\\pjanv\\.nuget\\packages\\microsoft.entityframeworkcore\\6.0.25\\microsoft.entityframeworkcore.6.0.25.nupkg.sha512",
     "C:\\Users\\pjanv\\.nuget\\packages\\microsoft.entityframeworkcore.abstractions\\6.0.25\\microsoft.entityframeworkcore.abstractions.6.0.25.nupkg.sha512",
     "C:\\Users\\pjanv\\.nuget\\packages\\microsoft.entityframeworkcore.analyzers\\6.0.25\\microsoft.entityframeworkcore.analyzers.6.0.25.nupkg.sha512",

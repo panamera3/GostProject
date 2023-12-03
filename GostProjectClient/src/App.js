@@ -1,24 +1,33 @@
-import logo from './logo.svg';
-import './App.css';
+// libraries
+import {
+  HashRouter,
+  Routes,
+  Route,
+  Navigate,
+  createHashRouter,
+  RouterProvider,
+} from "react-router-dom";
+// styles
+import "./App.css";
+// pages
+import Login from "./pages/Login/Login";
+
+const router = createHashRouter([{ path: "/login", element: <Login /> }, { path: "/", element: <Login /> },]);
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <>
+      <div className="body">
+        <RouterProvider router={router}>
+          <Routes>
+            <Route path="/login" element={<Login />} />
+            перенаправлять пользователя на главную страницу, если ввёл
+            несуществующий путь
+            <Route path="*" element={<Navigate to="/" />} />
+          </Routes>
+        </RouterProvider>
+      </div>
+    </>
   );
 }
 

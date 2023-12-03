@@ -1,3 +1,4 @@
+using GostProjectAPI.DTOModels.Gosts;
 using GostProjectAPI.Services;
 using Microsoft.AspNetCore.Mvc;
 
@@ -21,9 +22,22 @@ namespace GostProjectAPI.Controllers
         }
 
         [HttpGet("{orderID}")]
-        public async Task<JsonResult> GetGost(int gostID)
+        public async Task<JsonResult> GetGost(uint gostID)
         {
             return JSON(await _gostService.GetGostAsync(gostID));
         }
+
+        [HttpPost]
+        public async Task<JsonResult> AddGost([FromBody] GostAddDto gostAddDto)
+        {
+            return JSON(await _gostService.AddGostAsync(gostAddDto));
+        }
+
+        [HttpPost]
+        public async Task<JsonResult> EditGost([FromBody] GostEditDto gostEditDto)
+        {
+            return JSON(await _gostService.EditGostAsync(gostEditDto));
+        }
+
     }
 }
