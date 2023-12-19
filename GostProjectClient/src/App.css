@@ -36,3 +36,18 @@
     transform: rotate(360deg);
   }
 }
+
+button {
+  padding: 1em;
+  font-size: 20px;
+  border-radius: 1em;
+  border: none;
+}
+
+button:hover {
+  cursor: pointer;
+}
+
+a:hover{
+  cursor: pointer;
+}

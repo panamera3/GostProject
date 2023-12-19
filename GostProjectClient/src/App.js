@@ -1,31 +1,27 @@
 // libraries
-import {
-  HashRouter,
-  Routes,
-  Route,
-  Navigate,
-  createHashRouter,
-  RouterProvider,
-} from "react-router-dom";
+import { Routes, Route, Navigate, BrowserRouter } from "react-router-dom";
 // styles
 import "./App.css";
 // pages
 import Login from "./pages/Login/Login";
-
-const router = createHashRouter([{ path: "/login", element: <Login /> }, { path: "/", element: <Login /> },]);
+import Registration from "./pages/Registration/Registration";
+import Home from "./pages/Home/Home";
 
 function App() {
   return (
     <>
       <div className="body">
-        <RouterProvider router={router}>
+        <BrowserRouter>
           <Routes>
+            <Route path="/" element={<Login />} />
             <Route path="/login" element={<Login />} />
+            <Route path="/registration" element={<Registration />} />
+            <Route path="/home" element={<Home />} />
             перенаправлять пользователя на главную страницу, если ввёл
             несуществующий путь
             <Route path="*" element={<Navigate to="/" />} />
           </Routes>
-        </RouterProvider>
+        </BrowserRouter>
       </div>
     </>
   );

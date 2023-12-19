@@ -1,6 +1,7 @@
 // styles
 import "./Login.css";
 // components
+import LeftColumnLogReg from "../../components/LeftColumnLogReg/LeftColumnLogReg";
 // libraries
 import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
@@ -12,112 +13,44 @@ const Login = () => {
   const usernameLoginInputRef = useRef();
   const passwordLoginInputRef = useRef();
 
-  const usernameRegistrationInputRef = useRef();
-  const passwordRegistrationInputRef = useRef();
-
-  const [isRegistration, setIsRegistration] = useState(false);
   const [formValid, setFormValid] = useState(false);
 
   const submitHandler = () => {
-    console.log("Something")
-  }
+    console.log("Something");
+  };
 
   return (
     <>
-      <form onSubmit={submitHandler}>
-        {!isRegistration && (
-          <>
+      <LeftColumnLogReg login={true}>
+        <div className="children">
+          <form onSubmit={submitHandler}>
             <div>
               <h2>Вход</h2>
             </div>
             <div>
-              <div>
-                <label for="email_input">
-                  Почта:
-                </label>
-                <input
-                  name="email"
-                  id="email_input"
-                  type="email"
-                  ref={usernameLoginInputRef}
-                />
-              </div>
-              <div>
-                <label for="password_input">
-                  Пароль:
-                </label>
-                <input
-                  name="password"
-                  id="password_input"
-                  type="password"
-                  ref={passwordLoginInputRef}
-                />
-              </div>
-            </div>
-          </>
-        )}
-
-        {isRegistration && (
-          <>
-            <div>
-              <h2>Регистрация</h2>
+              <input
+                name="login"
+                id="login_input"
+                type="login"
+                ref={usernameLoginInputRef}
+                placeholder="Логин"
+              />
+              <input
+                name="password"
+                id="password_input"
+                type="password"
+                ref={passwordLoginInputRef}
+                placeholder="Пароль"
+              />
             </div>
             <div>
-              <div>
-                <label for="email__input">
-                  Почта:
-                </label>
-                <input
-                  name="email"
-                  id="email__input"
-                  type="email"
-                  placeholder="example@example.com"
-                  ref={usernameRegistrationInputRef}
-                />
-              </div>
-              <div>
-                <label for="password_input">
-                  Придумайте пароль:
-                </label>
-                <input
-                  name="password"
-                  id="password_input"
-                  type="password"
-                  placeholder="qwerty"
-                  ref={passwordRegistrationInputRef}
-                />
-              </div>
+              <input id="checkbox_remember" type="checkbox" />
+              <label for="checkbox_remember">Запомнить меня</label>
             </div>
-          </>
-        )}
-        <button disabled={!formValid} type="submit">
-          Продолжить
-        </button>
-      </form>
-      {!isRegistration && (
-        <div>
-          <button
-            type="button"
-            onClick={() => {
-              setIsRegistration(true);
-            }}
-          >
-            Регистрация
-          </button>
+            <button type="sumbit">Войти</button>
+          </form>
         </div>
-      )}
-      {isRegistration && (
-        <div>
-          <button
-            type="button"
-            onClick={() => {
-              setIsRegistration(false);
-            }}
-          >
-            Вход
-          </button>
-        </div>
-      )}
+      </LeftColumnLogReg>
     </>
   );
 };
