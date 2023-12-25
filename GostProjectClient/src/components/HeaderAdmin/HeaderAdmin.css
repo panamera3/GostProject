@@ -1,0 +1,33 @@
+.header {
+  color: #ffffff;
+  background-color: #004696;
+  padding: 2em;
+  display: flex;
+}
+
+.header a {
+  margin: 0em 1em;
+}
+
+.header p {
+  display: inline;
+  color: #ffffff;
+  margin: 0em 1em;
+}
+
+.header p:hover{
+  cursor: pointer;
+}
+
+.header .user {
+  display: none;
+}
+
+.modalProfile{
+  display: flex;
+  flex-direction: column;
+}
+
+.modalProfile *{
+  margin: 1em;
+}

@@ -1,6 +1,4 @@
 {
-  "proxy": "http://localhost:3000",
-  "homepage": ".",
   "name": "gostprojectclient",
   "version": "0.1.0",
   "private": true,

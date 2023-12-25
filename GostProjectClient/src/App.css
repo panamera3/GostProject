@@ -48,6 +48,34 @@ button:hover {
   cursor: pointer;
 }
 
-a:hover{
+a {
+  text-decoration: none;
+  color: #ffffff;
+}
+
+a:hover {
   cursor: pointer;
+}
+
+input {
+  padding: 1em;
+  border-radius: 1em;
+  width: 90%;
+  margin: 1em;
+}
+
+table {
+  border-radius: 0.5em;
+  border: 1px solid #a8a8a8;
+  padding: 0.2em;
+  table-layout: fixed;
+  border-collapse: collapse;
+}
+
+thead th,
+tbody th,
+tbody td {
+  border-top: 1px solid #a8a8a8;
+  border-bottom: 1px solid #a8a8a8;
+  padding: 0.5em;
 }

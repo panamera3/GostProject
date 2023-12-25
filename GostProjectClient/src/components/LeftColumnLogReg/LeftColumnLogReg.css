@@ -1,5 +1,5 @@
 #left_column_log_reg {
-  width: 30%;
+  width: 30em;
   background-color: #004696;
   color: #ffffff;
   height: 90vh;
@@ -9,10 +9,10 @@
   padding: 5vh;
 }
 
-.children {
+.left_column_log_reg_children {
   display: flex;
-  justify-content: center;
   width: 100%;
+  padding: 5vh;
 }
 
 #columns_flex {

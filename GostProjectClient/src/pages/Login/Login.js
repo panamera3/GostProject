@@ -17,12 +17,13 @@ const Login = () => {
 
   const submitHandler = () => {
     console.log("Something");
+    navigate("/home")
   };
 
   return (
     <>
-      <LeftColumnLogReg login={true}>
-        <div className="children">
+      <LeftColumnLogReg login>
+        <div className="left_column_log_reg_children">
           <form onSubmit={submitHandler}>
             <div>
               <h2>Вход</h2>
@@ -44,7 +45,7 @@ const Login = () => {
               />
             </div>
             <div>
-              <input id="checkbox_remember" type="checkbox" />
+              <input id="checkbox_remember" type="checkbox" style={{width: "auto"}} />
               <label for="checkbox_remember">Запомнить меня</label>
             </div>
             <button type="sumbit">Войти</button>

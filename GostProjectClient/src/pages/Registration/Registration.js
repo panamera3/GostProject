@@ -16,41 +16,42 @@ const Registration = () => {
 
   return (
     <>
-      <LeftColumnLogReg />
-      <div>
-        <form onSubmit={submitHandler}>
-          <div>
-            <h2>Регистрация</h2>
-          </div>
-          <div>
-            <input
-              name="login"
-              id="login_input"
-              type="login"
-              ref={usernameRegistrationInputRef}
-              placeholder="Логин"
-            />
-            <input
-              name="password"
-              id="password_input"
-              type="password"
-              ref={passwordRegistrationInputRef}
-              placeholder="Пароль"
-            />
-            <input
-              id="password_confirm_input"
-              type="password"
-              placeholder="Подтверждение пароля"
-            />
-            <input
-              name="fullname"
-              id="fullname_input"
-              placeholder="Фамилия Имя Отчество"
-            />
-          </div>
-          <button type="sumbit">Зарегистрироваться</button>
-        </form>
-      </div>
+      <LeftColumnLogReg registration>
+        <div className="left_column_log_reg_children">
+          <form onSubmit={submitHandler}>
+            <div>
+              <h2>Регистрация</h2>
+            </div>
+            <div>
+              <input
+                name="login"
+                id="login_input"
+                type="login"
+                ref={usernameRegistrationInputRef}
+                placeholder="Логин"
+              />
+              <input
+                name="password"
+                id="password_input"
+                type="password"
+                ref={passwordRegistrationInputRef}
+                placeholder="Пароль"
+              />
+              <input
+                id="password_confirm_input"
+                type="password"
+                placeholder="Подтверждение пароля"
+              />
+              <input
+                name="fullname"
+                id="fullname_input"
+                placeholder="Фамилия Имя Отчество"
+              />
+            </div>
+            <button type="sumbit">Зарегистрироваться</button>
+          </form>
+        </div>
+      </LeftColumnLogReg>
     </>
   );
 };
