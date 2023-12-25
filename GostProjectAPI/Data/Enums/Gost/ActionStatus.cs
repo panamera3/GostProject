@@ -11,6 +11,6 @@ namespace GostProjectAPI.Data.Enums.Gost
         Cancelled,
 
         [Description("Заменён")]
-        Replced
+        Replaced
     }
 }

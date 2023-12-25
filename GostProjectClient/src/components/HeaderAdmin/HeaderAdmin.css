@@ -31,3 +31,11 @@
 .modalProfile *{
   margin: 1em;
 }
+
+.form_search_container{
+  display: flex;
+}
+
+.form_search_container input{
+  width: auto;
+}

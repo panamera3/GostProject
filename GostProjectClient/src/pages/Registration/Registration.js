@@ -4,14 +4,17 @@ import "./Registration.css";
 import LeftColumnLogReg from "../../components/LeftColumnLogReg/LeftColumnLogReg";
 // libraries
 import { useState, useEffect, useRef } from "react";
+import { useNavigate } from "react-router-dom";
 //import axios from "axios";
 
 const Registration = () => {
+  const navigate = useNavigate();
   const usernameRegistrationInputRef = useRef();
   const passwordRegistrationInputRef = useRef();
 
   const submitHandler = () => {
     console.log("example");
+    navigate("/home");
   };
 
   return (

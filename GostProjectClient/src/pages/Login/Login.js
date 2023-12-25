@@ -5,7 +5,7 @@ import LeftColumnLogReg from "../../components/LeftColumnLogReg/LeftColumnLogReg
 // libraries
 import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-//import axios from "axios";
+import axios from "axios";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -17,7 +17,8 @@ const Login = () => {
 
   const submitHandler = () => {
     console.log("Something");
-    navigate("/home")
+
+    navigate("/home");
   };
 
   return (
@@ -45,7 +46,11 @@ const Login = () => {
               />
             </div>
             <div>
-              <input id="checkbox_remember" type="checkbox" style={{width: "auto"}} />
+              <input
+                id="checkbox_remember"
+                type="checkbox"
+                style={{ width: "auto" }}
+              />
               <label for="checkbox_remember">Запомнить меня</label>
             </div>
             <button type="sumbit">Войти</button>

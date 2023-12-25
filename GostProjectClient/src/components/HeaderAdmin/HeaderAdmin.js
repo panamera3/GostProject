@@ -30,6 +30,10 @@ const HeaderAdmin = (props) => {
     console.log(123234);
   };
 
+  const searchHandler = () => {
+    console.log(897);
+  };
+
   //import UserIcon from "./user.svg"
   //src={UserIcon}
 
@@ -66,7 +70,81 @@ const HeaderAdmin = (props) => {
           isOpen={isSearchModalOpen}
           onClose={closeSearchModalCard}
           overlay
-        ></Modal>
+        >
+          <form onSubmit={searchHandler}>
+            <div className="form_search_container">
+              <div>
+                <div>
+                  <label for="">Обозначение стандарта</label>
+                  <input id="" />
+                </div>
+                <div>
+                  <label for="">Наименование стандарта</label>
+                  <input id="" />
+                </div>
+                <div>
+                  <label for="">Код ОКС</label>
+                  <input id="" />
+                </div>
+                <div>
+                  <label for="">Код ОКПД</label>
+                  <input id="" />
+                </div>
+                <div>
+                  <label for="">Разработчик</label>
+                  <input id="" />
+                </div>
+                <div>
+                  <label for="">Принят взамен</label>
+                  <input id="" />
+                </div>
+                <div>
+                  <label for="">Текст документа</label>
+                  <input id="" />
+                </div>
+                <div>
+                  <label for="">Поправки</label>
+                  <input id="" />
+                </div>
+              </div>
+              <div>
+                <div>
+                  <label for="">Нормативные ссылки</label>
+                  <input id="" />
+                </div>
+                <div>
+                  <label for="">Дата принятия</label>
+                  <input id="" />
+                </div>
+                <div>
+                  <label for="">Дата введение</label>
+                  <input id="" />
+                </div>
+                <div>
+                  <label for="">Дата актуализации описания</label>
+                  <input id="" />
+                </div>
+                <div>
+                  <label for="">Содержание</label>
+                  <input id="" />
+                </div>
+                <div>
+                  <label for="">Ключевые слова</label>
+                  <input id="" />
+                </div>
+                <div>
+                  <label for="">Ключевые фразы</label>
+                  <input id="" />
+                </div>
+                <div>
+                  <label for="">Уровень принятия</label>
+                  <input id="" />
+                </div>
+              </div>
+            </div>
+            <button type="sumbit">Применить</button>
+          </form>
+        </Modal>
       )}
     </>
   );

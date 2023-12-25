@@ -10,6 +10,12 @@ namespace GostProjectAPI.Data
         public DbSet<User> Users { get; set; }
 
         public DbSet<Company> Companies { get; set; }
+        
+        public DbSet<Keyword> Keywords { get; set; }
+
+        public DbSet<Keyphrase> Keyphrases { get; set; }
+
+        public GostDBContext(DbContextOptions opt) : base(opt) { }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

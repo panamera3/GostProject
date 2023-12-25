@@ -36,3 +36,8 @@ C:\Users\pjanv\OneDrive\Рабочий стол\Study\ВУЗ\5 семестр\П
 C:\Users\pjanv\OneDrive\Рабочий стол\Study\ВУЗ\5 семестр\ПП\GostProject\GostProjectAPI\obj\Debug\net6.0\GostProjectAPI.pdb
 C:\Users\pjanv\OneDrive\Рабочий стол\Study\ВУЗ\5 семестр\ПП\GostProject\GostProjectAPI\obj\Debug\net6.0\GostProjectAPI.genruntimeconfig.cache
 C:\Users\pjanv\OneDrive\Рабочий стол\Study\ВУЗ\5 семестр\ПП\GostProject\GostProjectAPI\obj\Debug\net6.0\ref\GostProjectAPI.dll
+C:\Users\pjanv\OneDrive\Рабочий стол\Study\ВУЗ\5 семестр\ПП\GostProject\GostProjectAPI\bin\Debug\net6.0\Humanizer.dll
+C:\Users\pjanv\OneDrive\Рабочий стол\Study\ВУЗ\5 семестр\ПП\GostProject\GostProjectAPI\bin\Debug\net6.0\Microsoft.EntityFrameworkCore.Design.dll
+C:\Users\pjanv\OneDrive\Рабочий стол\Study\ВУЗ\5 семестр\ПП\GostProject\GostProjectAPI\bin\Debug\net6.0\Microsoft.EntityFrameworkCore.Relational.dll
+C:\Users\pjanv\OneDrive\Рабочий стол\Study\ВУЗ\5 семестр\ПП\GostProject\GostProjectAPI\bin\Debug\net6.0\MySqlConnector.dll
+C:\Users\pjanv\OneDrive\Рабочий стол\Study\ВУЗ\5 семестр\ПП\GostProject\GostProjectAPI\bin\Debug\net6.0\Pomelo.EntityFrameworkCore.MySql.dll

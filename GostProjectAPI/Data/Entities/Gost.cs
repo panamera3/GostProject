@@ -46,13 +46,13 @@ namespace GostProjectAPI.Data.Entities
 
         [Description("ID принят взамен")]
         [ForeignKey(nameof(GostReplaced))]
-        public uint GostIdReplaced { get; set; }
+        public uint? GostIdReplaced { get; set; }
 
         [Description("Ключевые слова")]
-        public List<string> Keywords { get; set; }
+        public List<Keyword> Keywords { get; set; } = new();
 
         [Description("Ключевые фразы")]
-        public List<string> Keyphrases { get; set; }
+        public List<Keyphrase> Keyphrases { get; set; } = new();
 
         [Description("Уровень принятия")]
         public AcceptanceLevel AcceptanceLevel { get; set; }
@@ -67,13 +67,13 @@ namespace GostProjectAPI.Data.Entities
         public string Text { get; set; }
 
         [Description("Нормативные ссылки")]
-        public List<string> NormativeReferences { get; set; }
+        public string NormativeReferences { get; set; }
 
         [Description("Изменения")]
-        public List<string> Changes { get; set; }
+        public string Changes { get; set; }
 
         [Description("Поправки")]
-        public List<string> Amendments { get; set; }
+        public string Amendments { get; set; }
 
         [Description("Количество обращений")]
         public ulong RequestsNumber { get; set; }

@@ -10,7 +10,6 @@ namespace GostProjectAPI.Services
         private readonly IMapper _mapper;
         private readonly GostDBContext _dbContext;
 
-
         public GostService(GostDBContext dbContext, IMapper mapper)
         {
             _dbContext = dbContext;
