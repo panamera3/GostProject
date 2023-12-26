@@ -1,17 +1,78 @@
 // styles
-
+import "./GostsTable.css";
 // images
 
 // libraries
 import { useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import axios from "axios";
+import { translationDict } from "../constants/translationDict";
 
 const GostsTable = (props) => {
   const navigate = useNavigate();
+  const [gosts, setGosts] = useState();
+
+  useEffect(() => {
+    axios({
+      method: "get",
+      url: `https://localhost:7243/api/Gost/GetGosts`,
+      //headers: { Authorization: `Bearer ${userToken}` },
+    })
+      .then((gosts) => {
+        console.log(gosts.data);
+        setGosts(gosts.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }, []);
+
+  const renderGostsTable = () => {
+    if (gosts) {
+      return gosts.map((gost) => (
+        <tr key={gost.id}>
+          <td>
+            <p>{gost.id}</p>
+          </td>
+          <td>
+            <p>{gost.designation}</p>
+          </td>
+          <td>
+            <p>{gost.oksCode}</p>
+          </td>
+          <td>
+            <p>{gost.denomination}</p>
+          </td>
+          <td>
+            <img
+              className="gostsTableButton"
+              src=""
+              alt="view"
+              onClick={() => {
+                navigate("/gost");
+                window.location.reload();
+              }}
+            />
+          </td>
+          <td>
+            <img
+              className="gostsTableButton"
+              src=""
+              alt="add"
+              onClick={() => {
+                navigate("/gostAdd");
+                window.location.reload();
+              }}
+            />
+          </td>
+        </tr>
+      ));
+    }
+  };
 
   return (
     <>
-      <table>
+      <table className="gostsTable">
         <thead>
           <tr>
             <th scope="col">№</th>
@@ -20,29 +81,7 @@ const GostsTable = (props) => {
             <th scope="col">Наименование</th>
           </tr>
         </thead>
-        <tbody>
-          <tr>
-            <td>1</td>
-            <td>2</td>
-            <td>3</td>
-            <td>4</td>
-            <td>
-              <img
-                src=""
-                alt="btn"
-                onClick={() => {
-                  navigate("/gostAdd");
-                }}
-              />
-            </td>
-            <td>4</td>
-          </tr>
-          <tr>
-            <td>5</td>
-            <td>6</td>
-            <td>7</td>
-          </tr>
-        </tbody>
+        <tbody>{renderGostsTable()}</tbody>
       </table>
     </>
   );

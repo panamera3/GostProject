@@ -10,7 +10,7 @@
 }
 
 .main_modal_content {
-  background-color: #c75b5b;
+  background-color: #004696;
   overflow: auto;
   border-bottom-left-radius: 1em;
   border-bottom-right-radius: 1em;
@@ -18,7 +18,7 @@
 
 .main_modal {
   animation-name: modalAppear;
-  animation-duration: 0.5s;
+  animation-duration: .3s;
   color: #ffffff;
   position: fixed;
 }

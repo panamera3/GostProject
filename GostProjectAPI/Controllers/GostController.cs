@@ -21,7 +21,7 @@ namespace GostProjectAPI.Controllers
             return JSON(await _gostService.GetGostsAsync());
         }
 
-        [HttpGet("{orderID}")]
+        [HttpGet("{gostID}")]
         public async Task<JsonResult> GetGost(uint gostID)
         {
             return JSON(await _gostService.GetGostAsync(gostID));

@@ -1,5 +1,6 @@
 // libraries
 import { Routes, Route, Navigate, BrowserRouter } from "react-router-dom";
+import { useEffect } from "react";
 // styles
 import "./App.css";
 // pages
@@ -12,6 +13,17 @@ import GostEdit from "./pages/Gost/edit/GostEdit";
 import Gost from "./pages/Gost/Gost";
 
 function App() {
+  useEffect(() => {
+    const header = document.querySelector(".header");
+    if (header) {
+      const headerHeight = header.offsetHeight;
+      const bodyContainer = document.querySelector(".body_container");
+      if (bodyContainer) {
+        bodyContainer.style.paddingTop = `${1.3 * headerHeight}px`;
+      }
+    }
+  }, []);
+
   return (
     <>
       <div className="body">

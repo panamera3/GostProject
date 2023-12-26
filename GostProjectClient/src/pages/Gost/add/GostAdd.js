@@ -2,6 +2,7 @@
 // libraries
 import { useState, useEffect, useRef } from "react";
 import HeaderAdmin from "../../../components/HeaderAdmin/HeaderAdmin";
+import GostTable from "../../../components/GostTable/GostTable";
 // components
 
 const GostAdd = () => {
@@ -10,7 +11,12 @@ const GostAdd = () => {
   return (
     <>
       <HeaderAdmin />
-      <p>ГОСТ</p>
+      <div className="body_container">
+        <div>
+          <a href="/home">Назад</a>
+        </div>
+        <GostTable add />
+      </div>
     </>
   );
 };

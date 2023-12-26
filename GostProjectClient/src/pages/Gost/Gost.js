@@ -1,4 +1,5 @@
 // styles
+import "./Gost.css";
 // libraries
 import { useState, useEffect, useRef } from "react";
 import GostTable from "../../components/GostTable/GostTable";
@@ -12,18 +13,22 @@ const Gost = () => {
   return (
     <>
       {true ? <HeaderAdmin /> : <HeaderUser />}
-      <div className="activities_container">
-        <div>
-          <a href="/">Назад</a>
-          <p>Добавить в избранное</p>
+      <div className="body_container">
+        <div className="activities_container">
+          <div>
+          <a href="/home">Назад</a>
+            <p>Добавить в избранное</p>
+          </div>
+          {true && (
+            <div>
+              <a href="/gostEdit">Редактировать</a>
+              <p>Архивировать</p>
+              <p>Удалить</p>
+            </div>
+          )}
         </div>
-        <div>
-          <a href="/gostEdit">Редактировать</a>
-          <p>Архивировать</p>
-          <p>Удалить</p>
-        </div>
+        <GostTable view />
       </div>
-      <GostTable />
     </>
   );
 };

@@ -16,9 +16,8 @@ const Login = () => {
   const [formValid, setFormValid] = useState(false);
 
   const submitHandler = () => {
-    console.log("Something");
-
     navigate("/home");
+    window.location.reload();
   };
 
   return (
@@ -26,34 +25,36 @@ const Login = () => {
       <LeftColumnLogReg login>
         <div className="left_column_log_reg_children">
           <form onSubmit={submitHandler}>
-            <div>
-              <h2>Вход</h2>
+            <div className="left_column_log_reg_children_form">
+              <div>
+                <h2>Вход</h2>
+              </div>
+              <div>
+                <input
+                  name="login"
+                  id="login_input"
+                  type="login"
+                  ref={usernameLoginInputRef}
+                  placeholder="Логин"
+                />
+                <input
+                  name="password"
+                  id="password_input"
+                  type="password"
+                  ref={passwordLoginInputRef}
+                  placeholder="Пароль"
+                />
+              </div>
+              <div>
+                <input
+                  id="checkbox_remember"
+                  type="checkbox"
+                  style={{ width: "auto" }}
+                />
+                <label for="checkbox_remember">Запомнить меня</label>
+              </div>
+              <button type="submit">Войти</button>
             </div>
-            <div>
-              <input
-                name="login"
-                id="login_input"
-                type="login"
-                ref={usernameLoginInputRef}
-                placeholder="Логин"
-              />
-              <input
-                name="password"
-                id="password_input"
-                type="password"
-                ref={passwordLoginInputRef}
-                placeholder="Пароль"
-              />
-            </div>
-            <div>
-              <input
-                id="checkbox_remember"
-                type="checkbox"
-                style={{ width: "auto" }}
-              />
-              <label for="checkbox_remember">Запомнить меня</label>
-            </div>
-            <button type="sumbit">Войти</button>
           </form>
         </div>
       </LeftColumnLogReg>

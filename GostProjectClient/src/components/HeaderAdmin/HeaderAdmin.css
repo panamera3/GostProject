@@ -3,6 +3,11 @@
   background-color: #004696;
   padding: 2em;
   display: flex;
+  justify-content: space-between;
+  position: fixed;
+  left: 0;
+  right: 0;
+  z-index: 100;
 }
 
 .header a {
@@ -15,27 +20,58 @@
   margin: 0em 1em;
 }
 
-.header p:hover{
+.header p:hover {
   cursor: pointer;
 }
 
-.header .user {
-  display: none;
-}
-
-.modalProfile{
+.modalProfile {
   display: flex;
   flex-direction: column;
 }
 
-.modalProfile *{
+.modalProfile * {
   margin: 1em;
+  cursor: pointer;
 }
 
-.form_search_container{
+.main_modal_content.search {
+  position: fixed;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.main_modal_content.profile {
+  position: fixed;
+  right: 0%;
+}
+
+.form_search_container {
   display: flex;
 }
 
-.form_search_container input{
+.form_search_container input {
   width: auto;
+  background-color: #004696;
+  border: 1px solid #ffffff;
+}
+
+.form_search_container > div:last-of-type {
+  border-left: 1px solid #ffffff;
+}
+
+.search_input_container {
+  display: flex;
+  justify-content: space-between;
+}
+
+.search_input_container:not(:last-child) {
+  border-bottom: 1px solid #ffffff;
+}
+
+.search_input_container * {
+  padding: 1em;
+}
+
+.search_input_container input {
+  color: #ffffff;
 }

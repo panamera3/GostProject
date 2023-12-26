@@ -1,0 +1,21 @@
+.activities_container {
+  display: flex;
+  justify-content: space-between;
+}
+
+.activities_container div {
+  display: flex;
+  align-items: center;
+}
+
+.activities_container a {
+  color: #000000;
+}
+
+.activities_container p:hover {
+    cursor: pointer;
+}
+
+.activities_container div > *:not(:last-child) {
+  margin-right: 2em;
+}

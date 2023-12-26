@@ -1,0 +1,7 @@
+.gostsTable {
+  width: 100%;
+}
+
+.gostsTableButton:hover {
+  cursor: pointer;
+}
