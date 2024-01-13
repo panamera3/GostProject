@@ -36,7 +36,7 @@ function App() {
             <Route path="/userProfiles" element={<UserProfiles />} />
             <Route path="/gostAdd" element={<GostAdd />} />
             <Route path="/gostEdit" element={<GostEdit />} />
-            <Route path="/gost" element={<Gost />} />
+            <Route path="/gost/:id" element={<Gost />} />
             <Route path="/userProfiles" element={<UserProfiles />} />
             перенаправлять пользователя на главную страницу, если ввёл
             несуществующий путь

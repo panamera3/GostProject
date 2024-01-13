@@ -39,5 +39,20 @@ namespace GostProjectAPI.Controllers
             return JSON(await _gostService.EditGostAsync(gostEditDto));
         }
 
+        [HttpDelete]
+        [Route("{id}")]
+        public async Task<IActionResult> DeleteGost(uint id)
+        {
+            if (await _gostService.TryDeleteGostAsync(id))
+                return Ok();
+
+            return BadRequest();
+        }
+
+        [HttpPost]
+        public async Task<JsonResult> AddFavouriteGost([FromQuery] uint gostID, uint userID)
+        {
+            return JSON(await _gostService.AddFavouriteGostAsync(gostID, userID));
+        }
     }
 }

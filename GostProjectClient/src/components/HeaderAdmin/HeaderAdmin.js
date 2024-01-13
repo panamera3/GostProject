@@ -1,7 +1,7 @@
 // styles
 import "./HeaderAdmin.css";
 // images
-
+import user from "../../images/user.svg"
 // libraries
 import { useNavigate } from "react-router-dom";
 import { useRef, useState, useEffect } from "react";
@@ -66,7 +66,7 @@ const HeaderAdmin = (props) => {
           )}
         </div>
         <div>
-          <img alt="User" onClick={() => openModalCard()} />
+          <img alt="User" src={user} onClick={() => openModalCard()} />
         </div>
       </div>
       {isModalOpen && (

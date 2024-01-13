@@ -25,18 +25,34 @@ const GostTable = (props) => {
 
   useEffect(() => {
     if (props.view || props.edit) {
-      axios({
-        method: "get",
-        url: `https://localhost:7243/api/Gost/GetGost/3`,
-        //headers: { Authorization: `Bearer ${userToken}` },
-      })
-        .then((gost) => {
-          console.log(gost.data);
-          setGost(gost.data);
+      if (localStorage.getItem("count") == 3) {
+        axios({
+          method: "get",
+          url: `https://localhost:7243/api/Gost/GetGost/3`,
+          //headers: { Authorization: `Bearer ${userToken}` },
         })
-        .catch((error) => {
-          console.log(error);
-        });
+          .then((gost) => {
+            console.log(gost.data);
+            setGost(gost.data);
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+      } else {
+        axios({
+          method: "get",
+          url: `https://localhost:7243/api/Gost/GetGost/3`,
+          //headers: { Authorization: `Bearer ${userToken}` },
+        })
+          .then((gost) => {
+            console.log(gost.data);
+            setGost(gost.data);
+            localStorage.setItem("count", 3);
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+      }
     }
   }, []);
 
@@ -68,7 +84,10 @@ const GostTable = (props) => {
             <label htmlFor={key}>{translationDict[key]}</label>
           </td>
           <td>
-            <input className="gostInput" onChange={(e) => handleInputChange(key, e.target.value)} />
+            <input
+              className="gostInput"
+              onChange={(e) => handleInputChange(key, e.target.value)}
+            />
           </td>
         </tr>
       ));
@@ -79,20 +98,47 @@ const GostTable = (props) => {
     console.log(formData);
     console.log("ok");
     event.preventDefault();
-    /*
-    axios({
-      method: "post",
-      url: `https://localhost:7243/api/Gost/GetGost/3`,
-      //headers: { Authorization: `Bearer ${userToken}` },
-    })
-      .then((gost) => {
-        console.log(gost.data);
-        setGost(gost.data);
+    const formAddData = new FormData();
+    formAddData.append('gostAddDto', JSON.stringify(formData));
+    for (const key in formData) {
+      formAddData.append(key, formData[key]);
+    }
+
+    console.log(formAddData);
+    if (props.add) {
+      axios({
+        method: "post",
+        url: `https://localhost:7243/api/Gost/AddGost`,
+        data: formAddData,
+        headers: {
+          "Content-Type": "application/json",
+          //'Authorization': Bearer ${userToken}
+        },
       })
-      .catch((error) => {
-        console.log(error);
-      });
-      */
+        .then((gost) => {
+          console.log(gost.data);
+          setGost(gost.data);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    }
+    /*
+    if(props.edit){
+      axios({
+        method: "post",
+        url: `https://localhost:7243/api/Gost/GetGost/3`,
+        //headers: { Authorization: `Bearer ${userToken}` },
+      })
+        .then((gost) => {
+          console.log(gost.data);
+          setGost(gost.data);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    }
+    */
   };
 
   const cancelHandler = () => {
@@ -106,7 +152,6 @@ const GostTable = (props) => {
       [key]: value,
     }));
   };
-
 
   return (
     <>

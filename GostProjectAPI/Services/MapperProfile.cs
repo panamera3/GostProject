@@ -1,5 +1,6 @@
 ﻿using GostProjectAPI.Data.Entities;
 using GostProjectAPI.DTOModels.Gosts;
+using GostProjectAPI.DTOModels.Users;
 
 namespace GostProjectAPI.Services
 {
@@ -7,8 +8,12 @@ namespace GostProjectAPI.Services
     {
         public MapperProfile()
         {
-            CreateMap<Gost, GostAddDto>();
-            CreateMap<Gost, GostEditDto>();
+            CreateMap<GostAddDto, Gost>();
+            CreateMap<GostEditDto, Gost>();
+            CreateMap<UserAddDto, User>();
+            CreateMap<UserAuthDto, User>();
+            CreateMap<UserAddDto, UserAuthDto>();   
+            CreateMap<User, SignedInUser>();
         }
     }
 }

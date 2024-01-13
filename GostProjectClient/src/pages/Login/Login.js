@@ -15,10 +15,30 @@ const Login = () => {
 
   const [formValid, setFormValid] = useState(false);
 
-  const submitHandler = () => {
-    navigate("/home");
-    window.location.reload();
+  const submitHandler = (event) => {
+    event.preventDefault();
+    const username = usernameLoginInputRef.current.value;
+    const password = passwordLoginInputRef.current.value;
+
+    axios({
+      method: "post",
+      responseType: "json",
+      url: `https://localhost:7243/api/Auth/AuthUser`,
+      data: {
+        login: `${username}`,
+        password: `${password}`,
+      },
+    })
+      .then((gost) => {
+        console.log(gost.data);
+        navigate("/home");
+        window.location.reload();
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   };
+
 
   return (
     <>
@@ -44,14 +64,6 @@ const Login = () => {
                   ref={passwordLoginInputRef}
                   placeholder="Пароль"
                 />
-              </div>
-              <div>
-                <input
-                  id="checkbox_remember"
-                  type="checkbox"
-                  style={{ width: "auto" }}
-                />
-                <label for="checkbox_remember">Запомнить меня</label>
               </div>
               <button type="submit">Войти</button>
             </div>

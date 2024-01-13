@@ -1,7 +1,9 @@
 ﻿using GostProjectAPI.Data;
 using GostProjectAPI.Data.Entities;
 using GostProjectAPI.DTOModels.Gosts;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Data;
 
 namespace GostProjectAPI.Services
 {
@@ -53,6 +55,28 @@ namespace GostProjectAPI.Services
             await _dbContext.SaveChangesAsync();
 
             return oldGost;
+        }
+
+        public async Task<bool> TryDeleteGostAsync(uint gostID)
+        {
+            var gost = await GetGostAsync(gostID);
+
+            if (gost == null)
+                return false;
+
+            _dbContext.Gosts.Remove(gost);
+            await _dbContext.SaveChangesAsync();
+            return true;
+        }
+
+        public async Task<FavouriteGost?> AddFavouriteGostAsync(uint gostID, uint userID)
+        {
+            var user = await _dbContext.Users.FirstOrDefaultAsync(u => u.ID == userID);
+            var favouriteGost = new FavouriteGost() { GostId = gostID, UserId = userID };
+            _dbContext.FavouritesGosts.Add(favouriteGost);
+            await _dbContext.SaveChangesAsync();
+
+            return favouriteGost;
         }
     }
 }

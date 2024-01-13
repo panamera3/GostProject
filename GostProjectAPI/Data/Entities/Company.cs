@@ -18,5 +18,8 @@ namespace GostProjectAPI.Data.Entities
         [Description("ИНН")]
         [Column(TypeName = "VARCHAR(12)")]
         public string Inn { get; set; }
+
+        [Description("Код подключения")]
+        public string Code { get; set; }
     }
 }

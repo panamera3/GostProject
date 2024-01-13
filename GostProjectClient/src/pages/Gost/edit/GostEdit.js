@@ -15,15 +15,7 @@ const GostEdit = () => {
         <div className="activities_container">
           <div>
             <a href="/home">Назад</a>
-            <p>Добавить в избранное</p>
           </div>
-          {true && (
-            <div>
-              <a href="/gostEdit">Редактировать</a>
-              <p>Архивировать</p>
-              <p>Удалить</p>
-            </div>
-          )}
         </div>
         <GostTable edit />
       </div>

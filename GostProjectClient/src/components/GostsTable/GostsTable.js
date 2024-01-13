@@ -1,6 +1,8 @@
 // styles
 import "./GostsTable.css";
 // images
+import file from "../../images/file-minus.svg"
+import like from "../../images/like.svg"
 
 // libraries
 import { useNavigate } from "react-router-dom";
@@ -46,10 +48,10 @@ const GostsTable = (props) => {
           <td>
             <img
               className="gostsTableButton"
-              src=""
+              src={file}
               alt="view"
               onClick={() => {
-                navigate("/gost");
+                navigate(`/gost/${gost.id}`);
                 window.location.reload();
               }}
             />
@@ -57,12 +59,8 @@ const GostsTable = (props) => {
           <td>
             <img
               className="gostsTableButton"
-              src=""
-              alt="add"
-              onClick={() => {
-                navigate("/gostAdd");
-                window.location.reload();
-              }}
+              src={like}
+              alt="like"
             />
           </td>
         </tr>

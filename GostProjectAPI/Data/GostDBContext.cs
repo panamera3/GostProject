@@ -15,6 +15,8 @@ namespace GostProjectAPI.Data
 
         public DbSet<Keyphrase> Keyphrases { get; set; }
 
+        public DbSet<FavouriteGost> FavouritesGosts { get; set; }
+
         public GostDBContext(DbContextOptions opt) : base(opt) { }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

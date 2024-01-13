@@ -28,5 +28,11 @@ namespace GostProjectAPI.DTOModels.Gosts
 
         [Required]
         public AcceptanceLevel AcceptanceLevel { get; set; }
+
+        [Required]
+        public string Text { get; set; }
+
+        [Required]
+        public string NormativeReferences { get; set; }
     }
 }

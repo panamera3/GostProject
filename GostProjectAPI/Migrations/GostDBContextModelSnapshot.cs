@@ -25,6 +25,10 @@ namespace GostProjectAPI.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int unsigned");
 
+                    b.Property<string>("Code")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
                     b.Property<string>("Inn")
                         .IsRequired()
                         .HasColumnType("VARCHAR(12)");
@@ -36,6 +40,27 @@ namespace GostProjectAPI.Migrations
                     b.HasKey("ID");
 
                     b.ToTable("Companies");
+                });
+
+            modelBuilder.Entity("GostProjectAPI.Data.Entities.FavouritesGosts", b =>
+                {
+                    b.Property<uint>("ID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int unsigned");
+
+                    b.Property<uint>("GostId")
+                        .HasColumnType("int unsigned");
+
+                    b.Property<uint>("UserId")
+                        .HasColumnType("int unsigned");
+
+                    b.HasKey("ID");
+
+                    b.HasIndex("GostId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("FavouritesGosts");
                 });
 
             modelBuilder.Entity("GostProjectAPI.Data.Entities.Gost", b =>
@@ -186,6 +211,25 @@ namespace GostProjectAPI.Migrations
                     b.HasIndex("WorkCompanyID");
 
                     b.ToTable("Users");
+                });
+
+            modelBuilder.Entity("GostProjectAPI.Data.Entities.FavouritesGosts", b =>
+                {
+                    b.HasOne("GostProjectAPI.Data.Entities.Gost", "Gost")
+                        .WithMany()
+                        .HasForeignKey("GostId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("GostProjectAPI.Data.Entities.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Gost");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("GostProjectAPI.Data.Entities.Gost", b =>
