@@ -1,7 +1,7 @@
 // styles
 import "./HeaderAdmin.css";
 // images
-import user from "../../images/user.svg"
+import user from "../../images/user.svg";
 // libraries
 import { useNavigate } from "react-router-dom";
 import { useRef, useState, useEffect } from "react";
@@ -42,6 +42,8 @@ const HeaderAdmin = (props) => {
 
   const exitHandler = () => {
     console.log(123234);
+    localStorage.setItem("token", "");
+    localStorage.setItem("id", "");
     navigate("/login");
   };
 
@@ -56,6 +58,7 @@ const HeaderAdmin = (props) => {
     <>
       <div className="header" ref={header}>
         <div>
+          <a href="/home">Все документы</a>
           {!props.user && <a href="/gostAdd">Создать документ</a>}
           <p onClick={() => openSearchModalCard()}>Поиск по документам</p>
           {!props.user && (
@@ -77,7 +80,7 @@ const HeaderAdmin = (props) => {
         >
           <div className="modalProfile">
             <a href="/">Мой профиль</a>
-            <a href="/userProfiles">Список профилей</a>
+            <a href="/favourites">Избранное</a>
             <p onClick={exitHandler}>Выход</p>
           </div>
         </Modal>

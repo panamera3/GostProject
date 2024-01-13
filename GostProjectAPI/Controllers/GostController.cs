@@ -49,10 +49,25 @@ namespace GostProjectAPI.Controllers
             return BadRequest();
         }
 
+        [HttpGet("{userID}")]
+        public async Task<JsonResult> GetFavouritesGosts(uint userID)
+        {
+            return JSON(await _gostService.GetFavouritesGostsAsync(userID));
+        }
+
         [HttpPost]
         public async Task<JsonResult> AddFavouriteGost([FromQuery] uint gostID, uint userID)
         {
             return JSON(await _gostService.AddFavouriteGostAsync(gostID, userID));
+        }
+
+        [HttpDelete]
+        public async Task<IActionResult> DeleteFavouriteGost([FromQuery] uint gostID, uint userID)
+        {
+            if (await _gostService.TryDeleteFavouriteGostAsync(gostID, userID))
+                return Ok();
+
+            return BadRequest();
         }
     }
 }

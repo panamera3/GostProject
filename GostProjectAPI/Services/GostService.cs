@@ -1,9 +1,13 @@
 ﻿using GostProjectAPI.Data;
 using GostProjectAPI.Data.Entities;
+using GostProjectAPI.Data.Enums.Gost;
 using GostProjectAPI.DTOModels.Gosts;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Data;
+using static System.Net.Mime.MediaTypeNames;
+using System.Reflection.Emit;
+using System.Threading.Channels;
 
 namespace GostProjectAPI.Services
 {
@@ -69,6 +73,13 @@ namespace GostProjectAPI.Services
             return true;
         }
 
+        public async Task<List<Gost>?> GetFavouritesGostsAsync(uint userID)
+        {
+            var favouritesGosts = await _dbContext.FavouritesGosts.Where(g => g.UserId == userID).Select(g=> g.GostId).ToListAsync();
+            var allGosts = await _dbContext.Gosts.Where(g => favouritesGosts.Contains(g.ID)).ToListAsync();
+            return allGosts;
+        }
+
         public async Task<FavouriteGost?> AddFavouriteGostAsync(uint gostID, uint userID)
         {
             var user = await _dbContext.Users.FirstOrDefaultAsync(u => u.ID == userID);
@@ -77,6 +88,23 @@ namespace GostProjectAPI.Services
             await _dbContext.SaveChangesAsync();
 
             return favouriteGost;
+        }
+
+        public async Task<FavouriteGost?> GetFavouriteGostAsync(uint gostID, uint userID)
+        {
+            return await _dbContext.FavouritesGosts.FirstOrDefaultAsync(g => g.UserId == userID && g.GostId == gostID);
+        }
+
+        public async Task<bool> TryDeleteFavouriteGostAsync(uint gostID, uint userID)
+        {
+            var favouriteGost = await GetFavouriteGostAsync(gostID, userID);
+
+            if (favouriteGost == null)
+                return false;
+
+            _dbContext.FavouritesGosts.Remove(favouriteGost);
+            await _dbContext.SaveChangesAsync();
+            return true;
         }
     }
 }

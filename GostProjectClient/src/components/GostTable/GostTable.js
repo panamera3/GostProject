@@ -25,34 +25,18 @@ const GostTable = (props) => {
 
   useEffect(() => {
     if (props.view || props.edit) {
-      if (localStorage.getItem("count") == 3) {
-        axios({
-          method: "get",
-          url: `https://localhost:7243/api/Gost/GetGost/3`,
-          //headers: { Authorization: `Bearer ${userToken}` },
+      axios({
+        method: "get",
+        url: `https://localhost:7243/api/Gost/GetGost/${props.id}`,
+        //headers: { Authorization: `Bearer ${userToken}` },
+      })
+        .then((gost) => {
+          console.log("just gosts", gost.data);
+          setGost(gost.data);
         })
-          .then((gost) => {
-            console.log(gost.data);
-            setGost(gost.data);
-          })
-          .catch((error) => {
-            console.log(error);
-          });
-      } else {
-        axios({
-          method: "get",
-          url: `https://localhost:7243/api/Gost/GetGost/3`,
-          //headers: { Authorization: `Bearer ${userToken}` },
-        })
-          .then((gost) => {
-            console.log(gost.data);
-            setGost(gost.data);
-            localStorage.setItem("count", 3);
-          })
-          .catch((error) => {
-            console.log(error);
-          });
-      }
+        .catch((error) => {
+          console.log(error);
+        });
     }
   }, []);
 
@@ -99,7 +83,7 @@ const GostTable = (props) => {
     console.log("ok");
     event.preventDefault();
     const formAddData = new FormData();
-    formAddData.append('gostAddDto', JSON.stringify(formData));
+    formAddData.append("gostAddDto", JSON.stringify(formData));
     for (const key in formData) {
       formAddData.append(key, formData[key]);
     }

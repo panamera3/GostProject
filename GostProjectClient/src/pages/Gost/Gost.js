@@ -7,15 +7,17 @@ import GostTable from "../../components/GostTable/GostTable";
 import HeaderAdmin from "../../components/HeaderAdmin/HeaderAdmin";
 import HeaderUser from "../../components/Header/HeaderUser";
 import axios from "axios";
+import { useParams } from 'react-router-dom';
 // components
 
 const Gost = (props) => {
+  const params = useParams();
   const navigate = useNavigate();
 
   const deleteHandler = () => {
     axios({
       method: "delete",
-      url: `https://localhost:7243/api/Gost/DeleteGost/12`,
+      url: `https://localhost:7243/api/Gost/DeleteGost/${params.id}`,
       //headers: { Authorization: `Bearer ${userToken}` },
     })
       .then((data) => {
@@ -29,6 +31,20 @@ const Gost = (props) => {
         console.log(error);
       });
   };
+  const addFavGostHandler = () => {
+    const userId = localStorage.getItem("id");
+    axios({
+      method: "post",
+      responseType: "json",
+      url: `https://localhost:7243/api/Gost/AddFavouriteGost/?userId=${userId}&gostId=${params.id}`,
+    })
+      .then((gost) => {
+        console.log("gost.data favourite", gost.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
 
   return (
     <>
@@ -37,7 +53,7 @@ const Gost = (props) => {
         <div className="activities_container">
           <div>
             <a href="/home">Назад</a>
-            <p>Добавить в избранное</p>
+            <p onClick={() => addFavGostHandler()}>Добавить в избранное</p>
           </div>
           {true && (
             <div>
@@ -47,7 +63,7 @@ const Gost = (props) => {
             </div>
           )}
         </div>
-        <GostTable view id={props.id} />
+        <GostTable view id={params.id} />
       </div>
     </>
   );

@@ -29,16 +29,17 @@ const Login = () => {
         password: `${password}`,
       },
     })
-      .then((gost) => {
-        console.log(gost.data);
+      .then((user) => {
+        console.log(user.data.token);
         navigate("/home");
         window.location.reload();
+        localStorage.setItem("token", user.data.token);
+        localStorage.setItem("id", user.data.id)
       })
       .catch((error) => {
         console.log(error);
       });
   };
-
 
   return (
     <>

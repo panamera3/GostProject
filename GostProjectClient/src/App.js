@@ -11,6 +11,8 @@ import UserProfiles from "./pages/Admin/UserProfiles/UserProfiles";
 import GostAdd from "./pages/Gost/add/GostAdd";
 import GostEdit from "./pages/Gost/edit/GostEdit";
 import Gost from "./pages/Gost/Gost";
+import FavouritesGosts from "./pages/FavouritesGosts/FavouritesGosts";
+
 
 function App() {
   useEffect(() => {
@@ -38,6 +40,7 @@ function App() {
             <Route path="/gostEdit" element={<GostEdit />} />
             <Route path="/gost/:id" element={<Gost />} />
             <Route path="/userProfiles" element={<UserProfiles />} />
+            <Route path="/favourites" element={<FavouritesGosts />} />
             перенаправлять пользователя на главную страницу, если ввёл
             несуществующий путь
             <Route path="*" element={<Navigate to="/" />} />
