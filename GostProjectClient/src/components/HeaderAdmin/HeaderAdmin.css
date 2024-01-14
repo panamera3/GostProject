@@ -21,7 +21,7 @@
   margin: 0em 1em;
 }
 
-.header p:hover {
+.header p, img:hover {
   cursor: pointer;
 }
 

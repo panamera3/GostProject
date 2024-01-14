@@ -8,6 +8,7 @@ namespace GostProjectAPI.Services
     {
         public MapperProfile()
         {
+            CreateMap<Gost, GostAddDto>();
             CreateMap<GostAddDto, Gost>();
             CreateMap<GostEditDto, Gost>();
             CreateMap<UserAddDto, User>();

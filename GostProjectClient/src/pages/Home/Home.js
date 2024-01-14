@@ -13,7 +13,7 @@ const Home = (props) => {
 
   return (
     <>
-      {true ? <HeaderAdmin /> : <HeaderUser />}
+      {localStorage.getItem("role") == 2 ? <HeaderAdmin /> : <HeaderUser />}
       <div className="body_container">
         {props.favourites && (
           <div className="activities_container">

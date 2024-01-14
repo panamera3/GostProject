@@ -1,4 +1,6 @@
-﻿namespace GostProjectAPI.DTOModels.Users
+﻿using GostProjectAPI.Data.Enums;
+
+namespace GostProjectAPI.DTOModels.Users
 {
     public class SignedInUser
     {
@@ -7,5 +9,7 @@
         public string Token { get; set; }
 
         public string Login { get; set; }
+
+        public UserRole Role { get; set; }
     }
 }

@@ -6,6 +6,7 @@ import user from "../../images/user.svg";
 import { useNavigate } from "react-router-dom";
 import { useRef, useState, useEffect } from "react";
 import Modal from "../Modal/Modal";
+import axios from "axios";
 
 const HeaderAdmin = (props) => {
   const header = useRef();
@@ -44,15 +45,31 @@ const HeaderAdmin = (props) => {
     console.log(123234);
     localStorage.setItem("token", "");
     localStorage.setItem("id", "");
+    localStorage.setItem("role", "");
     navigate("/login");
   };
 
   const searchHandler = () => {
     console.log(897);
+    /*
+    axios({
+      method: "post",
+      url: `https://localhost:7243/api/Gost/AddGost`,
+      data: formAddData,
+      headers: {
+        "Content-Type": "application/json",
+        //'Authorization': Bearer ${userToken}
+      },
+    })
+      .then((gost) => {
+        console.log(gost.data);
+        setGost(gost.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+      */
   };
-
-  //import UserIcon from "./user.svg"
-  //src={UserIcon}
 
   return (
     <>

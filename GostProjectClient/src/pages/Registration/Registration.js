@@ -33,7 +33,7 @@ const Registration = () => {
         lastName: `${fullnameString[0]}`,
         firstName: `${fullnameString[1]}`,
         patronymic: `${fullnameString[2] ? fullnameString[2] : ""}`,
-        role: 2,
+        role: 1,
       },
     })
       .then((user) => {
@@ -42,6 +42,7 @@ const Registration = () => {
         window.location.reload();
         localStorage.setItem("token", user.data.token)
         localStorage.setItem("id", user.data.id)
+        localStorage.setItem("role", user.data.role);
       })
       .catch((error) => {
         console.log(error);

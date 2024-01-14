@@ -93,7 +93,18 @@ const GostTable = (props) => {
       axios({
         method: "post",
         url: `https://localhost:7243/api/Gost/AddGost`,
-        data: formAddData,
+        data: {
+          Designation: "",
+          Denomination: "",
+          OKSCode: "",
+          OKPDCode: "",
+          Content: "",
+          Keywords: [""],
+          Keyphrases: [""],
+          AcceptanceLevel: 1,
+          Text: "",
+          NormativeReferences: "",
+        },
         headers: {
           "Content-Type": "application/json",
           //'Authorization': Bearer ${userToken}

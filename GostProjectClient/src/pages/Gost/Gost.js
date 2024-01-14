@@ -48,7 +48,7 @@ const Gost = (props) => {
 
   return (
     <>
-      {true ? <HeaderAdmin /> : <HeaderUser />}
+      {localStorage.getItem("role") == 2 ? <HeaderAdmin /> : <HeaderUser />}
       <div className="body_container">
         <div className="activities_container">
           <div>

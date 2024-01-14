@@ -30,11 +30,12 @@ const Login = () => {
       },
     })
       .then((user) => {
-        console.log(user.data.token);
+        console.log(user.data);
         navigate("/home");
         window.location.reload();
         localStorage.setItem("token", user.data.token);
         localStorage.setItem("id", user.data.id)
+        localStorage.setItem("role", user.data.role);
       })
       .catch((error) => {
         console.log(error);
