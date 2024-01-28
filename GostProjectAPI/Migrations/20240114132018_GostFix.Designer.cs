@@ -3,6 +3,7 @@ using System;
 using GostProjectAPI.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace GostProjectAPI.Migrations
 {
     [DbContext(typeof(GostDBContext))]
-    partial class GostDBContextModelSnapshot : ModelSnapshot
+    [Migration("20240114132018_GostFix")]
+    partial class GostFix
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -96,8 +98,9 @@ namespace GostProjectAPI.Migrations
                         .IsRequired()
                         .HasColumnType("VARCHAR(128)");
 
-                    b.Property<uint>("DeveloperId")
-                        .HasColumnType("int unsigned");
+                    b.Property<string>("Developer")
+                        .IsRequired()
+                        .HasColumnType("VARCHAR(128)");
 
                     b.Property<uint?>("GostIdReplaced")
                         .HasColumnType("int unsigned");
@@ -125,8 +128,6 @@ namespace GostProjectAPI.Migrations
                         .HasColumnType("VARCHAR(128)");
 
                     b.HasKey("ID");
-
-                    b.HasIndex("DeveloperId");
 
                     b.HasIndex("GostIdReplaced");
 
@@ -233,17 +234,9 @@ namespace GostProjectAPI.Migrations
 
             modelBuilder.Entity("GostProjectAPI.Data.Entities.Gost", b =>
                 {
-                    b.HasOne("GostProjectAPI.Data.Entities.User", "DeveloperUser")
-                        .WithMany()
-                        .HasForeignKey("DeveloperId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("GostProjectAPI.Data.Entities.Gost", "GostReplaced")
                         .WithMany()
                         .HasForeignKey("GostIdReplaced");
-
-                    b.Navigation("DeveloperUser");
 
                     b.Navigation("GostReplaced");
                 });

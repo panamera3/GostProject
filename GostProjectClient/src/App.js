@@ -12,6 +12,9 @@ import GostAdd from "./pages/Gost/add/GostAdd";
 import GostEdit from "./pages/Gost/edit/GostEdit";
 import Gost from "./pages/Gost/Gost";
 import FavouritesGosts from "./pages/FavouritesGosts/FavouritesGosts";
+import SearchGosts from "./pages/Search/Search";
+import { ToastContainer } from "react-toastify";
+import MyProfile from "./pages/MyProfile/MyProfile";
 
 
 function App() {
@@ -29,6 +32,7 @@ function App() {
   return (
     <>
       <div className="body">
+      <ToastContainer />
         <BrowserRouter>
           <Routes>
             <Route path="/" element={<Login />} />
@@ -41,6 +45,8 @@ function App() {
             <Route path="/gost/:id" element={<Gost />} />
             <Route path="/userProfiles" element={<UserProfiles />} />
             <Route path="/favourites" element={<FavouritesGosts />} />
+            <Route path="/search" element={<SearchGosts />} />
+            <Route path="/myProfile" element={<MyProfile />} />
             перенаправлять пользователя на главную страницу, если ввёл
             несуществующий путь
             <Route path="*" element={<Navigate to="/" />} />

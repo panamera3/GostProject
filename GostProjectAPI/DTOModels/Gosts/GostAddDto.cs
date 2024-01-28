@@ -1,4 +1,6 @@
-﻿using GostProjectAPI.Data.Enums.Gost;
+﻿using GostProjectAPI.Data.Entities;
+using GostProjectAPI.Data.Enums.Gost;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
 namespace GostProjectAPI.DTOModels.Gosts
@@ -12,6 +14,8 @@ namespace GostProjectAPI.DTOModels.Gosts
         public string OKSCode { get; set; }
 
         public string OKPDCode { get; set; }
+
+        public User DeveloperUser { get; set; }
 
         public string Content { get; set; }
 

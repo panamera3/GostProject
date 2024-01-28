@@ -1,0 +1,8 @@
+.userFields {
+  display: flex;
+  margin: 1em 0;
+}
+
+.userFields > p {
+  margin: 0 0.5em;
+}

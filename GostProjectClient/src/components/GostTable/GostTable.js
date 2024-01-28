@@ -42,6 +42,7 @@ const GostTable = (props) => {
 
   const renderGostTable = () => {
     if (gost) {
+      console.log("TEST FOR NOW", gost);
       return Object.keys(gost).map((key) => (
         <tr key={key}>
           <td>
@@ -104,6 +105,12 @@ const GostTable = (props) => {
           AcceptanceLevel: 1,
           Text: "",
           NormativeReferences: "",
+
+          /*
+          Developer: user;
+          IntrodutionDate: datetime.now;
+          AcceptanceDate: datetime.now
+          */
         },
         headers: {
           "Content-Type": "application/json",

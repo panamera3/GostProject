@@ -7,10 +7,19 @@ import { useNavigate } from "react-router-dom";
 import { useRef, useState, useEffect } from "react";
 import Modal from "../Modal/Modal";
 import axios from "axios";
+import { searchDict } from "../constants/searchDict";
 
 const HeaderAdmin = (props) => {
   const header = useRef();
   const navigate = useNavigate();
+
+  const [pagination, setPagination] = useState({
+    pageSize: 10,
+    offset: 0,
+    total: 10,
+  });
+  const [filter, setFilter] = useState();
+  const [search, setSearch] = useState();
 
   const openModal = () => {
     const header = document.querySelector(".header");
@@ -49,27 +58,49 @@ const HeaderAdmin = (props) => {
     navigate("/login");
   };
 
-  const searchHandler = () => {
-    console.log(897);
-    /*
-    axios({
-      method: "post",
-      url: `https://localhost:7243/api/Gost/AddGost`,
-      data: formAddData,
-      headers: {
-        "Content-Type": "application/json",
-        //'Authorization': Bearer ${userToken}
-      },
-    })
-      .then((gost) => {
-        console.log(gost.data);
-        setGost(gost.data);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-      */
+  const searchHandler = (event) => {
+    event.preventDefault();
+    const form = event.target;
+    const formData = new FormData(form);
+    const values = {};
+
+    for (let [name, value] of formData) {
+      if (value.trim() !== "") {
+        values[name] = value.trim();
+      }
+    }
+    console.log("values", values);
+    setFilter(values);
+    setSearch(true);
   };
+
+  const searchGosts = () => {
+    if (search) {
+      axios({
+        method: "post",
+        url: `https://localhost:7243/api/Gost/GetGosts`,
+        data: { userID: localStorage.getItem("id"), pagination, filter },
+        headers: {
+          "Content-Type": "application/json",
+          //'Authorization': Bearer ${userToken}
+        },
+      })
+        .then((gosts) => {
+          if (gosts.data) {
+            console.log("gosts.data", gosts.data.data);
+            localStorage.setItem("searchGosts", JSON.stringify(gosts.data.data));
+            setSearch(false);
+            navigate("/search");
+            window.location.reload();
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    }
+  };
+
+  useEffect(searchGosts, [filter]);
 
   return (
     <>
@@ -96,7 +127,7 @@ const HeaderAdmin = (props) => {
           contentClassName="profile"
         >
           <div className="modalProfile">
-            <a href="/">Мой профиль</a>
+            <a href="/myProfile">Мой профиль</a>
             <a href="/favourites">Избранное</a>
             <p onClick={exitHandler}>Выход</p>
           </div>
@@ -112,72 +143,24 @@ const HeaderAdmin = (props) => {
           <form onSubmit={searchHandler} className="modalSearchForm">
             <div className="form_search_container">
               <div>
-                <div className="search_input_container">
-                  <label for="">Обозначение стандарта</label>
-                  <input id="" />
-                </div>
-                <div className="search_input_container">
-                  <label for="">Наименование стандарта</label>
-                  <input id="" />
-                </div>
-                <div className="search_input_container">
-                  <label for="">Код ОКС</label>
-                  <input id="" />
-                </div>
-                <div className="search_input_container">
-                  <label for="">Код ОКПД</label>
-                  <input id="" />
-                </div>
-                <div className="search_input_container">
-                  <label for="">Разработчик</label>
-                  <input id="" />
-                </div>
-                <div className="search_input_container">
-                  <label for="">Принят взамен</label>
-                  <input id="" />
-                </div>
-                <div className="search_input_container">
-                  <label for="">Текст документа</label>
-                  <input id="" />
-                </div>
-                <div className="search_input_container">
-                  <label for="">Поправки</label>
-                  <input id="" />
-                </div>
+                {Object.keys(searchDict)
+                  .slice(0, Object.keys(searchDict).length / 2)
+                  .map((key) => (
+                    <div className="search_input_container" key={key}>
+                      <label htmlFor={key}>{searchDict[key]}</label>
+                      <input id={key} name={key} />
+                    </div>
+                  ))}
               </div>
               <div>
-                <div className="search_input_container">
-                  <label for="">Нормативные ссылки</label>
-                  <input id="" />
-                </div>
-                <div className="search_input_container">
-                  <label for="">Дата принятия</label>
-                  <input id="" />
-                </div>
-                <div className="search_input_container">
-                  <label for="">Дата введение</label>
-                  <input id="" />
-                </div>
-                <div className="search_input_container">
-                  <label for="">Дата актуализации описания</label>
-                  <input id="" />
-                </div>
-                <div className="search_input_container">
-                  <label for="">Содержание</label>
-                  <input id="" />
-                </div>
-                <div className="search_input_container">
-                  <label for="">Ключевые слова</label>
-                  <input id="" />
-                </div>
-                <div className="search_input_container">
-                  <label for="">Ключевые фразы</label>
-                  <input id="" />
-                </div>
-                <div className="search_input_container">
-                  <label for="">Уровень принятия</label>
-                  <input id="" />
-                </div>
+                {Object.keys(searchDict)
+                  .slice(Object.keys(searchDict).length / 2)
+                  .map((key) => (
+                    <div className="search_input_container" key={key}>
+                      <label htmlFor={key}>{searchDict[key]}</label>
+                      <input id={key} name={key} />
+                    </div>
+                  ))}
               </div>
             </div>
             <button type="submit">Применить</button>

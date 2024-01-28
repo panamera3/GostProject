@@ -1,6 +1,5 @@
 ﻿using GostProjectAPI.Data;
 using GostProjectAPI.Data.Entities;
-using GostProjectAPI.Data.Enums.Gost;
 using GostProjectAPI.DTOModels.Gosts;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -8,6 +7,9 @@ using System.Data;
 using static System.Net.Mime.MediaTypeNames;
 using System.Reflection.Emit;
 using System.Threading.Channels;
+using GostProjectAPI.DTOModels;
+using GostProjectAPI.Extensions;
+using GostProjectAPI.Migrations;
 
 namespace GostProjectAPI.Services
 {
@@ -27,6 +29,56 @@ namespace GostProjectAPI.Services
             return await _dbContext.Gosts.ToListAsync();
         }
 
+        public async Task<PagedList<Gost>> GetGostsAsync(GetGostsDto getParams)
+        {
+            var gosts = _dbContext.Gosts.AsQueryable();
+
+            var filteredOrders = gosts;
+
+            if (getParams?.Filter?.Designation != null)
+                filteredOrders = filteredOrders.Where(o => o.Designation.Contains(getParams.Filter.Designation)).AsQueryable();
+
+            if (getParams?.Filter?.Denomination != null)
+                filteredOrders = filteredOrders.Where(o => o.Denomination.Contains(getParams.Filter.Denomination)).AsQueryable();
+
+            if (getParams?.Filter?.OKSCode != null)
+                filteredOrders = filteredOrders.Where(o => o.OKSCode.Contains(getParams.Filter.OKSCode)).AsQueryable();
+
+            if (getParams?.Filter?.OKPDCode != null)
+                filteredOrders = filteredOrders.Where(o => o.OKPDCode.Contains(getParams.Filter.OKPDCode)).AsQueryable();
+
+            if (getParams?.Filter?.DeveloperId != null)
+                filteredOrders = filteredOrders.Where(o => o.DeveloperId == getParams.Filter.DeveloperId).AsQueryable();
+
+            // ???
+            if (getParams?.Filter?.AcceptanceLevel != null)
+                filteredOrders = filteredOrders.Where(o => o.AcceptanceLevel == getParams.Filter.AcceptanceLevel).AsQueryable();
+
+            if (getParams?.Filter?.Text != null)
+                filteredOrders = filteredOrders.Where(o => o.Text.Contains(getParams.Filter.Text)).AsQueryable();
+
+            if (getParams?.Filter?.NormativeReferences != null)
+                filteredOrders = filteredOrders.Where(o => o.NormativeReferences.Contains(getParams.Filter.NormativeReferences)).AsQueryable();
+
+            if (getParams?.Filter?.Designation != null)
+                filteredOrders = filteredOrders.Where(o => o.Designation.Contains(getParams.Filter.Designation)).AsQueryable();
+
+            if (getParams?.Filter?.Designation != null)
+                filteredOrders = filteredOrders.Where(o => o.Designation.Contains(getParams.Filter.Designation)).AsQueryable();
+
+            if (getParams?.Filter?.Designation != null)
+                filteredOrders = filteredOrders.Where(o => o.Designation.Contains(getParams.Filter.Designation)).AsQueryable();
+
+
+            var sortedOrders = getParams.SortDirection switch
+            {
+                "DESC" => filteredOrders.OrderByDescending(o => o.Designation).AsQueryable(),
+                _ => filteredOrders.OrderBy(o => o.Designation).AsQueryable()
+            };
+
+            return await sortedOrders.ToPagedListAsync(getParams.Pagination);
+        }
+
         public async Task<Gost?> GetGostAsync(uint gostID)
         {
             return await _dbContext.Gosts.FirstOrDefaultAsync(g => g.ID == gostID);
@@ -34,17 +86,34 @@ namespace GostProjectAPI.Services
 
         public async Task<Gost?> AddGostAsync(GostAddDto gostAddDto)
         {
-            // добавить маппер
             var gost = _mapper.Map<GostAddDto, Gost>(gostAddDto);
 
             if (gost == null)
                 return null;
+
+            // Преобразование Keywords в сущности Keyword
+            foreach (var keywordValue in gostAddDto.Keywords)
+            {
+                var keyword = new Keyword { Name = keywordValue };
+                gost.Keywords.Add(keyword);
+            }
+
+            // Преобразование Keyphrases в сущности Keyphrase
+            foreach (var keyphraseValue in gostAddDto.Keyphrases)
+            {
+                var keyphrase = new Keyphrase { Name = keyphraseValue };
+                gost.Keyphrases.Add(keyphrase);
+            }
+
+            gost.AcceptanceDate = DateTime.Now;
+            gost.IntrodutionDate = DateTime.Now;
 
             await _dbContext.Gosts.AddAsync(gost);
             await _dbContext.SaveChangesAsync();
 
             return gost;
         }
+
 
         public async Task<Gost?> EditGostAsync(GostEditDto gostEditDto)
         {
@@ -105,6 +174,12 @@ namespace GostProjectAPI.Services
             _dbContext.FavouritesGosts.Remove(favouriteGost);
             await _dbContext.SaveChangesAsync();
             return true;
+        }
+
+        public async Task<bool> CheckFavouriteGostsAsync(uint userID, uint gostID)
+        {
+            var state = await _dbContext.FavouritesGosts.AnyAsync(f => f.UserId == userID && f.GostId == gostID);
+            return state;
         }
     }
 }

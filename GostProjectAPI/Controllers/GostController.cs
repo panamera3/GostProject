@@ -21,6 +21,12 @@ namespace GostProjectAPI.Controllers
             return JSON(await _gostService.GetGostsAsync());
         }
 
+        [HttpPost]
+        public async Task<JsonResult> GetGosts([FromBody] GetGostsDto getParams)
+        {
+            return JSON(await _gostService.GetGostsAsync(getParams));
+        }
+
         [HttpGet("{gostID}")]
         public async Task<JsonResult> GetGost(uint gostID)
         {
@@ -68,6 +74,12 @@ namespace GostProjectAPI.Controllers
                 return Ok();
 
             return BadRequest();
+        }
+
+        [HttpGet("{userID}/{gostID}")]
+        public async Task<JsonResult> CheckFavouriteGosts(uint userID, uint gostID)
+        {
+            return JSON(await _gostService.CheckFavouriteGostsAsync(userID, gostID));
         }
     }
 }

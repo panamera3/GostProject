@@ -33,16 +33,20 @@ namespace GostProjectAPI.Data.Entities
         [Description("Дата введения")]
         public DateTime IntrodutionDate { get; set; }
 
-        [Description("Разработчик")] // ПОМЕНЯТЬ
+        [Description("Разработчик")]
         [Column(TypeName = "VARCHAR(128)")]
-        public string Developer { get; set; }
+        public User DeveloperUser { get; set; }
 
+        [Description("ID разработчика")]
+        [ForeignKey(nameof(DeveloperUser))]
+        public uint DeveloperId { get; set; }
+        
         [Description("Содержание")]
         [Column(TypeName = "VARCHAR(128)")]
         public string Content { get; set; }
 
         [Description("Принят взамен")]
-        public Gost GostReplaced { get; set; }
+        public Gost? GostReplaced { get; set; }
 
         [Description("ID принят взамен")]
         [ForeignKey(nameof(GostReplaced))]
@@ -60,8 +64,6 @@ namespace GostProjectAPI.Data.Entities
         [Description("Статус(Действующий/отменен/заменен)")]
         public ActionStatus ActionStatus { get; set; }
 
-        // после этой строки поменять
-
         [Description("Текст стандарта")]
         [Column(TypeName = "VARCHAR(128)")]
         public string Text { get; set; }
@@ -70,10 +72,10 @@ namespace GostProjectAPI.Data.Entities
         public string NormativeReferences { get; set; }
 
         [Description("Изменения")]
-        public string Changes { get; set; }
+        public string? Changes { get; set; }
 
         [Description("Поправки")]
-        public string Amendments { get; set; }
+        public string? Amendments { get; set; }
 
         [Description("Количество обращений")]
         public ulong RequestsNumber { get; set; }

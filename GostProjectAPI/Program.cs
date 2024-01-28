@@ -37,7 +37,7 @@ namespace GostProjectAPI
             var authConfig = builder.Configuration.GetSection("Auth").Get<AuthOptions>();
 
             builder.Services.AddScoped<GostService>();
-            builder.Services.AddScoped<UsersService>();
+            builder.Services.AddScoped<UserService>();
             builder.Services.AddScoped<AuthService>();
 
             builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)

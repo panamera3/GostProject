@@ -11,10 +11,10 @@ namespace GostProjectAPI.Controllers
     public class AuthController : CommonControllerBase
     {
         private readonly AuthService _authService;
-        private readonly UsersService _usersService;
+        private readonly UserService _usersService;
         private readonly IMapper _mapper;
 
-        public AuthController(AuthService authService, UsersService usersService, IMapper mapper)
+        public AuthController(AuthService authService, UserService usersService, IMapper mapper)
         {
             _authService = authService;
             _usersService = usersService;

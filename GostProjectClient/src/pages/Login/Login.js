@@ -6,6 +6,7 @@ import LeftColumnLogReg from "../../components/LeftColumnLogReg/LeftColumnLogReg
 import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import UserRole from "../../types/user/userRole";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -31,11 +32,14 @@ const Login = () => {
     })
       .then((user) => {
         console.log(user.data);
+        const userRole = Object.keys(UserRole).find(
+          (key) => UserRole[key] === user.data.role
+        );
+        localStorage.setItem("token", user.data.token);
+        localStorage.setItem("id", user.data.id);
+        localStorage.setItem("role", userRole);
         navigate("/home");
         window.location.reload();
-        localStorage.setItem("token", user.data.token);
-        localStorage.setItem("id", user.data.id)
-        localStorage.setItem("role", user.data.role);
       })
       .catch((error) => {
         console.log(error);

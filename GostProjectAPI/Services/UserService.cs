@@ -11,14 +11,14 @@ using System.Security.Claims;
 
 namespace GostProjectAPI.Services
 {
-    public class UsersService
+    public class UserService
     {
         private readonly IMapper _mapper;
         private readonly GostDBContext _dbContext;
         private readonly IPasswordHasherService _passwordHasher;
         private readonly IOptions<AuthOptions> _authOptions;
 
-        public UsersService(IPasswordHasherService passwordEncoder, GostDBContext dbContext, IMapper mapper, IOptions<AuthOptions> authOptions)
+        public UserService(IPasswordHasherService passwordEncoder, GostDBContext dbContext, IMapper mapper, IOptions<AuthOptions> authOptions)
         {
             _passwordHasher = passwordEncoder;
             _dbContext = dbContext;
@@ -48,6 +48,14 @@ namespace GostProjectAPI.Services
             return user;
         }
 
-        
+        public async Task<List<User>?> GetUsersAsync()
+        {
+            return await _dbContext.Users.ToListAsync();
+        }
+
+        public async Task<User?> GetUserAsync(uint userID)
+        {
+            return await _dbContext.Users.FirstOrDefaultAsync(u => u.ID == userID);
+        }
     }
 }

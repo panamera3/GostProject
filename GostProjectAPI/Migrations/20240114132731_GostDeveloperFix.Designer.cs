@@ -3,6 +3,7 @@ using System;
 using GostProjectAPI.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace GostProjectAPI.Migrations
 {
     [DbContext(typeof(GostDBContext))]
-    partial class GostDBContextModelSnapshot : ModelSnapshot
+    [Migration("20240114132731_GostDeveloperFix")]
+    partial class GostDeveloperFix
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -233,7 +235,7 @@ namespace GostProjectAPI.Migrations
 
             modelBuilder.Entity("GostProjectAPI.Data.Entities.Gost", b =>
                 {
-                    b.HasOne("GostProjectAPI.Data.Entities.User", "DeveloperUser")
+                    b.HasOne("GostProjectAPI.Data.Entities.User", "Developer")
                         .WithMany()
                         .HasForeignKey("DeveloperId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -243,7 +245,7 @@ namespace GostProjectAPI.Migrations
                         .WithMany()
                         .HasForeignKey("GostIdReplaced");
 
-                    b.Navigation("DeveloperUser");
+                    b.Navigation("Developer");
 
                     b.Navigation("GostReplaced");
                 });

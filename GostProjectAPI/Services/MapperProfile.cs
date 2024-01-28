@@ -15,6 +15,9 @@ namespace GostProjectAPI.Services
             CreateMap<UserAuthDto, User>();
             CreateMap<UserAddDto, UserAuthDto>();   
             CreateMap<User, SignedInUser>();
+
+            CreateMap<string, Keyword>().ForMember(dest => dest.Name, opt => opt.MapFrom(src => src));
+            CreateMap<string, Keyphrase>().ForMember(dest => dest.Name, opt => opt.MapFrom(src => src));
         }
     }
 }

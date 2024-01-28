@@ -33,9 +33,11 @@ const GostsTable = (props) => {
   };
 
   useEffect(() => {
-    const userId = localStorage.getItem("id");
+    console.log(props.searchGosts);
     if (props.favourites) {
+      console.log("ПЕРВОЕ");
       console.log("props.favourites");
+      const userId = localStorage.getItem("id");
       axios({
         method: "get",
         url: `https://localhost:7243/api/Gost/GetFavouritesGosts/${userId}`,
@@ -48,7 +50,15 @@ const GostsTable = (props) => {
         .catch((error) => {
           console.log(error);
         });
+    } else if (props.searchGosts) {
+      console.log("ВТОРОЕ");
+      const searchGostsFromHeader = JSON.parse(
+        localStorage.getItem("searchGosts")
+      );
+      console.log("searchGostsFromHeader", searchGostsFromHeader);
+      setGosts(searchGostsFromHeader);
     } else {
+      console.log("ТРЕТЬЕ");
       axios({
         method: "get",
         url: `https://localhost:7243/api/Gost/GetGosts`,

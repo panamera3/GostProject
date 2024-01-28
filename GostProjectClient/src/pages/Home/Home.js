@@ -9,18 +9,23 @@ import GostsTable from "../../components/GostsTable/GostsTable";
 import axios from "axios";
 
 const Home = (props) => {
-  // здесь же страница после поиска, кнопка назад просто будет появляться и будут изменяться данные в table
-
   return (
     <>
-      {localStorage.getItem("role") == 2 ? <HeaderAdmin /> : <HeaderUser />}
+      {localStorage.getItem("role") == "Admin" ? (
+        <HeaderAdmin />
+      ) : (
+        <HeaderUser />
+      )}
       <div className="body_container">
-        {props.favourites && (
+        {(props.favourites || props.searchGosts) && (
           <div className="activities_container">
             <a href="/home">Назад</a>
           </div>
         )}
-        <GostsTable favourites={props.favourites} />
+        <GostsTable
+          favourites={props.favourites}
+          searchGosts={props.searchGosts}
+        />
       </div>
     </>
   );
