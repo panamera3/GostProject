@@ -25,6 +25,7 @@ const Home = (props) => {
         <GostsTable
           favourites={props.favourites}
           searchGosts={props.searchGosts}
+          archiveGosts={props.archiveGosts}
         />
       </div>
     </>

@@ -15,7 +15,7 @@ namespace GostProjectAPI.DTOModels.Gosts
 
         public string OKPDCode { get; set; }
 
-        public User DeveloperUser { get; set; }
+        public uint DeveloperId { get; set; }
 
         public string Content { get; set; }
 

@@ -3,6 +3,7 @@ using System;
 using GostProjectAPI.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace GostProjectAPI.Migrations
 {
     [DbContext(typeof(GostDBContext))]
-    partial class GostDBContextModelSnapshot : ModelSnapshot
+    [Migration("20240215162413_Migr1")]
+    partial class Migr1
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -254,7 +256,7 @@ namespace GostProjectAPI.Migrations
             modelBuilder.Entity("GostProjectAPI.Data.Entities.Keyphrase", b =>
                 {
                     b.HasOne("GostProjectAPI.Data.Entities.Gost", "Gost")
-                        .WithMany()
+                        .WithMany("Keyphrases")
                         .HasForeignKey("GostId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -265,7 +267,7 @@ namespace GostProjectAPI.Migrations
             modelBuilder.Entity("GostProjectAPI.Data.Entities.Keyword", b =>
                 {
                     b.HasOne("GostProjectAPI.Data.Entities.Gost", "Gost")
-                        .WithMany()
+                        .WithMany("Keywords")
                         .HasForeignKey("GostId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -282,6 +284,13 @@ namespace GostProjectAPI.Migrations
                         .IsRequired();
 
                     b.Navigation("WorkCompany");
+                });
+
+            modelBuilder.Entity("GostProjectAPI.Data.Entities.Gost", b =>
+                {
+                    b.Navigation("Keyphrases");
+
+                    b.Navigation("Keywords");
                 });
 #pragma warning restore 612, 618
         }

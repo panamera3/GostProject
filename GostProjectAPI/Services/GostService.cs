@@ -91,24 +91,39 @@ namespace GostProjectAPI.Services
             if (gost == null)
                 return null;
 
+            gost.AcceptanceDate = DateTime.Now;
+            gost.IntrodutionDate = DateTime.Now;
+
+            await _dbContext.Gosts.AddAsync(gost);
+            await _dbContext.SaveChangesAsync();
+
+            List<Keyword> keywords = new();
+            List<Keyphrase> keyphrases = new();
+
             // Преобразование Keywords в сущности Keyword
             foreach (var keywordValue in gostAddDto.Keywords)
             {
-                var keyword = new Keyword { Name = keywordValue };
-                gost.Keywords.Add(keyword);
+                var keyword = new Keyword { Name = keywordValue, GostId = gost.ID };
+                keywords.Add(keyword);
             }
 
             // Преобразование Keyphrases в сущности Keyphrase
             foreach (var keyphraseValue in gostAddDto.Keyphrases)
             {
-                var keyphrase = new Keyphrase { Name = keyphraseValue };
-                gost.Keyphrases.Add(keyphrase);
+                var keyphrase = new Keyphrase { Name = keyphraseValue, GostId = gost.ID };
+                keyphrases.Add(keyphrase);
             }
 
-            gost.AcceptanceDate = DateTime.Now;
-            gost.IntrodutionDate = DateTime.Now;
+            keywords.ForEach(async keyword =>
+            {
+                await _dbContext.Keywords.AddAsync(keyword);
+            });
 
-            await _dbContext.Gosts.AddAsync(gost);
+            keyphrases.ForEach(async keyphrase =>
+            {
+                await _dbContext.Keyphrases.AddAsync(keyphrase);
+            });
+
             await _dbContext.SaveChangesAsync();
 
             return gost;
@@ -180,6 +195,38 @@ namespace GostProjectAPI.Services
         {
             var state = await _dbContext.FavouritesGosts.AnyAsync(f => f.UserId == userID && f.GostId == gostID);
             return state;
+        }
+
+        public async Task<Gost> AddRequestAsync(uint gostID)
+        {
+            var newGost = await GetGostAsync(gostID);
+
+            if (newGost != null)
+            {
+                newGost.RequestsNumber += 1;
+
+                _dbContext.Gosts.Update(newGost);
+                await _dbContext.SaveChangesAsync();
+
+                return newGost;
+            }
+
+            return null;
+        }
+
+        public async Task<Gost> ArchiveGostAsync(uint gostID)
+        {
+            var oldGost = await GetGostAsync(gostID);
+
+            if (oldGost == null) // || oldGost.OwnerID != user/company ID)
+                return null;
+
+            oldGost.IsArchived = true;
+            _dbContext.Gosts.Update(oldGost);
+
+            await _dbContext.SaveChangesAsync();
+
+            return oldGost;
         }
     }
 }

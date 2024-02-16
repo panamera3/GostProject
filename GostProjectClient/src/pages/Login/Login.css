@@ -1,0 +1,15 @@
+#eye_icon {
+  position: absolute;
+  right: 5%;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+#login_form {
+  width: 100%;
+}
+
+.test_name {
+  width: 50%;
+  text-align: center;
+}

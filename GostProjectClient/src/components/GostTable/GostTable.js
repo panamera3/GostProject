@@ -63,6 +63,36 @@ const GostTable = (props) => {
         </tr>
       ));
     } else {
+      if (props.add) {
+        const addFields = [
+          "designation",
+          "denomination",
+          "oksCode",
+          "okpdCode",
+          "developerId",
+          "content",
+          "keywords",
+          "keyphrases",
+          "acceptanceLevel",
+          "text",
+          "normativeReferences",
+        ];
+
+        return addFields.map((key, index) => (
+          <tr key={index}>
+            <td>
+              <label htmlFor={key}>{translationDict[key]}</label>
+            </td>
+            <td>
+              <input
+                className="gostInputAdd"
+                value={formData[key]}
+                onChange={(e) => handleInputChange(key, e.target.value)}
+              />
+            </td>
+          </tr>
+        ));
+      }
       return Object.keys(translationDict).map((key) => (
         <tr key={key}>
           <td>
@@ -80,37 +110,33 @@ const GostTable = (props) => {
   };
 
   const submitHandler = (event) => {
+    event.preventDefault();
     console.log(formData);
     console.log("ok");
-    event.preventDefault();
     const formAddData = new FormData();
     formAddData.append("gostAddDto", JSON.stringify(formData));
     for (const key in formData) {
       formAddData.append(key, formData[key]);
     }
 
-    console.log(formAddData);
+    console.log("formAddData", formAddData);
+    console.log("TEST", formData.id);
     if (props.add) {
       axios({
         method: "post",
         url: `https://localhost:7243/api/Gost/AddGost`,
         data: {
-          Designation: "",
-          Denomination: "",
-          OKSCode: "",
-          OKPDCode: "",
-          Content: "",
-          Keywords: [""],
-          Keyphrases: [""],
-          AcceptanceLevel: 1,
-          Text: "",
-          NormativeReferences: "",
-
-          /*
-          Developer: user;
-          IntrodutionDate: datetime.now;
-          AcceptanceDate: datetime.now
-          */
+          designation: formData.designation,
+          denomination: formData.denomination,
+          oksCode: formData.oksCode,
+          okpdCode: formData.okpdCode,
+          developerId: localStorage.getItem("id"),
+          content: formData.content,
+          keywords: formData.keywords.split(","),
+          keyphrases: formData.keyphrases.split(","),
+          acceptanceLevel: Number(formData.acceptanceLevel),
+          text: formData.text,
+          normativeReferences: formData.normativeReferences,
         },
         headers: {
           "Content-Type": "application/json",
@@ -120,6 +146,7 @@ const GostTable = (props) => {
         .then((gost) => {
           console.log(gost.data);
           setGost(gost.data);
+          navigate("/home");
         })
         .catch((error) => {
           console.log(error);
@@ -145,7 +172,6 @@ const GostTable = (props) => {
 
   const cancelHandler = () => {
     navigate("/home");
-    window.location.reload();
   };
 
   const handleInputChange = (key, value) => {
@@ -168,10 +194,30 @@ const GostTable = (props) => {
           </thead>
           <tbody>{renderGostTable()}</tbody>
         </table>
-        {!props.view && (
+        {!props.view && props.edit && (
           <>
-            <button type="submit">Сохранить</button>
-            <button type="button" onClick={openModalCard}>
+            <button className="btn_blue" type="submit">
+              Сохранить
+            </button>
+            <button
+              className="btn_darkGray"
+              type="button"
+              onClick={openModalCard}
+            >
+              Отменить
+            </button>
+          </>
+        )}
+        {!props.view && props.add && (
+          <>
+            <button className="btn_blue" type="submit">
+              Добавить
+            </button>
+            <button
+              className="btn_darkGray"
+              type="button"
+              onClick={openModalCard}
+            >
               Отменить
             </button>
           </>
@@ -189,8 +235,12 @@ const GostTable = (props) => {
             <p>Вы точно хотите покинуть раздел редактирования документа?</p>
           </div>
           <div className="modalCancel_buttons">
-            <button onClick={cancelHandler}>Покинуть</button>
-            <button onClick={closeModalCard}>Вернуться</button>
+            <button className="btn_blue" onClick={cancelHandler}>
+              Покинуть
+            </button>
+            <button className="btn_gray" onClick={closeModalCard}>
+              Вернуться
+            </button>
           </div>
         </Modal>
       )}

@@ -6,7 +6,7 @@ export const translationDict = {
   okpdCode: "Код ОКПД",
   acceptanceDate: "Дата принятия",
   introdutionDate: "Дата введения",
-  developer: "Разработчик",
+  developerId: "Разработчик",
   content: "Содержание",
   gostReplaced: "Принят взамен",
   gostIdReplaced: "Номер принятого взамен",

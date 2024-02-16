@@ -34,13 +34,12 @@ namespace GostProjectAPI.Data.Entities
         public DateTime IntrodutionDate { get; set; }
 
         [Description("Разработчик")]
-        [Column(TypeName = "VARCHAR(128)")]
         public User DeveloperUser { get; set; }
 
         [Description("ID разработчика")]
         [ForeignKey(nameof(DeveloperUser))]
         public uint DeveloperId { get; set; }
-        
+
         [Description("Содержание")]
         [Column(TypeName = "VARCHAR(128)")]
         public string Content { get; set; }
@@ -52,11 +51,13 @@ namespace GostProjectAPI.Data.Entities
         [ForeignKey(nameof(GostReplaced))]
         public uint? GostIdReplaced { get; set; }
 
+        /*
         [Description("Ключевые слова")]
         public List<Keyword> Keywords { get; set; } = new();
 
         [Description("Ключевые фразы")]
         public List<Keyphrase> Keyphrases { get; set; } = new();
+        */
 
         [Description("Уровень принятия")]
         public AcceptanceLevel AcceptanceLevel { get; set; }
@@ -79,5 +80,8 @@ namespace GostProjectAPI.Data.Entities
 
         [Description("Количество обращений")]
         public ulong RequestsNumber { get; set; }
-    }
+
+        [Description("Заархивирова ли гост")]
+        public bool IsArchived { get; set; }
+}
 }

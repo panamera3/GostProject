@@ -7,6 +7,10 @@ import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import UserRole from "../../types/user/userRole";
+import { toast } from "react-toastify";
+// images
+import eye from "../../images/eye.svg";
+import eye_closed from "../../images/eye_closed.svg";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -15,6 +19,7 @@ const Login = () => {
   const passwordLoginInputRef = useRef();
 
   const [formValid, setFormValid] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   const submitHandler = (event) => {
     event.preventDefault();
@@ -39,10 +44,17 @@ const Login = () => {
         localStorage.setItem("id", user.data.id);
         localStorage.setItem("role", userRole);
         navigate("/home");
-        window.location.reload();
       })
       .catch((error) => {
         console.log(error);
+        toast.error("Неверный логин и/или пароль", {
+          position: "top-right",
+          autoClose: 3000,
+          hideProgressBar: true,
+          progress: undefined,
+          pauseOnHover: false,
+          draggable: false,
+        });
       });
   };
 
@@ -50,12 +62,12 @@ const Login = () => {
     <>
       <LeftColumnLogReg login>
         <div className="left_column_log_reg_children">
-          <form onSubmit={submitHandler}>
+          <form onSubmit={submitHandler} id="login_form">
             <div className="left_column_log_reg_children_form">
-              <div>
+              <div className="test_name">
                 <h2>Вход</h2>
               </div>
-              <div>
+              <div className="test_name">
                 <input
                   name="login"
                   id="login_input"
@@ -63,15 +75,23 @@ const Login = () => {
                   ref={usernameLoginInputRef}
                   placeholder="Логин"
                 />
-                <input
-                  name="password"
-                  id="password_input"
-                  type="password"
-                  ref={passwordLoginInputRef}
-                  placeholder="Пароль"
-                />
+                <div style={{ position: "relative" }}>
+                  <input
+                    name="password"
+                    id="password_input"
+                    type={showPassword ? "text" : "password"}
+                    ref={passwordLoginInputRef}
+                    placeholder="Пароль"
+                  />
+                  <img
+                    src={showPassword ? eye : eye_closed}
+                    alt="eye"
+                    id="eye_icon"
+                    onClick={() => setShowPassword(!showPassword)}
+                  />
+                </div>
               </div>
-              <button type="submit">Войти</button>
+              <button type="submit" className="btn_blue">Войти</button>
             </div>
           </form>
         </div>

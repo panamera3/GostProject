@@ -21,6 +21,18 @@ const Gost = (props) => {
 
   useEffect(() => {
     axios({
+      method: "post",
+      url: `https://localhost:7243/api/Gost/AddRequest?gostID=${params.id}`,
+      //headers: { Authorization: `Bearer ${userToken}` },
+    })
+      .then((gost) => {
+        console.log("gost.data", gost.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+
+    axios({
       method: "get",
       url: `https://localhost:7243/api/Gost/CheckFavouriteGosts/${localStorage.getItem(
         "id"
@@ -46,7 +58,6 @@ const Gost = (props) => {
         console.log(data.status);
         if (data.status === 200) {
           navigate("/home");
-          window.location.reload();
         }
       })
       .catch((error) => {
@@ -99,6 +110,21 @@ const Gost = (props) => {
     }
   };
 
+  const archiveGost = () => {
+    axios({
+      method: "post",
+      url: `https://localhost:7243/api/Gost/ArchiveGost?gostID=${params.id}`,
+      //headers: { Authorization: `Bearer ${userToken}` },
+    })
+      .then((gost) => {
+        console.log("gost.data archive", gost.data);
+        navigate("/home");
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
   return (
     <>
       {localStorage.getItem("role") == "Admin" ? (
@@ -120,7 +146,7 @@ const Gost = (props) => {
           {true && (
             <div>
               <a href="/gostEdit">Редактировать</a>
-              <p>Архивировать</p>
+              <p onClick={archiveGost}>Архивировать</p>
               <p onClick={deleteHandler}>Удалить</p>
             </div>
           )}

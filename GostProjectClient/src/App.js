@@ -15,6 +15,7 @@ import FavouritesGosts from "./pages/FavouritesGosts/FavouritesGosts";
 import SearchGosts from "./pages/Search/Search";
 import { ToastContainer } from "react-toastify";
 import MyProfile from "./pages/MyProfile/MyProfile";
+import ArchiveGosts from "./pages/Admin/Archive/Archive";
 
 
 function App() {
@@ -47,6 +48,7 @@ function App() {
             <Route path="/favourites" element={<FavouritesGosts />} />
             <Route path="/search" element={<SearchGosts />} />
             <Route path="/myProfile" element={<MyProfile />} />
+            <Route path="/archive" element={<ArchiveGosts />} />
             перенаправлять пользователя на главную страницу, если ввёл
             несуществующий путь
             <Route path="*" element={<Navigate to="/" />} />

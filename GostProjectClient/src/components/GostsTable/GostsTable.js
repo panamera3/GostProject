@@ -108,53 +108,58 @@ const GostsTable = (props) => {
 
   const renderGostsTable = () => {
     if (gosts) {
-      return gosts.map((gost) => (
-        <tr key={gost.id}>
-          <td>
-            <p>{gost.id}</p>
-          </td>
-          <td>
-            <p>{gost.designation}</p>
-          </td>
-          <td>
-            <p>{gost.oksCode}</p>
-          </td>
-          <td>
-            <p>{gost.denomination}</p>
-          </td>
-          <td>
-            <img
-              className="gostsTableButton"
-              src={file}
-              alt="view"
-              onClick={() => {
-                navigate(`/gost/${gost.id}`);
-                window.location.reload();
-              }}
-            />
-          </td>
-          <td>
-            {favouritesGosts !== undefined &&
-              favouritesGosts.some((favGost) => favGost.id === gost.id) && (
-                <img
-                  className="gostsTableButton"
-                  src={likeActive}
-                  alt="like"
-                  onClick={() => likeHandler(false, gost.id)}
-                />
-              )}
-            {favouritesGosts !== undefined &&
-              !favouritesGosts.some((favGost) => favGost.id === gost.id) && (
-                <img
-                  className="gostsTableButton"
-                  src={like}
-                  alt="like"
-                  onClick={() => likeHandler(true, gost.id)}
-                />
-              )}
-          </td>
-        </tr>
-      ));
+      return gosts
+        .filter(
+          (gost) =>
+            (props.archiveGosts && gost.isArchived) ||
+            (!props.archiveGosts && !gost.isArchived)
+        )
+        .map((gost) => (
+          <tr key={gost.id}>
+            <td>
+              <p>{gost.id}</p>
+            </td>
+            <td>
+              <p>{gost.designation}</p>
+            </td>
+            <td>
+              <p>{gost.oksCode}</p>
+            </td>
+            <td>
+              <p>{gost.denomination}</p>
+            </td>
+            <td>
+              <img
+                className="gostsTableButton"
+                src={file}
+                alt="view"
+                onClick={() => {
+                  navigate(`/gost/${gost.id}`);
+                }}
+              />
+            </td>
+            <td>
+              {favouritesGosts !== undefined &&
+                favouritesGosts.some((favGost) => favGost.id === gost.id) && (
+                  <img
+                    className="gostsTableButton"
+                    src={likeActive}
+                    alt="like"
+                    onClick={() => likeHandler(false, gost.id)}
+                  />
+                )}
+              {favouritesGosts !== undefined &&
+                !favouritesGosts.some((favGost) => favGost.id === gost.id) && (
+                  <img
+                    className="gostsTableButton"
+                    src={like}
+                    alt="like"
+                    onClick={() => likeHandler(true, gost.id)}
+                  />
+                )}
+            </td>
+          </tr>
+        ));
     }
   };
 

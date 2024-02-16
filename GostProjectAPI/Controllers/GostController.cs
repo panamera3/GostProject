@@ -1,3 +1,4 @@
+using GostProjectAPI.Data.Entities;
 using GostProjectAPI.DTOModels.Gosts;
 using GostProjectAPI.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -80,6 +81,18 @@ namespace GostProjectAPI.Controllers
         public async Task<JsonResult> CheckFavouriteGosts(uint userID, uint gostID)
         {
             return JSON(await _gostService.CheckFavouriteGostsAsync(userID, gostID));
+        }
+
+        [HttpPost]
+        public async Task<JsonResult> AddRequest([FromQuery]uint gostID)
+        {
+            return JSON(await _gostService.AddRequestAsync(gostID));
+        }
+
+        [HttpPost]
+        public async Task<JsonResult> ArchiveGost([FromQuery] uint gostID)
+        {
+            return JSON(await _gostService.ArchiveGostAsync(gostID));
         }
     }
 }

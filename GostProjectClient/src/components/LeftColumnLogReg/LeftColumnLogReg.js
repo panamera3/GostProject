@@ -25,6 +25,7 @@ const LeftColumnLogReg = (props) => {
                 ниже
               </p>
               <button
+                className="btn_white"
                 type="button"
                 onClick={() => {
                   navigate("/registration");
@@ -38,9 +39,13 @@ const LeftColumnLogReg = (props) => {
             <>
               <h2>Вход</h2>
               <p>Уже есть аккаунт? Вы можете войти в него по кнопке ниже</p>
-              <button type="button" onClick={() => {
+              <button
+                className="btn_white"
+                type="button"
+                onClick={() => {
                   navigate("/login");
-                }}>
+                }}
+              >
                 Войти
               </button>
             </>

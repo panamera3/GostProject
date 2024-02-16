@@ -91,7 +91,6 @@ const HeaderAdmin = (props) => {
             localStorage.setItem("searchGosts", JSON.stringify(gosts.data.data));
             setSearch(false);
             navigate("/search");
-            window.location.reload();
           }
         })
         .catch((error) => {
@@ -111,7 +110,7 @@ const HeaderAdmin = (props) => {
           <p onClick={() => openSearchModalCard()}>Поиск по документам</p>
           {!props.user && (
             <>
-              <a href="/">Архив</a>
+              <a href="/archive">Архив</a>
               <a href="/userProfiles">Пользователи</a>
             </>
           )}
@@ -163,7 +162,7 @@ const HeaderAdmin = (props) => {
                   ))}
               </div>
             </div>
-            <button type="submit">Применить</button>
+            <button className="btn_white" type="submit">Применить</button>
           </form>
         </Modal>
       )}

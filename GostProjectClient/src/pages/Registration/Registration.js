@@ -46,7 +46,6 @@ const Registration = () => {
         localStorage.setItem("id", user.data.id);
         localStorage.setItem("role", userRole);
         navigate("/home");
-        window.location.reload();
       })
       .catch((error) => {
         console.log(error);
@@ -95,7 +94,7 @@ const Registration = () => {
                   placeholder="Код подключения к организации"
                 />
               </div>
-              <button type="submit">Зарегистрироваться</button>
+              <button type="submit" className="btn_blue">Зарегистрироваться</button>
             </div>
           </form>
         </div>
