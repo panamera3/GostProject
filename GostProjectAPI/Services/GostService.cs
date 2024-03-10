@@ -1,15 +1,10 @@
 ﻿using GostProjectAPI.Data;
 using GostProjectAPI.Data.Entities;
+using GostProjectAPI.DTOModels;
 using GostProjectAPI.DTOModels.Gosts;
-using Microsoft.AspNetCore.Mvc;
+using GostProjectAPI.Extensions;
 using Microsoft.EntityFrameworkCore;
 using System.Data;
-using static System.Net.Mime.MediaTypeNames;
-using System.Reflection.Emit;
-using System.Threading.Channels;
-using GostProjectAPI.DTOModels;
-using GostProjectAPI.Extensions;
-using GostProjectAPI.Migrations;
 
 namespace GostProjectAPI.Services
 {
@@ -134,13 +129,56 @@ namespace GostProjectAPI.Services
         {
             var oldGost = await GetGostAsync(gostEditDto.ID);
 
-            if (gostEditDto == null) // || oldGost.OwnerID != user/company ID)
+            if (oldGost == null)
                 return null;
 
-            _mapper.Map(gostEditDto, oldGost);
+            foreach (var property in typeof(GostEditDto).GetProperties())
+            {
+                var value = property.GetValue(gostEditDto);
+                if (value != null && value.ToString() != "")
+                {
+                    var gostProperty = oldGost.GetType().GetProperty(property.Name);
+                    gostProperty.SetValue(oldGost, value);
+                }
+            }
+
             _dbContext.Gosts.Update(oldGost);
+            await _dbContext.SaveChangesAsync();
+
+
+            List<Keyword> keywords = new();
+            List<Keyphrase> keyphrases = new();
+
+            if (gostEditDto.Keywords != null)
+            {
+                // Преобразование Keywords в сущности Keyword
+                foreach (var keywordValue in gostEditDto.Keywords)
+                {
+                    var keyword = new Keyword { Name = keywordValue, GostId = gostEditDto.ID };
+                    keywords.Add(keyword);
+                }
+            }
+            if (gostEditDto.Keyphrases != null)
+            {
+                // Преобразование Keyphrases в сущности Keyphrase
+                foreach (var keyphraseValue in gostEditDto.Keyphrases)
+                {
+                    var keyphrase = new Keyphrase { Name = keyphraseValue, GostId = gostEditDto.ID };
+                    keyphrases.Add(keyphrase);
+                }
+            }
+
+            keywords.ForEach(async keyword =>
+            {
+                await _dbContext.Keywords.AddAsync(keyword);
+            });
+            keyphrases.ForEach(async keyphrase =>
+            {
+                await _dbContext.Keyphrases.AddAsync(keyphrase);
+            });
 
             await _dbContext.SaveChangesAsync();
+
 
             return oldGost;
         }
@@ -159,7 +197,7 @@ namespace GostProjectAPI.Services
 
         public async Task<List<Gost>?> GetFavouritesGostsAsync(uint userID)
         {
-            var favouritesGosts = await _dbContext.FavouritesGosts.Where(g => g.UserId == userID).Select(g=> g.GostId).ToListAsync();
+            var favouritesGosts = await _dbContext.FavouritesGosts.Where(g => g.UserId == userID).Select(g => g.GostId).ToListAsync();
             var allGosts = await _dbContext.Gosts.Where(g => favouritesGosts.Contains(g.ID)).ToListAsync();
             return allGosts;
         }

@@ -23,3 +23,8 @@
   display: flex;
   justify-content: space-between;
 }
+
+#idEdit{
+  text-align: center;
+  display: block;
+}

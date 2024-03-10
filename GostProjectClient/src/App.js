@@ -42,7 +42,7 @@ function App() {
             <Route path="/home" element={<Home />} />
             <Route path="/userProfiles" element={<UserProfiles />} />
             <Route path="/gostAdd" element={<GostAdd />} />
-            <Route path="/gostEdit" element={<GostEdit />} />
+            <Route path="/gostEdit/:id" element={<GostEdit />} />
             <Route path="/gost/:id" element={<Gost />} />
             <Route path="/userProfiles" element={<UserProfiles />} />
             <Route path="/favourites" element={<FavouritesGosts />} />

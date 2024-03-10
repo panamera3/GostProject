@@ -1,12 +1,13 @@
 // styles
 // libraries
 import { useState, useEffect, useRef } from "react";
+import { useParams } from "react-router-dom";
+// components
 import HeaderAdmin from "../../../components/HeaderAdmin/HeaderAdmin";
 import GostTable from "../../../components/GostTable/GostTable";
-// components
 
-const GostEdit = () => {
-  // здесь будет страница с редактированием таблицы информации госта, просто в элемент передавать true на edit
+const GostEdit = () => {  
+  const params = useParams();
 
   return (
     <>
@@ -17,7 +18,7 @@ const GostEdit = () => {
             <a href="/home">Назад</a>
           </div>
         </div>
-        <GostTable edit />
+        <GostTable edit id={params.id} />
       </div>
     </>
   );

@@ -145,7 +145,7 @@ const Gost = (props) => {
           </div>
           {true && (
             <div>
-              <a href="/gostEdit">Редактировать</a>
+              <a href={`/gostEdit/` + params.id}>Редактировать</a>
               <p onClick={archiveGost}>Архивировать</p>
               <p onClick={deleteHandler}>Удалить</p>
             </div>

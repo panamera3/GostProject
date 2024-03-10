@@ -19,4 +19,5 @@ export const translationDict = {
   changes: "Изменения",
   amendments: "Поправки",
   requestsNumber: "Количество обращений",
+  isArchived: "Архивирован"
 };

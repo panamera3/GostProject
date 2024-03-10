@@ -8,28 +8,20 @@ namespace GostProjectAPI.DTOModels.Gosts
         [Required]
         public uint ID { get; set; }
 
-        [Required]
-        public string Designation { get; set; }
+        public string? Designation { get; set; }
+        
+        public string? Denomination { get; set; }
 
-        [Required]
-        public string Denomination { get; set; }
+        public string? OKSCode { get; set; }
 
-        [Required]
-        public string OKSCode { get; set; }
+        public string? OKPDCode { get; set; }
 
-        [Required]
-        public string OKPDCode { get; set; }
+        public string? Content { get; set; }
 
-        [Required]
-        public string Content { get; set; }
+        public List<string>? Keywords { get; set; }
 
-        [Required]
-        public List<string> Keywords { get; set; }
+        public List<string>? Keyphrases { get; set; }
 
-        [Required]
-        public List<string> Keyphrases { get; set; }
-
-        [Required]
-        public AcceptanceLevel AcceptanceLevel { get; set; }
+        public AcceptanceLevel? AcceptanceLevel { get; set; }
     }
 }
