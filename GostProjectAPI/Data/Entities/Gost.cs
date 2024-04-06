@@ -51,14 +51,6 @@ namespace GostProjectAPI.Data.Entities
         [ForeignKey(nameof(GostReplaced))]
         public uint? GostIdReplaced { get; set; }
 
-        /*
-        [Description("Ключевые слова")]
-        public List<Keyword> Keywords { get; set; } = new();
-
-        [Description("Ключевые фразы")]
-        public List<Keyphrase> Keyphrases { get; set; } = new();
-        */
-
         [Description("Уровень принятия")]
         public AcceptanceLevel AcceptanceLevel { get; set; }
 

@@ -3,6 +3,7 @@ using System;
 using GostProjectAPI.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace GostProjectAPI.Migrations
 {
     [DbContext(typeof(GostDBContext))]
-    partial class GostDBContextModelSnapshot : ModelSnapshot
+    [Migration("20240406093751_UpdateGostDates3")]
+    partial class UpdateGostDates3
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -189,8 +191,9 @@ namespace GostProjectAPI.Migrations
                         .IsRequired()
                         .HasColumnType("VARCHAR(128)");
 
-                    b.Property<DateTime>("UpdateDate")
-                        .HasColumnType("datetime(6)");
+                    b.Property<string>("UpdateDate")
+                        .IsRequired()
+                        .HasColumnType("VARCHAR(128)");
 
                     b.HasKey("ID");
 

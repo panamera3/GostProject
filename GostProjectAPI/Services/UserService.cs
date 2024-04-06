@@ -7,7 +7,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
+using System.Net;
 using System.Security.Claims;
+using System.Web.Http;
 
 namespace GostProjectAPI.Services
 {
@@ -28,8 +30,17 @@ namespace GostProjectAPI.Services
 
         public async Task<User?> AddUserAsync(UserAddDto userDTO)
         {
-            if (await _dbContext.Users.AnyAsync(u => u.Login == userDTO.Login) || await _dbContext.Companies.AnyAsync(c => c.Code != userDTO.CompanyCode))
-                return null;
+            var isLoginExist = await _dbContext.Users.AnyAsync(u => u.Login == userDTO.Login);
+            var isCodeExist = !(await _dbContext.Companies.AnyAsync(c => c.Code == userDTO.CompanyCode));
+			if (isLoginExist || isCodeExist)
+            {
+				var response = new HttpResponseMessage(HttpStatusCode.BadRequest)
+				{
+					Content = new StringContent(isLoginExist ? "Такой логин уже существует" : "Неверный код организации")
+				};
+				throw new HttpResponseException(response);
+			}
+                
 
             var user = _mapper.Map<UserAddDto, User>(userDTO,
                 opt => opt.AfterMap(async (src, dest) =>

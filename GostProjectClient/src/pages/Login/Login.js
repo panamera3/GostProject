@@ -49,7 +49,7 @@ const Login = () => {
         console.log(error);
         toast.error("Неверный логин и/или пароль", {
           position: "top-right",
-          autoClose: 3000,
+          autoClose: 5000,
           hideProgressBar: true,
           progress: undefined,
           pauseOnHover: false,

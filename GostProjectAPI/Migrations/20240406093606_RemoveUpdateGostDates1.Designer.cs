@@ -3,6 +3,7 @@ using System;
 using GostProjectAPI.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace GostProjectAPI.Migrations
 {
     [DbContext(typeof(GostDBContext))]
-    partial class GostDBContextModelSnapshot : ModelSnapshot
+    [Migration("20240406093606_RemoveUpdateGostDates1")]
+    partial class RemoveUpdateGostDates1
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -176,29 +178,6 @@ namespace GostProjectAPI.Migrations
                     b.ToTable("Keywords");
                 });
 
-            modelBuilder.Entity("GostProjectAPI.Data.Entities.UpdateGostDate", b =>
-                {
-                    b.Property<uint>("ID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int unsigned");
-
-                    b.Property<uint>("GostId")
-                        .HasColumnType("int unsigned");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("VARCHAR(128)");
-
-                    b.Property<DateTime>("UpdateDate")
-                        .HasColumnType("datetime(6)");
-
-                    b.HasKey("ID");
-
-                    b.HasIndex("GostId");
-
-                    b.ToTable("UpdateGostDates");
-                });
-
             modelBuilder.Entity("GostProjectAPI.Data.Entities.User", b =>
                 {
                     b.Property<uint>("ID")
@@ -286,17 +265,6 @@ namespace GostProjectAPI.Migrations
                 });
 
             modelBuilder.Entity("GostProjectAPI.Data.Entities.Keyword", b =>
-                {
-                    b.HasOne("GostProjectAPI.Data.Entities.Gost", "Gost")
-                        .WithMany()
-                        .HasForeignKey("GostId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Gost");
-                });
-
-            modelBuilder.Entity("GostProjectAPI.Data.Entities.UpdateGostDate", b =>
                 {
                     b.HasOne("GostProjectAPI.Data.Entities.Gost", "Gost")
                         .WithMany()

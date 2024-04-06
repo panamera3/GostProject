@@ -6,6 +6,8 @@ import LeftColumnLogReg from "../../components/LeftColumnLogReg/LeftColumnLogReg
 import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { toast } from "react-toastify";
+// types
 import UserRole from "../../types/user/userRole";
 
 const Registration = () => {
@@ -37,8 +39,11 @@ const Registration = () => {
         role: UserRole.Standart,
       },
     })
-      .then((user) => {
-        console.log(user.data);
+    .then((user) => {
+      console.log(user);
+      console.log(user.data);
+    
+      if (user.data.role) {
         const userRole = Object.keys(UserRole).find(
           (key) => UserRole[key] === user.data.role
         );
@@ -46,7 +51,17 @@ const Registration = () => {
         localStorage.setItem("id", user.data.id);
         localStorage.setItem("role", userRole);
         navigate("/home");
-      })
+      } else {
+        toast.error(user.data.error, {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: true,
+          progress: undefined,
+          pauseOnHover: false,
+          draggable: false,
+        });
+      }
+    })    
       .catch((error) => {
         console.log(error);
       });

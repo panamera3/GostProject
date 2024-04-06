@@ -23,7 +23,25 @@ const GostTable = (props) => {
     setModalOpen(false);
   };
 
+  const [updateGostDates, setUpdateGostDates] = useState();
+
   useEffect(() => {
+    console.log("props.id", props.id);
+
+    axios({
+      method: "get",
+      url: `https://localhost:7243/api/Gost/GetUpdateGostDates/${props.id}`,
+      //headers: { Authorization: `Bearer ${userToken}` },
+    })
+      .then((gosts) => {
+        console.log(gosts);
+        console.log("update dates", gosts.data);
+        setUpdateGostDates(gosts.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+
     if (props.view || props.edit) {
       axios({
         method: "get",
@@ -77,7 +95,9 @@ const GostTable = (props) => {
                 <td>
                   <input
                     className="gostInputEdit"
-                    value={formData[key] != undefined? formData[key] : gost[key]}
+                    value={
+                      formData[key] != undefined ? formData[key] : gost[key]
+                    }
                     onChange={(e) => handleInputChange(key, e.target.value)}
                   />
                 </td>
@@ -89,29 +109,43 @@ const GostTable = (props) => {
       console.log("TEST FOR NOW", gost);
       return Object.keys(gost)
         .filter((key) => key != "developerUser")
-        .map((key) => (
-          <tr key={key}>
-            <td>
-              <label htmlFor={key}>{translationDict[key] || key}</label>
-            </td>
-            <td>
-              {props.view && (
-                <p>
-                  {gost[key] ? (gost[key] == true ? "Да" : gost[key]) : "Нет"}
-                </p>
-              )}
-              {props.edit && (
-                <input
-                  className="gostInput"
-                  placeholder={translationDict[key] || key}
-                  value={gost[key]}
-                  onChange={(e) => handleInputChange(key, e.target.value)}
-                />
-              )}
-            </td>
-            <td>Дата</td>
-          </tr>
-        ));
+        .map((key) => {
+          //console.log("updateGostDates[gost[key]]", updateGostDates[key])
+          if (updateGostDates !== undefined) {
+            console.log("gost[key]", key);
+            console.log("FFFFFFFFFFFFFFFFFFFF");
+          }
+          return (
+            <tr key={key}>
+              <td>
+                <label htmlFor={key}>{translationDict[key] || key}</label>
+              </td>
+              <td>
+                {props.view && (
+                  <p>
+                    {gost[key] ? (gost[key] == true ? "Да" : gost[key]) : "Нет"}
+                  </p>
+                )}
+                {props.edit && (
+                  <input
+                    className="gostInput"
+                    placeholder={translationDict[key] || key}
+                    value={gost[key]}
+                    onChange={(e) => handleInputChange(key, e.target.value)}
+                  />
+                )}
+              </td>
+              <td>
+                {updateGostDates !== undefined &&
+                updateGostDates.some((item) => item.name.toLowerCase() == key)
+                  ? updateGostDates
+                      .find((item) => item.name.toLowerCase() == key)
+                      .updateDate.split("T")[0]
+                  : ""}
+              </td>
+            </tr>
+          );
+        });
     } else {
       if (props.add) {
         const addFields = [
@@ -206,7 +240,7 @@ const GostTable = (props) => {
           console.log(error);
         });
     }
-    if(props.edit){
+    if (props.edit) {
       axios({
         method: "post",
         url: `https://localhost:7243/api/Gost/EditGost`,

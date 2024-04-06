@@ -53,3 +53,7 @@ C:\Users\pjanv\OneDrive\Рабочий стол\Study\ВУЗ\5 семестр\П
 C:\Users\pjanv\OneDrive\Рабочий стол\Study\ВУЗ\5 семестр\ПП\GostProject\GostProjectAPI\bin\Debug\net6.0\Scrutor.dll
 C:\Users\pjanv\OneDrive\Рабочий стол\Study\ВУЗ\5 семестр\ПП\GostProject\GostProjectAPI\bin\Debug\net6.0\Swashbuckle.AspNetCore.Filters.dll
 C:\Users\pjanv\OneDrive\Рабочий стол\Study\ВУЗ\5 семестр\ПП\GostProject\GostProjectAPI\bin\Debug\net6.0\Swashbuckle.AspNetCore.Filters.Abstractions.dll
+C:\Users\pjanv\OneDrive\Рабочий стол\Study\ВУЗ\5 семестр\ПП\GostProject\GostProjectAPI\bin\Debug\net6.0\System.Net.Http.Formatting.dll
+C:\Users\pjanv\OneDrive\Рабочий стол\Study\ВУЗ\5 семестр\ПП\GostProject\GostProjectAPI\bin\Debug\net6.0\System.Web.Http.dll
+C:\Users\pjanv\OneDrive\Рабочий стол\Study\ВУЗ\5 семестр\ПП\GostProject\GostProjectAPI\bin\Debug\net6.0\Newtonsoft.Json.dll
+C:\Users\pjanv\OneDrive\Рабочий стол\Study\ВУЗ\5 семестр\ПП\GostProject\GostProjectAPI\bin\Debug\net6.0\Newtonsoft.Json.Bson.dll

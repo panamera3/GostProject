@@ -26,6 +26,9 @@ namespace GostProjectAPI.Services.Auth
 
         public async Task<SignedInUser?> AuthenticateAsync(UserAuthDto userAuthDto)
         {
+            if (userAuthDto == null)
+                return null;
+
             var pwdHash = _passwordHasher.Encode(userAuthDto.Password) ?? "";
 
             if (string.IsNullOrWhiteSpace(pwdHash))

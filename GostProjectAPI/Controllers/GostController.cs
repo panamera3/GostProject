@@ -93,6 +93,12 @@ namespace GostProjectAPI.Controllers
         public async Task<JsonResult> ArchiveGost([FromQuery] uint gostID)
         {
             return JSON(await _gostService.ArchiveGostAsync(gostID));
-        }
-    }
+		}
+
+		[HttpGet("{gostID}")]
+		public async Task<JsonResult> GetUpdateGostDates(uint gostID)
+		{
+			return JSON(await _gostService.GetUpdateGostDate(gostID));
+		}
+	}
 }

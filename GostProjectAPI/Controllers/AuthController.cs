@@ -3,11 +3,12 @@ using GostProjectAPI.DTOModels.Users;
 using GostProjectAPI.Services;
 using GostProjectAPI.Services.Auth;
 using Microsoft.AspNetCore.Mvc;
+using System.Web.Http;
 
 namespace GostProjectAPI.Controllers
 {
     [ApiController]
-    [Route("/api/[controller]/[action]")]
+    [Microsoft.AspNetCore.Mvc.Route("/api/[controller]/[action]")]
     public class AuthController : CommonControllerBase
     {
         private readonly AuthService _authService;
@@ -21,15 +22,25 @@ namespace GostProjectAPI.Controllers
             _mapper = mapper;
         }
 
-        [HttpPost]
-        public async Task<JsonResult> RegisterUser([FromBody] UserAddDto addDto)
+        [Microsoft.AspNetCore.Mvc.HttpPost]
+        public async Task<JsonResult> RegisterUser([Microsoft.AspNetCore.Mvc.FromBody] UserAddDto addDto)
         {
-            var _ = await _usersService.AddUserAsync(addDto);
-            return JSON(await _authService.AuthenticateAsync(_mapper.Map<UserAuthDto>(addDto)));
-        }
+			try
+			{
+				var newUser = await _usersService.AddUserAsync(addDto);
+				if (newUser != null)
+					return JSON(await _authService.AuthenticateAsync(_mapper.Map<UserAuthDto>(addDto)));
+				else
+					return JSON(await _authService.AuthenticateAsync(_mapper.Map<UserAuthDto>(null)));
+			}
+			catch (HttpResponseException ex)
+			{
+				return JSON(new { error = ex.Response.Content.ReadAsStringAsync().Result });
+			}
+		}
 
-        [HttpPost]
-        public async Task<JsonResult> AuthUser([FromBody] UserAuthDto authDto)
+        [Microsoft.AspNetCore.Mvc.HttpPost]
+        public async Task<JsonResult> AuthUser([Microsoft.AspNetCore.Mvc.FromBody] UserAuthDto authDto)
         {
             return JSON(await _authService.AuthenticateAsync(authDto));
         }

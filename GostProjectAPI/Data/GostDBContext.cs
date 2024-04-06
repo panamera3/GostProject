@@ -17,6 +17,8 @@ namespace GostProjectAPI.Data
 
         public DbSet<FavouriteGost> FavouritesGosts { get; set; }
 
+        public DbSet<UpdateGostDate> UpdateGostDates { get; set; }
+
         public GostDBContext(DbContextOptions opt) : base(opt) { }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

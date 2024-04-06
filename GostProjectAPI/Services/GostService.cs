@@ -5,6 +5,9 @@ using GostProjectAPI.DTOModels.Gosts;
 using GostProjectAPI.Extensions;
 using Microsoft.EntityFrameworkCore;
 using System.Data;
+using static System.Net.Mime.MediaTypeNames;
+using System.Reflection;
+using System.Xml.Linq;
 
 namespace GostProjectAPI.Services
 {
@@ -179,8 +182,29 @@ namespace GostProjectAPI.Services
 
             await _dbContext.SaveChangesAsync();
 
+			// добавление даты актуализации
+			PropertyInfo[] properties = typeof(GostEditDto).GetProperties();
+			List<UpdateGostDate> updatedFields = new();
 
-            return oldGost;
+			foreach (var property in properties)
+			{
+				if (property.GetValue(gostEditDto) != null && property.Name != "ID")
+				{
+					UpdateGostDate updateField = new UpdateGostDate
+					{
+						UpdateDate = DateTime.Now,
+						Name = property.Name,
+						GostId = gostEditDto.ID
+					};
+
+					updatedFields.Add(updateField);
+				}
+			}
+
+			_dbContext.UpdateGostDates.AddRange(updatedFields);
+			await _dbContext.SaveChangesAsync();
+
+			return oldGost;
         }
 
         public async Task<bool> TryDeleteGostAsync(uint gostID)
@@ -266,5 +290,11 @@ namespace GostProjectAPI.Services
 
             return oldGost;
         }
-    }
+
+        public async Task<List<UpdateGostDate>> GetUpdateGostDate(uint gostID)
+        {
+            var updateGostDates = await _dbContext.UpdateGostDates.Where(g => g.GostId == gostID).ToListAsync();
+			return updateGostDates;
+		}
+	}
 }
