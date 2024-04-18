@@ -37,5 +37,7 @@ namespace GostProjectAPI.Data.Entities
 
         [Description("Роль пользователя в системе")]
         public UserRole Role { get; set; }
+
+        // добавить подразделение
     }
 }

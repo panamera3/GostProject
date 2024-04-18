@@ -22,7 +22,7 @@ namespace GostProjectAPI.Controllers
             return JSON(await _gostService.GetGostsAsync());
         }
 
-        [HttpPost]
+		[HttpPost]
         public async Task<JsonResult> GetGosts([FromBody] GetGostsDto getParams)
         {
             return JSON(await _gostService.GetGostsAsync(getParams));

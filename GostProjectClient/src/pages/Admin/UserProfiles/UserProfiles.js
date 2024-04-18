@@ -11,6 +11,11 @@ const UserProfiles = () => {
   // страница с таблицей всех пользоваетелей организации
   const [users, setUsers] = useState();
 
+  const roleTranslations = {
+    Admin: "Администратор",
+    Standart: "Обычный пользователь",
+  };
+
   useEffect(() => {
     axios({
       method: "get",
@@ -39,10 +44,17 @@ const UserProfiles = () => {
             </p>
           </td>
           <td>
+            <p>{user.login}</p>
+          </td>
+          <td>
             <p>
-              {Object.keys(UserRole).find(
-                (key) => UserRole[key] === user.role
-              )}
+              {
+                roleTranslations[
+                  Object.keys(UserRole).find(
+                    (key) => UserRole[key] === user.role
+                  )
+                ]
+              }
             </p>
           </td>
           <td></td>
@@ -64,6 +76,7 @@ const UserProfiles = () => {
             <tr>
               <th scope="col">Логин</th>
               <th scope="col">ФИО пользователя</th>
+              <th scope="col">Подразделение</th>
               <th scope="col">Роль</th>
               <th scope="col"></th>
               <th scope="col"></th>

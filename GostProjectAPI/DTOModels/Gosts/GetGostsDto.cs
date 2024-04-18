@@ -14,6 +14,8 @@ namespace GostProjectAPI.DTOModels.Gosts
         [EnumDataType(typeof(SortDirection))]
         public string? SortDirection { get; set; } = "ASC";
 
-        public FilterGosts? Filter { get; set; }
+		public string? SortField { get; set; }
+
+		public FilterGosts? Filter { get; set; }
     }
 }

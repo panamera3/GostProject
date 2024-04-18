@@ -8,6 +8,9 @@ using System.Data;
 using static System.Net.Mime.MediaTypeNames;
 using System.Reflection;
 using System.Xml.Linq;
+using System;
+using System.Linq.Expressions;
+using GostProjectAPI.Migrations;
 
 namespace GostProjectAPI.Services
 {
@@ -27,57 +30,54 @@ namespace GostProjectAPI.Services
             return await _dbContext.Gosts.ToListAsync();
         }
 
-        public async Task<PagedList<Gost>> GetGostsAsync(GetGostsDto getParams)
-        {
-            var gosts = _dbContext.Gosts.AsQueryable();
+		public async Task<PagedList<Gost>> GetGostsAsync(GetGostsDto getParams)
+		{
+			var gosts = _dbContext.Gosts.AsQueryable();
 
-            var filteredOrders = gosts;
+			var filteredOrders = gosts;
 
-            if (getParams?.Filter?.Designation != null)
-                filteredOrders = filteredOrders.Where(o => o.Designation.Contains(getParams.Filter.Designation)).AsQueryable();
+			if (getParams?.Filter?.Designation != null)
+				filteredOrders = filteredOrders.Where(o => o.Designation.Contains(getParams.Filter.Designation)).AsQueryable();
 
-            if (getParams?.Filter?.Denomination != null)
-                filteredOrders = filteredOrders.Where(o => o.Denomination.Contains(getParams.Filter.Denomination)).AsQueryable();
+			if (getParams?.Filter?.Denomination != null)
+				filteredOrders = filteredOrders.Where(o => o.Denomination.Contains(getParams.Filter.Denomination)).AsQueryable();
 
-            if (getParams?.Filter?.OKSCode != null)
-                filteredOrders = filteredOrders.Where(o => o.OKSCode.Contains(getParams.Filter.OKSCode)).AsQueryable();
+			if (getParams?.Filter?.OKSCode != null)
+				filteredOrders = filteredOrders.Where(o => o.OKSCode.Contains(getParams.Filter.OKSCode)).AsQueryable();
 
-            if (getParams?.Filter?.OKPDCode != null)
-                filteredOrders = filteredOrders.Where(o => o.OKPDCode.Contains(getParams.Filter.OKPDCode)).AsQueryable();
+			if (getParams?.Filter?.OKPDCode != null)
+				filteredOrders = filteredOrders.Where(o => o.OKPDCode.Contains(getParams.Filter.OKPDCode)).AsQueryable();
 
-            if (getParams?.Filter?.DeveloperId != null)
-                filteredOrders = filteredOrders.Where(o => o.DeveloperId == getParams.Filter.DeveloperId).AsQueryable();
+			if (getParams?.Filter?.DeveloperId != null)
+				filteredOrders = filteredOrders.Where(o => o.DeveloperId == getParams.Filter.DeveloperId).AsQueryable();
 
-            // ???
-            if (getParams?.Filter?.AcceptanceLevel != null)
-                filteredOrders = filteredOrders.Where(o => o.AcceptanceLevel == getParams.Filter.AcceptanceLevel).AsQueryable();
+			if (getParams?.Filter?.AcceptanceLevel != null)
+				filteredOrders = filteredOrders.Where(o => o.AcceptanceLevel == getParams.Filter.AcceptanceLevel).AsQueryable();
 
-            if (getParams?.Filter?.Text != null)
-                filteredOrders = filteredOrders.Where(o => o.Text.Contains(getParams.Filter.Text)).AsQueryable();
+			if (getParams?.Filter?.Text != null)
+				filteredOrders = filteredOrders.Where(o => o.Text.Contains(getParams.Filter.Text)).AsQueryable();
 
-            if (getParams?.Filter?.NormativeReferences != null)
-                filteredOrders = filteredOrders.Where(o => o.NormativeReferences.Contains(getParams.Filter.NormativeReferences)).AsQueryable();
+			if (getParams?.Filter?.NormativeReferences != null)
+				filteredOrders = filteredOrders.Where(o => o.NormativeReferences.Contains(getParams.Filter.NormativeReferences)).AsQueryable();
 
-            if (getParams?.Filter?.Designation != null)
-                filteredOrders = filteredOrders.Where(o => o.Designation.Contains(getParams.Filter.Designation)).AsQueryable();
+			PropertyInfo propertyInfo = typeof(Gost).GetProperty(getParams.SortField, BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Instance);
 
-            if (getParams?.Filter?.Designation != null)
-                filteredOrders = filteredOrders.Where(o => o.Designation.Contains(getParams.Filter.Designation)).AsQueryable();
+			var parameter = Expression.Parameter(typeof(Gost), "g");
+			var property = Expression.Property(parameter, propertyInfo);
+			var convertedProperty = Expression.Convert(property, typeof(object));
+			var lambda = Expression.Lambda<Func<Gost, object>>(convertedProperty, parameter);
 
-            if (getParams?.Filter?.Designation != null)
-                filteredOrders = filteredOrders.Where(o => o.Designation.Contains(getParams.Filter.Designation)).AsQueryable();
+			var sortedOrders = getParams.SortDirection switch
+			{
+				"DESC" => filteredOrders.OrderByDescending(lambda).AsQueryable(),
+				_ => filteredOrders.OrderBy(lambda).AsQueryable()
+			};
 
 
-            var sortedOrders = getParams.SortDirection switch
-            {
-                "DESC" => filteredOrders.OrderByDescending(o => o.Designation).AsQueryable(),
-                _ => filteredOrders.OrderBy(o => o.Designation).AsQueryable()
-            };
+			return await sortedOrders.ToPagedListAsync(getParams.Pagination);
+		}
 
-            return await sortedOrders.ToPagedListAsync(getParams.Pagination);
-        }
-
-        public async Task<Gost?> GetGostAsync(uint gostID)
+		public async Task<Gost?> GetGostAsync(uint gostID)
         {
             return await _dbContext.Gosts.FirstOrDefaultAsync(g => g.ID == gostID);
         }

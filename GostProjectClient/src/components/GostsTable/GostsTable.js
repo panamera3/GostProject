@@ -129,6 +129,9 @@ const GostsTable = (props) => {
               <p>{gost.denomination}</p>
             </td>
             <td>
+              <p>{gost.requestsNumber}</p>
+            </td>
+            <td>
               <img
                 className="gostsTableButton"
                 src={file}
@@ -163,8 +166,33 @@ const GostsTable = (props) => {
     }
   };
 
+  const [pagination, setPagination] = useState({
+    pageSize: 10,
+    offset: 0,
+    total: 10,
+  });
+  const sortField = "Designation";
+  const exampleOfWork = () => {
+    axios({
+      method: "post",
+      url: `https://localhost:7243/api/Gost/GetGosts`,
+      data: { userID: localStorage.getItem("id"), pagination, sortField },
+      headers: {
+        "Content-Type": "application/json",
+        //'Authorization': Bearer ${userToken}
+      },
+    })
+      .then((gosts) => {
+        console.log("gosts.data", gosts.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
   return (
     <>
+      <button onClick={() => exampleOfWork()}>test</button>
       <table className="gostsTable">
         <thead>
           <tr>
@@ -172,6 +200,7 @@ const GostsTable = (props) => {
             <th scope="col">Обозначение</th>
             <th scope="col">Код ОКС</th>
             <th scope="col">Наименование</th>
+            <th scope="col">Количество обращений</th>
           </tr>
         </thead>
         <tbody>{renderGostsTable()}</tbody>
