@@ -2,6 +2,8 @@
 import "./HeaderAdmin.css";
 // images
 import user from "../../images/user.svg";
+import notification from "../../images/notification.svg";
+import notificationActive from "../../images/notificationActive.svg";
 // libraries
 import { useNavigate } from "react-router-dom";
 import { useRef, useState, useEffect } from "react";
@@ -88,7 +90,10 @@ const HeaderAdmin = (props) => {
         .then((gosts) => {
           if (gosts.data) {
             console.log("gosts.data", gosts.data.data);
-            localStorage.setItem("searchGosts", JSON.stringify(gosts.data.data));
+            localStorage.setItem(
+              "searchGosts",
+              JSON.stringify(gosts.data.data)
+            );
             setSearch(false);
             navigate("/search");
           }
@@ -112,10 +117,23 @@ const HeaderAdmin = (props) => {
             <>
               <a href="/archive">Архив</a>
               <a href="/userProfiles">Пользователи</a>
+              <a href="/activity">Активность</a>
             </>
           )}
         </div>
-        <div>
+        <div id="header-images">
+          {!props.user && (
+            <>
+            <img
+              alt="Notifications"
+              src={notification}
+              onClick={() => openModalCard()}
+            /><img
+            alt="Notifications"
+            src={notificationActive}
+            onClick={() => openModalCard()}
+          /></>
+          )}
           <img alt="User" src={user} onClick={() => openModalCard()} />
         </div>
       </div>
@@ -162,7 +180,9 @@ const HeaderAdmin = (props) => {
                   ))}
               </div>
             </div>
-            <button className="btn_white" type="submit">Применить</button>
+            <button className="btn_white" type="submit">
+              Применить
+            </button>
           </form>
         </Modal>
       )}

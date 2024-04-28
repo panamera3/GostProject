@@ -1,7 +1,7 @@
 .header {
   color: #ffffff;
   background-color: #004696;
-  padding: 2em;
+  padding: 2em 4em;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -11,17 +11,18 @@
   z-index: 100;
 }
 
-.header a {
+.header a, .header p {
   margin: 0em 1em;
+  font-size: 20px;
 }
 
 .header p {
   display: inline;
   color: #ffffff;
-  margin: 0em 1em;
 }
 
-.header p, img:hover {
+.header p,
+img:hover {
   cursor: pointer;
 }
 
@@ -76,4 +77,12 @@
 
 .search_input_container input {
   color: #ffffff;
+}
+
+#header-images {
+  display: flex;
+  justify-content: center;
+  flex-wrap: nowrap;
+  align-items: center;
+  grid-gap: 1em;
 }

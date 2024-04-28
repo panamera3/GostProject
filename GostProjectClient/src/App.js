@@ -16,6 +16,8 @@ import SearchGosts from "./pages/Search/Search";
 import { ToastContainer } from "react-toastify";
 import MyProfile from "./pages/MyProfile/MyProfile";
 import ArchiveGosts from "./pages/Admin/Archive/Archive";
+import Activity from "./pages/Admin/Activity/Activity";
+import CompanyRegistration from "./pages/private/CompanyRegistration/CompanyRegistration";
 
 
 function App() {
@@ -49,6 +51,11 @@ function App() {
             <Route path="/search" element={<SearchGosts />} />
             <Route path="/myProfile" element={<MyProfile />} />
             <Route path="/archive" element={<ArchiveGosts />} />
+            <Route path="/activity" element={<Activity />} />
+
+            сделать "скрытыми" эти пути
+            <Route path="/companyRegistration" element={<CompanyRegistration />} />
+
             перенаправлять пользователя на главную страницу, если ввёл
             несуществующий путь
             <Route path="*" element={<Navigate to="/" />} />

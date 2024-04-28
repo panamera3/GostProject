@@ -6,3 +6,7 @@
 .gostsTableButton:hover {
   cursor: pointer;
 }
+
+th {
+  text-align:start;
+}

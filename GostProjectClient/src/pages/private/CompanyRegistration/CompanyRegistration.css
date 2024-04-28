@@ -1,0 +1,32 @@
+.company-registration-container {
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+
+.company-registration-title {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.company-registration-title p {
+  font-size: 2em;
+}
+
+.step-hidden {
+  display: none;
+}
+
+.step-container {
+  width: 40%;
+}
+
+.btn_blue {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}

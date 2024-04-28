@@ -19,6 +19,8 @@ namespace GostProjectAPI.Data
 
         public DbSet<UpdateGostDate> UpdateGostDates { get; set; }
 
+        public DbSet<Notification> Notifications { get; set; }
+
         public GostDBContext(DbContextOptions opt) : base(opt) { }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

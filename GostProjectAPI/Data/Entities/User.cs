@@ -38,6 +38,11 @@ namespace GostProjectAPI.Data.Entities
         [Description("Роль пользователя в системе")]
         public UserRole Role { get; set; }
 
-        // добавить подразделение
+        [Description("Подтверждён ли администратором компании")]
+        public bool IsConfirmed { get; set; } = false;
+
+		[Description("Подразделение")]
+        public bool Department { get; set; } = false;
+        
     }
 }
