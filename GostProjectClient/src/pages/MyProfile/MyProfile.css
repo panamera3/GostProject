@@ -1,8 +1,57 @@
-.userFields {
+.user-fields {
   display: flex;
-  margin: 1em 0;
+  padding: 1em 0.3em;
+  align-items: center;
+  justify-content: space-between;
 }
 
-.userFields > p {
+.user-fields:not(:last-child) {
+  border-bottom: 1px solid lightgray;
+}
+
+.user-fields > p {
+  display: inline;
   margin: 0 0.5em;
+}
+
+.user-field-value {
+  border: 1px solid gray;
+  border-radius: 10px;
+  padding: 0.5em;
+  width: 70%;
+}
+
+.profile-container {
+  display: flex;
+  flex-direction: column;
+}
+
+.profile-container div[class*="-container"] {
+  margin: 1em 0;
+  border: 1px solid gray;
+  border-radius: 10px;
+}
+
+.profile-invite {
+  display: flex;
+  justify-content: space-between;
+}
+
+.profile-invite > div {
+  display: flex;
+  width: 45%;
+}
+
+.profile-invite > div * {
+  padding: 0.5em;
+}
+
+.buttons {
+  display: flex;
+  justify-content: flex-start;
+  align-items: start;
+}
+
+.buttons button {
+  margin: 1em;
 }

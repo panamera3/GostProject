@@ -1,4 +1,4 @@
-export const translationDict = {
+export const translationGostDict = {
   id: "Номер",
   designation: "Обозначение",
   denomination: "Название",

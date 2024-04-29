@@ -8,7 +8,7 @@ import likeActive from "../../images/like_active.svg";
 import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import axios from "axios";
-import { translationDict } from "../constants/translationDict";
+import { translationGostDict } from "../constants/translationGostDict";
 
 const GostsTable = (props) => {
   const navigate = useNavigate();

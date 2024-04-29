@@ -124,15 +124,21 @@ const HeaderAdmin = (props) => {
         <div id="header-images">
           {!props.user && (
             <>
-            <img
-              alt="Notifications"
-              src={notification}
-              onClick={() => openModalCard()}
-            /><img
-            alt="Notifications"
-            src={notificationActive}
-            onClick={() => openModalCard()}
-          /></>
+              <img
+                alt="Notifications"
+                src={notification}
+                onClick={() => openModalCard()}
+              />
+              {/*
+              
+              <img
+                alt="Notifications"
+                src={notificationActive}
+                onClick={() => openModalCard()}
+              />
+              
+              */}
+            </>
           )}
           <img alt="User" src={user} onClick={() => openModalCard()} />
         </div>

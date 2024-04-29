@@ -7,7 +7,7 @@ import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import Modal from "../Modal/Modal";
-import { translationDict } from "../constants/translationDict";
+import { translationGostDict } from "../constants/translationGostDict";
 
 const GostTable = (props) => {
   const navigate = useNavigate();
@@ -90,7 +90,7 @@ const GostTable = (props) => {
             {editFields.map((key, index) => (
               <tr key={index}>
                 <td>
-                  <label htmlFor={key}>{translationDict[key]}</label>
+                  <label htmlFor={key}>{translationGostDict[key]}</label>
                 </td>
                 <td>
                   <input
@@ -118,7 +118,7 @@ const GostTable = (props) => {
           return (
             <tr key={key}>
               <td>
-                <label htmlFor={key}>{translationDict[key] || key}</label>
+                <label htmlFor={key}>{translationGostDict[key] || key}</label>
               </td>
               <td>
                 {props.view && (
@@ -129,7 +129,7 @@ const GostTable = (props) => {
                 {props.edit && (
                   <input
                     className="gostInput"
-                    placeholder={translationDict[key] || key}
+                    placeholder={translationGostDict[key] || key}
                     value={gost[key]}
                     onChange={(e) => handleInputChange(key, e.target.value)}
                   />
@@ -167,7 +167,7 @@ const GostTable = (props) => {
             {addFields.map((key, index) => (
               <tr key={index}>
                 <td>
-                  <label htmlFor={key}>{translationDict[key]}</label>
+                  <label htmlFor={key}>{translationGostDict[key]}</label>
                 </td>
                 <td>
                   <input
@@ -181,10 +181,10 @@ const GostTable = (props) => {
           </>
         );
       }
-      return Object.keys(translationDict).map((key) => (
+      return Object.keys(translationGostDict).map((key) => (
         <tr key={key}>
           <td>
-            <label htmlFor={key}>{translationDict[key]}</label>
+            <label htmlFor={key}>{translationGostDict[key]}</label>
           </td>
           <td>
             <input
