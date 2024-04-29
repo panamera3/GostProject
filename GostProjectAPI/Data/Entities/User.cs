@@ -42,7 +42,6 @@ namespace GostProjectAPI.Data.Entities
         public bool IsConfirmed { get; set; } = false;
 
 		[Description("Подразделение")]
-        public bool Department { get; set; } = false;
-        
+        public string Department { get; set; }
     }
 }
