@@ -6,8 +6,14 @@ import "./UserProfiles.css";
 // libraries
 import { useState, useEffect, useRef } from "react";
 import UserRole from "../../../types/user/userRole";
+// images
+import deleteImg from "../../../images/delete.svg";
+import editImg from "../../../images/edit.svg";
+import { useNavigate } from "react-router-dom";
 
 const UserProfiles = () => {
+  const navigate = useNavigate();
+
   // страница с таблицей всех пользоваетелей организации
   const [users, setUsers] = useState();
 
@@ -31,20 +37,25 @@ const UserProfiles = () => {
       });
   }, []);
 
+  const changeDepartment = () => {
+    return 0;
+  };
+
+  const renderOptions = () => {
+    if (users) {
+      return users.map((user) => <option>user.department</option>);
+    }
+  };
+
   const renderUsers = () => {
     if (users) {
       return users.map((user) => (
         <tr key={user.id}>
           <td>
-            <p>{user.login}</p>
+            <p>{user.id}</p>
           </td>
           <td>
-            <p>
-              {user.lastName} {user.firstName} {user.patronymic}
-            </p>
-          </td>
-          <td>
-            <p>{user.login}</p>
+            <p>{user.department}</p>
           </td>
           <td>
             <p>
@@ -57,8 +68,29 @@ const UserProfiles = () => {
               }
             </p>
           </td>
-          <td></td>
-          <td></td>
+          <td>
+            <p>
+              {user.lastName} {user.firstName} {user.patronymic}
+            </p>
+          </td>
+          <td>
+            <img
+              src={editImg}
+              alt="редактировать"
+              onClick={() => {
+                navigate(`/editUser`);
+              }}
+            />
+          </td>
+          <td>
+            <img
+              src={deleteImg}
+              alt="удалить"
+              onClick={() => {
+                console.log(1);
+              }}
+            />
+          </td>
         </tr>
       ));
     }
@@ -71,15 +103,21 @@ const UserProfiles = () => {
         <div className="activities_container">
           <a href="/home">Назад</a>
         </div>
-        <table>
+        <select placeholder="Отдел" onChange={() => changeDepartment()}>
+          <option>example</option>
+          {/*
+            renderOptions()
+            */}
+        </select>
+        <table className="user_profiles_table">
           <thead>
             <tr>
-              <th scope="col">Логин</th>
-              <th scope="col">ФИО пользователя</th>
-              <th scope="col">Подразделение</th>
+              <th scope="col">№</th>
+              <th scope="col">Отдел</th>
               <th scope="col">Роль</th>
-              <th scope="col"></th>
-              <th scope="col"></th>
+              <th scope="col">ФИО пользователя</th>
+              <th />
+              <th />
             </tr>
           </thead>
           <tbody>{renderUsers()}</tbody>

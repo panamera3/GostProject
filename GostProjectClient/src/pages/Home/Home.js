@@ -6,7 +6,6 @@ import { useState, useEffect, useRef } from "react";
 import HeaderAdmin from "../../components/HeaderAdmin/HeaderAdmin";
 import HeaderUser from "../../components/Header/HeaderUser";
 import GostsTable from "../../components/GostsTable/GostsTable";
-import axios from "axios";
 
 const Home = (props) => {
   return (

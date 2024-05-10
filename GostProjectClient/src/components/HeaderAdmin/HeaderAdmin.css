@@ -26,6 +26,15 @@ img:hover {
   cursor: pointer;
 }
 
+#header-images {
+  display: flex;
+  justify-content: center;
+  flex-wrap: nowrap;
+  align-items: center;
+  grid-gap: 1em;
+}
+
+
 .modalProfile {
   display: flex;
   flex-direction: column;
@@ -79,10 +88,12 @@ img:hover {
   color: #ffffff;
 }
 
-#header-images {
-  display: flex;
-  justify-content: center;
-  flex-wrap: nowrap;
-  align-items: center;
-  grid-gap: 1em;
+#textSearch {
+  width: auto;
+  background-color: #004696;
+  border: 1px solid #ffffff;
+}
+
+#textSearch::placeholder{
+  color: #ffffff;
 }

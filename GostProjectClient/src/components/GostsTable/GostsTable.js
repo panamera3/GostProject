@@ -173,6 +173,8 @@ const GostsTable = (props) => {
   });
   const sortField = "Designation";
   const exampleOfWork = () => {
+    var selectedOptionSort = document.getElementById("selectSorting").value;
+
     axios({
       method: "post",
       url: `https://localhost:7243/api/Gost/GetGosts`,
@@ -192,7 +194,14 @@ const GostsTable = (props) => {
 
   return (
     <>
-      <button onClick={() => exampleOfWork()}>test</button>
+      <div className="sortGosts">
+        <p>Сортировать по: </p>
+        <select id="selectSorting" onChange={() => exampleOfWork()}>
+          <option value={`OKScode`}>коду ОКС - возрастание</option>
+          <option value={`OKScode`}>коду ОКС - антивозрастание</option>
+        </select>
+        <button onClick={() => exampleOfWork()}>test</button>
+      </div>
       <table className="gostsTable">
         <thead>
           <tr>
@@ -201,6 +210,8 @@ const GostsTable = (props) => {
             <th scope="col">Код ОКС</th>
             <th scope="col">Наименование</th>
             <th scope="col">Количество обращений</th>
+            <th />
+            <th />
           </tr>
         </thead>
         <tbody>{renderGostsTable()}</tbody>

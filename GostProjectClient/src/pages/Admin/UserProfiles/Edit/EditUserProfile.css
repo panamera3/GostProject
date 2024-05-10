@@ -1,0 +1,38 @@
+.activities_container {
+  margin: 1em 0;
+}
+
+.activities_container a {
+  color: #000000;
+}
+
+.edit_profile_container {
+  border: 1px solid gray;
+  border-radius: 1em;
+}
+
+.edit_profile_container > div:not(:last-child) {
+  border-bottom: 1px solid lightgray;
+  width: 100%;
+}
+
+.edit_profile_container > div {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.edit_profile_container > div * {
+  padding: 1em;
+}
+
+.edit_profile_container label {
+  font-weight: 600;
+  width: 30%;
+}
+
+.edit_profile_container select {
+  width: 100%;
+  border-radius: 1em;
+  border: 0px solid #ffffff;
+}

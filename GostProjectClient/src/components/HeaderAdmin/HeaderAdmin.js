@@ -127,7 +127,7 @@ const HeaderAdmin = (props) => {
               <img
                 alt="Notifications"
                 src={notification}
-                onClick={() => openModalCard()}
+                onClick={() => navigate("/notifications")}
               />
               {/*
               
@@ -164,27 +164,39 @@ const HeaderAdmin = (props) => {
           contentClassName="search"
         >
           <form onSubmit={searchHandler} className="modalSearchForm">
-            <div className="form_search_container">
-              <div>
-                {Object.keys(searchDict)
-                  .slice(0, Object.keys(searchDict).length / 2)
-                  .map((key) => (
-                    <div className="search_input_container" key={key}>
-                      <label htmlFor={key}>{searchDict[key]}</label>
-                      <input id={key} name={key} />
-                    </div>
-                  ))}
+            <div>
+              <div className="form_search_container">
+                <div>
+                  {Object.keys(searchDict)
+                    .slice(0, Object.keys(searchDict).length / 2)
+                    .map((key) => (
+                      <div className="search_input_container" key={key}>
+                        <label htmlFor={key}>{searchDict[key]}</label>
+                        <input id={key} name={key} />
+                      </div>
+                    ))}
+                </div>
+                <div>
+                  {Object.keys(searchDict)
+                    .slice(Object.keys(searchDict).length / 2)
+                    .map((key) => (
+                      <div className="search_input_container" key={key}>
+                        <label htmlFor={key}>{searchDict[key]}</label>
+                        <input id={key} name={key} />
+                      </div>
+                    ))}
+                </div>
               </div>
-              <div>
-                {Object.keys(searchDict)
-                  .slice(Object.keys(searchDict).length / 2)
-                  .map((key) => (
-                    <div className="search_input_container" key={key}>
-                      <label htmlFor={key}>{searchDict[key]}</label>
-                      <input id={key} name={key} />
-                    </div>
-                  ))}
-              </div>
+              <br />
+              {/*
+<div id="textSearchContainer">
+<input
+  id="textSearch"
+  name="textSearch"
+  placeholder="Поиск по тексту"
+/>
+</div>
+*/}
             </div>
             <button className="btn_white" type="submit">
               Применить

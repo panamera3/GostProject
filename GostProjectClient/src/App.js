@@ -18,6 +18,9 @@ import MyProfile from "./pages/MyProfile/MyProfile";
 import ArchiveGosts from "./pages/Admin/Archive/Archive";
 import Activity from "./pages/Admin/Activity/Activity";
 import CompanyRegistration from "./pages/private/CompanyRegistration/CompanyRegistration";
+import EditUserProfile from "./pages/Admin/UserProfiles/Edit/EditUserProfile";
+import Notifications from "./pages/Notifications/Notifications";
+import EditNotification from "./pages/Notifications/Edit/EditNotification";
 
 
 function App() {
@@ -43,15 +46,17 @@ function App() {
             <Route path="/registration" element={<Registration />} />
             <Route path="/home" element={<Home />} />
             <Route path="/userProfiles" element={<UserProfiles />} />
+            <Route path="/editUser/:id" element={<EditUserProfile />} />
             <Route path="/gostAdd" element={<GostAdd />} />
             <Route path="/gostEdit/:id" element={<GostEdit />} />
             <Route path="/gost/:id" element={<Gost />} />
-            <Route path="/userProfiles" element={<UserProfiles />} />
             <Route path="/favourites" element={<FavouritesGosts />} />
             <Route path="/search" element={<SearchGosts />} />
             <Route path="/myProfile" element={<MyProfile />} />
             <Route path="/archive" element={<ArchiveGosts />} />
             <Route path="/activity" element={<Activity />} />
+            <Route path="/notifications" element={<Notifications />} />
+            <Route path="/notification/:id" element={<EditNotification />} />
 
             сделать "скрытыми" эти пути
             <Route path="/companyRegistration" element={<CompanyRegistration />} />

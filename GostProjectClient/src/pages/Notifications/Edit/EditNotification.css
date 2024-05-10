@@ -1,0 +1,18 @@
+.notification_container {
+    width: 100%;
+    border: 1px solid gray;
+    border-radius: 1em;
+}
+
+.notification_container > div {
+    display: flex;
+    padding: 0.5em;
+}
+
+.notification_container > div:not(:last-child) {
+    border-bottom: 1px solid lightgray;
+}
+
+.notification_container > div > p:first-child {
+   width: 25%;
+}

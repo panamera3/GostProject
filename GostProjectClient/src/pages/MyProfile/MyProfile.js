@@ -32,7 +32,9 @@ const MyProfile = () => {
         <HeaderUser />
       )}
       <div className="body_container">
-        <p>Назад</p>
+        <div className="activities_container">
+          <a href="/home">Назад</a>
+        </div>
         <div className="profile-container">
           <div className="profile-fields-container">
             {Object.keys(user).map((key) => (

@@ -10,3 +10,23 @@
 th {
   text-align:start;
 }
+
+.sortGosts * {
+  display: inline;
+}
+
+.gostsTable th:first-child,
+.gostsTable td:first-child,
+.gostsTable th:nth-last-child(2),
+.gostsTable td:nth-last-child(2),
+.gostsTable th:last-child,
+.gostsTable td:last-child {
+    width: 3em;
+}
+
+.gostsTable th:nth-last-child(2),
+.gostsTable td:nth-last-child(2),
+.gostsTable th:last-child,
+.gostsTable td:last-child {
+    text-align: center;
+}

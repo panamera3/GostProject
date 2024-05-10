@@ -5,3 +5,23 @@
 .activities_container a {
   color: #000000;
 }
+
+table {
+  width: 100%;
+}
+
+.user_profiles_table th:first-child,
+.user_profiles_table td:first-child,
+.user_profiles_table th:nth-last-child(2),
+.user_profiles_table td:nth-last-child(2),
+.user_profiles_table th:last-child,
+.user_profiles_table td:last-child {
+    width: 3em;
+}
+
+.user_profiles_table th:nth-last-child(2),
+.user_profiles_table td:nth-last-child(2),
+.user_profiles_table th:last-child,
+.user_profiles_table td:last-child {
+    text-align: center;
+}
