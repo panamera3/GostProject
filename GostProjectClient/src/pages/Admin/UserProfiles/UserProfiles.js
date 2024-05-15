@@ -25,7 +25,7 @@ const UserProfiles = () => {
   useEffect(() => {
     axios({
       method: "get",
-      url: `https://localhost:7243/api/User/GetUsers`,
+      url: `/api/User/GetUsers`,
       //headers: { Authorization: `Bearer ${userToken}` },
     })
       .then((users) => {

@@ -18,7 +18,7 @@ const EditUserProfile = () => {
   useEffect(() => {
     axios({
       method: "post",
-      url: `https://localhost:7243/api/User/GetUser/1}`,
+      url: `/api/User/GetUser/1}`,
       //headers: { Authorization: `Bearer ${userToken}` },
     })
       .then((user) => {
@@ -58,7 +58,7 @@ const EditUserProfile = () => {
     
       axios({
         method: "post",
-        url: `https://localhost:7243/api/Gost/AddGost`,
+        url: `/api/Gost/AddGost`,
         data: {
           designation: formData.designation,
           denomination: formData.denomination,

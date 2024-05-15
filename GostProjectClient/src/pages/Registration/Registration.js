@@ -28,7 +28,7 @@ const Registration = () => {
     axios({
       method: "post",
       responseType: "json",
-      url: `https://localhost:7243/api/Auth/RegisterUser`,
+      url: `/api/Auth/RegisterUser`,
       data: {
         login: `${username}`,
         password: `${password}`,

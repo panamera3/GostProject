@@ -11,7 +11,7 @@ const NotificationsTable = () => {
     /*
     axios({
       method: "get",
-      url: `https://localhost:7243/api/GetNotifications/`, // userID/companyID ?
+      url: `/api/GetNotifications/`, // userID/companyID ?
       //headers: { Authorization: `Bearer ${userToken}` },
     })
       .then((notifications) => {

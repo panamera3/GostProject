@@ -30,7 +30,7 @@ const GostTable = (props) => {
 
     axios({
       method: "get",
-      url: `https://localhost:7243/api/Gost/GetUpdateGostDates/${props.id}`,
+      url: `/api/Gost/GetUpdateGostDates/${props.id}`,
       //headers: { Authorization: `Bearer ${userToken}` },
     })
       .then((gosts) => {
@@ -45,7 +45,7 @@ const GostTable = (props) => {
     if (props.view || props.edit) {
       axios({
         method: "get",
-        url: `https://localhost:7243/api/Gost/GetGost/${props.id}`,
+        url: `/api/Gost/GetGost/${props.id}`,
         //headers: { Authorization: `Bearer ${userToken}` },
       })
         .then((gost) => {
@@ -212,7 +212,7 @@ const GostTable = (props) => {
     if (props.add) {
       axios({
         method: "post",
-        url: `https://localhost:7243/api/Gost/AddGost`,
+        url: `/api/Gost/AddGost`,
         data: {
           designation: formData.designation,
           denomination: formData.denomination,
@@ -243,7 +243,7 @@ const GostTable = (props) => {
     if (props.edit) {
       axios({
         method: "post",
-        url: `https://localhost:7243/api/Gost/EditGost`,
+        url: `/api/Gost/EditGost`,
         data: {
           id: props.id,
           designation: formData.designation,

@@ -22,7 +22,7 @@ const Gost = (props) => {
   useEffect(() => {
     axios({
       method: "post",
-      url: `https://localhost:7243/api/Gost/AddRequest?gostID=${params.id}`,
+      url: `/api/Gost/AddRequest?gostID=${params.id}`,
       //headers: { Authorization: `Bearer ${userToken}` },
     })
       .then((gost) => {
@@ -34,7 +34,7 @@ const Gost = (props) => {
 
     axios({
       method: "get",
-      url: `https://localhost:7243/api/Gost/CheckFavouriteGosts/${localStorage.getItem(
+      url: `/api/Gost/CheckFavouriteGosts/${localStorage.getItem(
         "id"
       )}/${params.id}`,
       //headers: { Authorization: `Bearer ${userToken}` },
@@ -51,7 +51,7 @@ const Gost = (props) => {
   const deleteHandler = () => {
     axios({
       method: "delete",
-      url: `https://localhost:7243/api/Gost/DeleteGost/${params.id}`,
+      url: `/api/Gost/DeleteGost/${params.id}`,
       //headers: { Authorization: `Bearer ${userToken}` },
     })
       .then((data) => {
@@ -70,7 +70,7 @@ const Gost = (props) => {
       axios({
         method: "post",
         responseType: "json",
-        url: `https://localhost:7243/api/Gost/AddFavouriteGost/?userId=${userId}&gostId=${params.id}`,
+        url: `/api/Gost/AddFavouriteGost/?userId=${userId}&gostId=${params.id}`,
       })
         .then((gost) => {
           console.log("gost.data favourite", gost.data);
@@ -90,7 +90,7 @@ const Gost = (props) => {
     } else {
       axios({
         method: "delete",
-        url: `https://localhost:7243/api/Gost/DeleteFavouriteGost/?userId=${userId}&gostId=${params.id}`,
+        url: `/api/Gost/DeleteFavouriteGost/?userId=${userId}&gostId=${params.id}`,
       })
         .then((gost) => {
           console.log("gost.data favourite", gost.data);
@@ -113,7 +113,7 @@ const Gost = (props) => {
   const archiveGost = () => {
     axios({
       method: "post",
-      url: `https://localhost:7243/api/Gost/ArchiveGost?gostID=${params.id}`,
+      url: `/api/Gost/ArchiveGost?gostID=${params.id}`,
       //headers: { Authorization: `Bearer ${userToken}` },
     })
       .then((gost) => {

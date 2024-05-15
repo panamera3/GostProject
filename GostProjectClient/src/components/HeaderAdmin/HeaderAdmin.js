@@ -80,7 +80,7 @@ const HeaderAdmin = (props) => {
     if (search) {
       axios({
         method: "post",
-        url: `https://localhost:7243/api/Gost/GetGosts`,
+        url: `/api/Gost/GetGosts`,
         data: { userID: localStorage.getItem("id"), pagination, filter },
         headers: {
           "Content-Type": "application/json",

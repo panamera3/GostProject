@@ -20,7 +20,7 @@ const GostsTable = (props) => {
     const userId = localStorage.getItem("id");
     axios({
       method: "get",
-      url: `https://localhost:7243/api/Gost/GetFavouritesGosts/${userId}`,
+      url: `/api/Gost/GetFavouritesGosts/${userId}`,
       //headers: { Authorization: `Bearer ${userToken}` },
     })
       .then((favGosts) => {
@@ -40,7 +40,7 @@ const GostsTable = (props) => {
       const userId = localStorage.getItem("id");
       axios({
         method: "get",
-        url: `https://localhost:7243/api/Gost/GetFavouritesGosts/${userId}`,
+        url: `/api/Gost/GetFavouritesGosts/${userId}`,
         //headers: { Authorization: `Bearer ${userToken}` },
       })
         .then((gosts) => {
@@ -61,7 +61,7 @@ const GostsTable = (props) => {
       console.log("ТРЕТЬЕ");
       axios({
         method: "get",
-        url: `https://localhost:7243/api/Gost/GetGosts`,
+        url: `/api/Gost/GetGosts`,
         //headers: { Authorization: `Bearer ${userToken}` },
       })
         .then((gosts) => {
@@ -82,7 +82,7 @@ const GostsTable = (props) => {
       axios({
         method: "post",
         responseType: "json",
-        url: `https://localhost:7243/api/Gost/AddFavouriteGost/?userId=${userId}&gostId=${gostId}`,
+        url: `/api/Gost/AddFavouriteGost/?userId=${userId}&gostId=${gostId}`,
       })
         .then((gost) => {
           console.log("gost.data favourite", gost.data);
@@ -94,7 +94,7 @@ const GostsTable = (props) => {
     } else {
       axios({
         method: "delete",
-        url: `https://localhost:7243/api/Gost/DeleteFavouriteGost/?userId=${userId}&gostId=${gostId}`,
+        url: `/api/Gost/DeleteFavouriteGost/?userId=${userId}&gostId=${gostId}`,
       })
         .then((gost) => {
           console.log("gost.data favourite", gost.data);
@@ -177,7 +177,7 @@ const GostsTable = (props) => {
 
     axios({
       method: "post",
-      url: `https://localhost:7243/api/Gost/GetGosts`,
+      url: `/api/Gost/GetGosts`,
       data: { userID: localStorage.getItem("id"), pagination, sortField },
       headers: {
         "Content-Type": "application/json",

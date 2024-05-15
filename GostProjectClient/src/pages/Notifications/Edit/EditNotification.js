@@ -13,7 +13,7 @@ const EditNotification = () => {
     /*
     axios({
         method: "get",
-        url: `https://localhost:7243/api/User/GetUser/${params.id}`,
+        url: `/api/User/GetUser/${params.id}`,
         //headers: { Authorization: `Bearer ${userToken}` },
       })
         .then((user) => {

@@ -13,7 +13,7 @@ const MyProfile = () => {
     const userId = localStorage.getItem("id");
     axios({
       method: "get",
-      url: `https://localhost:7243/api/User/GetUser/${userId}`,
+      url: `/api/User/GetUser/${userId}`,
       //headers: { Authorization: `Bearer ${userToken}` },
     })
       .then((user) => {
