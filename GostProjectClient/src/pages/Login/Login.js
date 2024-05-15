@@ -29,14 +29,14 @@ const Login = () => {
     axios({
       method: "post",
       responseType: "json",
-      url: `https://localhost:7243/api/Auth/AuthUser`,
+      url: `/api/Auth/AuthUser`,
       data: {
         login: `${username}`,
         password: `${password}`,
       },
     })
       .then((user) => {
-        console.log(user.data);
+        console.log(user);
         const userRole = Object.keys(UserRole).find(
           (key) => UserRole[key] === user.data.role
         );
@@ -91,7 +91,9 @@ const Login = () => {
                   />
                 </div>
               </div>
-              <button type="submit" className="btn_blue">Войти</button>
+              <button type="submit" className="btn_blue">
+                Войти
+              </button>
             </div>
           </form>
         </div>

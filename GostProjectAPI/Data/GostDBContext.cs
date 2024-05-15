@@ -21,6 +21,8 @@ namespace GostProjectAPI.Data
 
         public DbSet<Notification> Notifications { get; set; }
 
+        public DbSet<NotificationsLastSeen> NotificationsLastSeen { get; set; }
+
         public GostDBContext(DbContextOptions opt) : base(opt) { }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

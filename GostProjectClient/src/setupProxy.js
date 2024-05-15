@@ -4,11 +4,9 @@ module.exports = function(app) {
   app.use(
     '/api',
     createProxyMiddleware({
-      target: 'https://localhost:7243',
+      target: 'http://localhost:5229/api',
       changeOrigin: true,
-      onProxyReq: function(proxyReq) {
-        proxyReq.setHeader('Host', 'localhost:7243'); // Устанавливает хост для запроса
-      },
     })
   );
 };
+

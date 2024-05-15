@@ -17,5 +17,9 @@ namespace GostProjectAPI.Data.Entities
 
         [Description("Код подключения")]
         public string Code { get; set; }
-    }
+
+        [Description("ОГРН/ОГРНИП")]
+        public string PSRN { get; set; }
+
+	}
 }

@@ -112,7 +112,7 @@ const HeaderAdmin = (props) => {
         <div>
           <a href="/home">Все документы</a>
           {!props.user && <a href="/gostAdd">Создать документ</a>}
-          <p onClick={() => openSearchModalCard()}>Поиск по документам</p>
+          <p onClick={() => openSearchModalCard()}>Поиск</p>
           {!props.user && (
             <>
               <a href="/archive">Архив</a>
@@ -188,7 +188,7 @@ const HeaderAdmin = (props) => {
                 </div>
               </div>
               <br />
-              {/*
+            
 <div id="textSearchContainer">
 <input
   id="textSearch"
@@ -196,7 +196,7 @@ const HeaderAdmin = (props) => {
   placeholder="Поиск по тексту"
 />
 </div>
-*/}
+
             </div>
             <button className="btn_white" type="submit">
               Применить

@@ -37,6 +37,17 @@ const MyProfile = () => {
         </div>
         <div className="profile-container">
           <div className="profile-fields-container">
+            {
+              /*
+                ФИО пользователя
+                Номер телефона
+                Логин
+                Роль пользователя
+                ОГРН/ОГРНИП
+                Название организации
+                Электронная почта
+              */
+            }
             {Object.keys(user).map((key) => (
               <div className="user-fields">
                 <p className="user-field-name">

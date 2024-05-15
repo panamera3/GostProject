@@ -13,7 +13,12 @@ namespace GostProjectAPI.Data.Entities
 		[Description("Дата отправления заявки")]
 		public DateTime SendingDate { get; set; }
 
+		[Description("Компания, в которую была отправлена заявка")]
+		public uint CompanyId { get; set; }
+		public Company Company { get; set; }
+
+		[Description("Пользователь, подавший заявку")]
 		public uint UserId { get; set; }
-		public User User{ get; set; }
+		public User User { get; set; }
 	}
 }
