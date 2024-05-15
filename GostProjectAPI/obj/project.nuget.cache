@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "oGsd0KLWpTi2CbTcJMicyu0mVzoAmshWIBvV97kNRvyTu2yqdydeCEgmZyKWKekHv/TXBvogDK8OBEoMN46TPw==",
+  "dgSpecHash": "r/6c4po4h/Dxqkau/SCmsi5i34bMFJlYIPhsNawWl4MZKx6Q411cyhy3joX+zOQ6ylIYBy4CrkF0JfPo8aCEVg==",
   "success": true,
-  "projectFilePath": "C:\\Users\\pjanv\\OneDrive\\Рабочий стол\\Study\\ВУЗ\\5 семестр\\ПП\\GostProject\\GostProjectAPI\\GostProjectAPI.csproj",
+  "projectFilePath": "C:\\Users\\pjanv\\OneDrive\\Рабочий стол\\Study\\Programming\\ТЕСТ\\GostProject\\GostProjectAPI\\GostProjectAPI.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\pjanv\\.nuget\\packages\\automapper\\12.0.1\\automapper.12.0.1.nupkg.sha512",
     "C:\\Users\\pjanv\\.nuget\\packages\\humanizer.core\\2.8.26\\humanizer.core.2.8.26.nupkg.sha512",
