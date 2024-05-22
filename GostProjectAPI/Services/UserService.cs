@@ -59,6 +59,31 @@ namespace GostProjectAPI.Services
             return user;
         }
 
+        public async Task CreateNotification(User user)
+        {
+			Notification notification = new()
+			{
+				SendingDate = DateTime.Now,
+				CompanyId = user.WorkCompanyID,
+				UserId = user.ID
+			};
+
+			await _dbContext.Notifications.AddAsync(notification);
+			await _dbContext.SaveChangesAsync();
+        }
+
+        public async Task MarkNotificationsAsRead(User companyAdmin)
+        {
+            NotificationsLastSeen notificationLastSeen = new()
+            {
+				LastSeenDate = DateTime.Now,
+                UserId = companyAdmin.ID
+			};
+
+			await _dbContext.NotificationsLastSeen.AddAsync(notificationLastSeen);
+			await _dbContext.SaveChangesAsync();
+		}
+
         public async Task<List<User>?> GetUsersAsync()
         {
             return await _dbContext.Users.ToListAsync();

@@ -1,4 +1,5 @@
 ﻿using GostProjectAPI.Data.Enums.Gost;
+using GostProjectAPI.Migrations;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -73,7 +74,11 @@ namespace GostProjectAPI.Data.Entities
         [Description("Количество обращений")]
         public ulong RequestsNumber { get; set; }
 
-        [Description("Заархивирова ли гост")]
+        [Description("Заархивироваг ли гост")]
         public bool IsArchived { get; set; }
+
+        [Description("ID прикреплённого к госту файла")]
+        public uint GostFileId { get; set; }
+        public GostFile GostFile { get; set; }
 }
 }

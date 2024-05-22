@@ -11,6 +11,9 @@ using System.Xml.Linq;
 using System;
 using System.Linq.Expressions;
 using GostProjectAPI.Migrations;
+using System.IO;
+using Microsoft.Extensions.Options;
+using Microsoft.AspNetCore.Mvc;
 
 namespace GostProjectAPI.Services
 {
@@ -18,12 +21,16 @@ namespace GostProjectAPI.Services
     {
         private readonly IMapper _mapper;
         private readonly GostDBContext _dbContext;
+        private readonly FileUploadPaths _fileUploadPaths;
+        private readonly IWebHostEnvironment _env;
 
-        public GostService(GostDBContext dbContext, IMapper mapper)
+		public GostService(GostDBContext dbContext, IMapper mapper, IOptions<FileUploadPaths> fileUploadPaths, IWebHostEnvironment env)
         {
             _dbContext = dbContext;
             _mapper = mapper;
-        }
+            _fileUploadPaths = fileUploadPaths.Value;
+            _env = env;
+		}
 
         public async Task<List<Gost>?> GetGostsAsync()
         {
@@ -82,7 +89,17 @@ namespace GostProjectAPI.Services
             return await _dbContext.Gosts.FirstOrDefaultAsync(g => g.ID == gostID);
         }
 
-        public async Task<Gost?> AddGostAsync(GostAddDto gostAddDto)
+        public async Task AddFileToGostAsync(IFormFile gostFile)
+        {
+            // записывать в бд id/хэш, путь до файла, связать с гостом
+            string filePath = _env.IsDevelopment() ? _fileUploadPaths.Local : _fileUploadPaths.Global;
+			string path = Path.Join(filePath, gostFile.FileName);
+			using var fileStream = new FileStream(path, FileMode.Create);
+			await gostFile.CopyToAsync(fileStream);
+		}
+
+
+		public async Task<Gost?> AddGostAsync(GostAddDto gostAddDto)
         {
             var gost = _mapper.Map<GostAddDto, Gost>(gostAddDto);
 
@@ -120,9 +137,10 @@ namespace GostProjectAPI.Services
             keyphrases.ForEach(async keyphrase =>
             {
                 await _dbContext.Keyphrases.AddAsync(keyphrase);
-            });
+			});
+                      
 
-            await _dbContext.SaveChangesAsync();
+			await _dbContext.SaveChangesAsync();
 
             return gost;
         }

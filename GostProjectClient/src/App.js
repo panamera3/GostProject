@@ -12,7 +12,7 @@ import GostAdd from "./pages/Gost/add/GostAdd";
 import GostEdit from "./pages/Gost/edit/GostEdit";
 import Gost from "./pages/Gost/Gost";
 import FavouritesGosts from "./pages/FavouritesGosts/FavouritesGosts";
-import SearchGosts from "./pages/Search/Search";
+import SearchGosts from "./pages/SearchGosts/SearchGosts";
 import { ToastContainer } from "react-toastify";
 import MyProfile from "./pages/MyProfile/MyProfile";
 import ArchiveGosts from "./pages/Admin/Archive/Archive";
@@ -21,6 +21,7 @@ import CompanyRegistration from "./pages/private/CompanyRegistration/CompanyRegi
 import EditUserProfile from "./pages/Admin/UserProfiles/Edit/EditUserProfile";
 import Notifications from "./pages/Notifications/Notifications";
 import EditNotification from "./pages/Notifications/Edit/EditNotification";
+import Search from "./pages/Search/Search";
 
 
 function App() {
@@ -51,19 +52,24 @@ function App() {
             <Route path="/gostEdit/:id" element={<GostEdit />} />
             <Route path="/gost/:id" element={<Gost />} />
             <Route path="/favourites" element={<FavouritesGosts />} />
-            <Route path="/search" element={<SearchGosts />} />
+            <Route path="/afterSearch" element={<SearchGosts />} />
             <Route path="/myProfile" element={<MyProfile />} />
             <Route path="/archive" element={<ArchiveGosts />} />
             <Route path="/activity" element={<Activity />} />
             <Route path="/notifications" element={<Notifications />} />
             <Route path="/notification/:id" element={<EditNotification />} />
+            <Route path="/search" element={<Search />} />
 
             сделать "скрытыми" эти пути
             <Route path="/companyRegistration" element={<CompanyRegistration />} />
 
             перенаправлять пользователя на главную страницу, если ввёл
             несуществующий путь
-            <Route path="*" element={<Navigate to="/" />} />
+            {
+              /*
+                <Route path="*" element={<Navigate to="/" />} />
+              */
+            }
           </Routes>
         </BrowserRouter>
       </div>

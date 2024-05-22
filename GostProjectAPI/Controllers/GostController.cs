@@ -41,6 +41,13 @@ namespace GostProjectAPI.Controllers
         }
 
         [HttpPost]
+        public async Task<IActionResult> AddFileToGost(IFormFile gostFile)
+        {
+            await _gostService.AddFileToGostAsync(gostFile);
+			return Ok();
+        }
+
+        [HttpPost]
         public async Task<JsonResult> EditGost([FromBody] GostEditDto gostEditDto)
         {
             return JSON(await _gostService.EditGostAsync(gostEditDto));

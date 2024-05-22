@@ -1,0 +1,25 @@
+.form_search_container{
+    border: 1px solid gray;
+    border-radius: 20px;
+    display: flex;
+}
+
+.form_search_container > div {
+    
+    width: 50%;
+}
+
+.search_input_container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5em 1em;
+}
+
+.search_input_container:not(:last-child){
+    border-bottom: 1px solid gray;
+}
+
+.search_input_container input {
+    width: 50%;
+}

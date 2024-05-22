@@ -13,14 +13,17 @@ namespace GostProjectAPI.Controllers
     {
         private readonly AuthService _authService;
         private readonly UserService _usersService;
-        private readonly IMapper _mapper;
+        private readonly NotificationService _notificationsService;
+		private readonly IMapper _mapper;
 
-        public AuthController(AuthService authService, UserService usersService, IMapper mapper)
+        public AuthController(AuthService authService, UserService usersService, NotificationService notificationsService, IMapper mapper)
         {
             _authService = authService;
             _usersService = usersService;
             _mapper = mapper;
-        }
+            _notificationsService = notificationsService;
+
+		}
 
         [Microsoft.AspNetCore.Mvc.HttpPost]
         public async Task<JsonResult> RegisterUser([Microsoft.AspNetCore.Mvc.FromBody] UserAddDto addDto)
@@ -29,7 +32,10 @@ namespace GostProjectAPI.Controllers
 			{
 				var newUser = await _usersService.AddUserAsync(addDto);
 				if (newUser != null)
+                {
+					await _notificationsService.CreateNotification(newUser);
 					return JSON(await _authService.AuthenticateAsync(_mapper.Map<UserAuthDto>(addDto)));
+				}
 				else
 					return JSON(await _authService.AuthenticateAsync(_mapper.Map<UserAuthDto>(null)));
 			}

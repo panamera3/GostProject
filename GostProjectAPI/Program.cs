@@ -1,4 +1,5 @@
 using GostProjectAPI.Data;
+using GostProjectAPI.Data.Entities;
 using GostProjectAPI.Services;
 using GostProjectAPI.Services.Auth;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -36,7 +37,15 @@ namespace GostProjectAPI
             builder.Services.Configure<AuthOptions>(builder.Configuration.GetSection("Auth"));
             var authConfig = builder.Configuration.GetSection("Auth").Get<AuthOptions>();
 
-            builder.Services.AddScoped<GostService>();
+
+
+            // взятие пути для pdf файлов
+			builder.Services.Configure<FileUploadPaths>(builder.Configuration.GetSection("FileUploadPaths"));
+			var fileUploadPaths = builder.Configuration.GetSection("FileUploadPaths").Get<FileUploadPaths>();
+
+
+
+			builder.Services.AddScoped<GostService>();
             builder.Services.AddScoped<UserService>();
             builder.Services.AddScoped<AuthService>();
 

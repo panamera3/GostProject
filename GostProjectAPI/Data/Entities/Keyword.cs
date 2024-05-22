@@ -17,6 +17,5 @@ namespace GostProjectAPI.Data.Entities
 
         public uint GostId { get; set; }
         public Gost Gost { get; set; }
-
     }
 }
