@@ -1,4 +1,5 @@
 ﻿using GostProjectAPI.Data.Entities;
+using GostProjectAPI.DTOModels.Company;
 using GostProjectAPI.DTOModels.Gosts;
 using GostProjectAPI.DTOModels.Users;
 
@@ -18,6 +19,9 @@ namespace GostProjectAPI.Services
 
             CreateMap<string, Keyword>().ForMember(dest => dest.Name, opt => opt.MapFrom(src => src));
             CreateMap<string, Keyphrase>().ForMember(dest => dest.Name, opt => opt.MapFrom(src => src));
-        }
+
+			CreateMap<CompanyAddDto, UserAddDto>();
+			CreateMap<CompanyAddDto, Company>();
+		}
     }
 }

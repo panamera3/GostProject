@@ -33,6 +33,10 @@ namespace GostProjectAPI.Migrations
                         .IsRequired()
                         .HasColumnType("VARCHAR(128)");
 
+                    b.Property<string>("PSRN")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
                     b.HasKey("ID");
 
                     b.ToTable("Companies");
@@ -132,6 +136,26 @@ namespace GostProjectAPI.Migrations
                     b.ToTable("Gosts");
                 });
 
+            modelBuilder.Entity("GostProjectAPI.Data.Entities.GostFile", b =>
+                {
+                    b.Property<uint>("ID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int unsigned");
+
+                    b.Property<uint>("GostId")
+                        .HasColumnType("int unsigned");
+
+                    b.Property<string>("Path")
+                        .IsRequired()
+                        .HasColumnType("VARCHAR(128)");
+
+                    b.HasKey("ID");
+
+                    b.HasIndex("GostId");
+
+                    b.ToTable("GostFiles");
+                });
+
             modelBuilder.Entity("GostProjectAPI.Data.Entities.Keyphrase", b =>
                 {
                     b.Property<uint>("ID")
@@ -178,7 +202,31 @@ namespace GostProjectAPI.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int unsigned");
 
+                    b.Property<uint>("CompanyId")
+                        .HasColumnType("int unsigned");
+
                     b.Property<DateTime>("SendingDate")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<uint>("UserId")
+                        .HasColumnType("int unsigned");
+
+                    b.HasKey("ID");
+
+                    b.HasIndex("CompanyId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Notifications");
+                });
+
+            modelBuilder.Entity("GostProjectAPI.Data.Entities.NotificationsLastSeen", b =>
+                {
+                    b.Property<uint>("ID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int unsigned");
+
+                    b.Property<DateTime>("LastSeenDate")
                         .HasColumnType("datetime(6)");
 
                     b.Property<uint>("UserId")
@@ -188,7 +236,7 @@ namespace GostProjectAPI.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Notifications");
+                    b.ToTable("NotificationsLastSeen");
                 });
 
             modelBuilder.Entity("GostProjectAPI.Data.Entities.UpdateGostDate", b =>
@@ -221,7 +269,6 @@ namespace GostProjectAPI.Migrations
                         .HasColumnType("int unsigned");
 
                     b.Property<string>("Department")
-                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<string>("FirstName")
@@ -296,6 +343,17 @@ namespace GostProjectAPI.Migrations
                     b.Navigation("GostReplaced");
                 });
 
+            modelBuilder.Entity("GostProjectAPI.Data.Entities.GostFile", b =>
+                {
+                    b.HasOne("GostProjectAPI.Data.Entities.Gost", "Gost")
+                        .WithMany()
+                        .HasForeignKey("GostId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Gost");
+                });
+
             modelBuilder.Entity("GostProjectAPI.Data.Entities.Keyphrase", b =>
                 {
                     b.HasOne("GostProjectAPI.Data.Entities.Gost", "Gost")
@@ -319,6 +377,25 @@ namespace GostProjectAPI.Migrations
                 });
 
             modelBuilder.Entity("GostProjectAPI.Data.Entities.Notification", b =>
+                {
+                    b.HasOne("GostProjectAPI.Data.Entities.Company", "Company")
+                        .WithMany()
+                        .HasForeignKey("CompanyId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("GostProjectAPI.Data.Entities.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Company");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("GostProjectAPI.Data.Entities.NotificationsLastSeen", b =>
                 {
                     b.HasOne("GostProjectAPI.Data.Entities.User", "User")
                         .WithMany()

@@ -23,3 +23,27 @@
 .search_input_container input {
     width: 50%;
 }
+
+.text_search_container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.text_search_container * {
+    height: 1em;
+}
+
+.text_search_container button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+form {
+    margin-top: 2em;
+}
+
+.text_search_back:hover{
+    cursor: pointer;
+}

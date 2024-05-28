@@ -67,19 +67,23 @@ namespace GostProjectAPI.Services
 			if (getParams?.Filter?.NormativeReferences != null)
 				filteredOrders = filteredOrders.Where(o => o.NormativeReferences.Contains(getParams.Filter.NormativeReferences)).AsQueryable();
 
-			PropertyInfo propertyInfo = typeof(Gost).GetProperty(getParams.SortField, BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Instance);
+            var sortedOrders = filteredOrders;
 
-			var parameter = Expression.Parameter(typeof(Gost), "g");
-			var property = Expression.Property(parameter, propertyInfo);
-			var convertedProperty = Expression.Convert(property, typeof(object));
-			var lambda = Expression.Lambda<Func<Gost, object>>(convertedProperty, parameter);
-
-			var sortedOrders = getParams.SortDirection switch
+			if (getParams.SortField != null)
 			{
-				"DESC" => filteredOrders.OrderByDescending(lambda).AsQueryable(),
-				_ => filteredOrders.OrderBy(lambda).AsQueryable()
-			};
+				PropertyInfo propertyInfo = typeof(Gost).GetProperty(getParams.SortField, BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Instance);
 
+				var parameter = Expression.Parameter(typeof(Gost), "g");
+				var property = Expression.Property(parameter, propertyInfo);
+				var convertedProperty = Expression.Convert(property, typeof(object));
+				var lambda = Expression.Lambda<Func<Gost, object>>(convertedProperty, parameter);
+
+				sortedOrders = getParams.SortDirection switch
+				{
+					"DESC" => filteredOrders.OrderByDescending(lambda).AsQueryable(),
+					_ => filteredOrders.OrderBy(lambda).AsQueryable()
+				};
+			}
 
 			return await sortedOrders.ToPagedListAsync(getParams.Pagination);
 		}

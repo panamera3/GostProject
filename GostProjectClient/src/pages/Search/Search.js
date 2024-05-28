@@ -19,6 +19,7 @@ const Search = (props) => {
   });
   const [filter, setFilter] = useState();
   const [search, setSearch] = useState();
+  const [textSearch, setTextSearch] = useState(false);
 
   const searchGosts = () => {
     if (search) {
@@ -66,6 +67,10 @@ const Search = (props) => {
     setSearch(true);
   };
 
+  const submitTextSearchHandler = (event) => {
+    event.preventDefault();
+  };
+
   return (
     <>
       {localStorage.getItem("role") == "Admin" ? (
@@ -75,36 +80,59 @@ const Search = (props) => {
       )}
 
       <div className="body_container">
-        <a href="/home">Назад</a>
-        <form onSubmit={searchHandler} className="modalSearchForm">
-          <div className="form_search_container">
-            <div>
-              {Object.keys(searchDict)
-                .slice(0, Object.keys(searchDict).length / 2)
-                .map((key) => (
-                  <div className="search_input_container" key={key}>
-                    <label htmlFor={key}>{searchDict[key]}</label>
-                    <input id={key} name={key} />
-                  </div>
-                ))}
-            </div>
-            <div>
-              {Object.keys(searchDict)
-                .slice(Object.keys(searchDict).length / 2)
-                .map((key) => (
-                  <div className="search_input_container" key={key}>
-                    <label htmlFor={key}>{searchDict[key]}</label>
-                    <input id={key} name={key} />
-                  </div>
-                ))}
-            </div>
-          </div>
+        {!textSearch && (
+          <>
+            <a href="/home">Назад</a>
+            <form onSubmit={searchHandler} className="modalSearchForm">
+              <div className="form_search_container">
+                <div>
+                  {Object.keys(searchDict)
+                    .slice(0, Object.keys(searchDict).length / 2)
+                    .map((key) => (
+                      <div className="search_input_container" key={key}>
+                        <label htmlFor={key}>{searchDict[key]}</label>
+                        <input id={key} name={key} />
+                      </div>
+                    ))}
+                </div>
+                <div>
+                  {Object.keys(searchDict)
+                    .slice(Object.keys(searchDict).length / 2)
+                    .map((key) => (
+                      <div className="search_input_container" key={key}>
+                        <label htmlFor={key}>{searchDict[key]}</label>
+                        <input id={key} name={key} />
+                      </div>
+                    ))}
+                </div>
+              </div>
 
-          <button className="btn_blue" type="submit">
-            Применить
-          </button>
-          <button className="btn_darkGray">К поиску по тексту</button>
-        </form>
+              <button className="btn_blue" type="submit">
+                Применить
+              </button>
+              <button
+                onClick={() => setTextSearch(true)}
+                className="btn_darkGray"
+              >
+                К поиску по тексту
+              </button>
+            </form>
+          </>
+        )}
+
+        {textSearch && (
+          <>
+            <p className="text_search_back" onClick={() => setTextSearch(false)}>Назад</p>
+            <form onSubmit={submitTextSearchHandler}>
+              <div className="text_search_container">
+                <input id="text" placeholder="Введите текст" />
+                <button className="btn_blue" type="submit">
+                  Применить
+                </button>
+              </div>
+            </form>
+          </>
+        )}
       </div>
     </>
   );

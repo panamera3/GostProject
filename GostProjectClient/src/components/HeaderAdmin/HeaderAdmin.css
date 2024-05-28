@@ -56,3 +56,8 @@ img:hover {
   position: fixed;
   right: 0%;
 }
+
+.header a {
+  text-decoration: none;
+  color: #ffffff;
+}

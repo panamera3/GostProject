@@ -16,7 +16,12 @@ const Home = (props) => {
         <HeaderUser />
       )}
       <div className="body_container">
-        {(props.favourites || props.searchGosts) && (
+        {props.searchGosts && (
+          <div className="activities_container">
+            <a href="/search">Назад</a>
+          </div>
+        )}
+        {props.favourites && (
           <div className="activities_container">
             <a href="/home">Назад</a>
           </div>

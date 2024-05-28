@@ -40,23 +40,18 @@ namespace GostProjectAPI.Services
 				};
 				throw new HttpResponseException(response);
 			}
-                
 
-            var user = _mapper.Map<UserAddDto, User>(userDTO,
-                opt => opt.AfterMap(async (src, dest) =>
-                {
-                    dest.PasswordHash = _passwordHasher.Encode(src.Password);
-                    dest.WorkCompanyID = (await _dbContext.Companies.FirstOrDefaultAsync(c => c.Code == userDTO.CompanyCode)).ID;
-                })
-            );
+			var company = await _dbContext.Companies.FirstOrDefaultAsync(c => c.Code == userDTO.CompanyCode);
+            var user = _mapper.Map<UserAddDto, User>(userDTO);
 
-            if (user == null)
-                return null;
+			user.PasswordHash = _passwordHasher.Encode(userDTO.Password);
+			user.WorkCompanyID = company.ID;
 
-            await _dbContext.Users.AddAsync(user);
-            await _dbContext.SaveChangesAsync();
+			await _dbContext.Users.AddAsync(user);
+			await _dbContext.SaveChangesAsync();
 
-            return user;
+
+			return user;
         }
 
         public async Task CreateNotification(User user)

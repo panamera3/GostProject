@@ -34,6 +34,7 @@ namespace GostProjectAPI
 
             // Вписывать новые сервисы
             builder.Services.AddSingleton<IPasswordHasherService, SHA256PasswordHasherService>();
+            builder.Services.AddSingleton<ICompanyCodeHasherService, SHA256CompanyCodeHasherService>();
             builder.Services.Configure<AuthOptions>(builder.Configuration.GetSection("Auth"));
             var authConfig = builder.Configuration.GetSection("Auth").Get<AuthOptions>();
 
@@ -48,6 +49,8 @@ namespace GostProjectAPI
 			builder.Services.AddScoped<GostService>();
             builder.Services.AddScoped<UserService>();
             builder.Services.AddScoped<AuthService>();
+            builder.Services.AddScoped<NotificationService>();
+            builder.Services.AddScoped<CompanyService>();
 
             builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             .AddJwtBearer(options =>

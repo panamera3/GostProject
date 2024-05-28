@@ -28,17 +28,18 @@ const HeaderAdmin = (props) => {
     localStorage.setItem("id", "");
     localStorage.setItem("role", "");
     navigate("/login");
-  };  
+  };
 
   return (
     <>
       <div className="header" ref={header}>
         <div>
-          <a href="/home">Все документы</a>
+          <a href="/home" className="a_header">Все документы</a>
           {!props.user && <a href="/gostAdd">Создать документ</a>}
-          
+
           {!props.user && (
             <>
+              <a href="/search">Поиск</a>
               <a href="/archive">Архив</a>
               <a href="/userProfiles">Пользователи</a>
               <a href="/activity">Активность</a>

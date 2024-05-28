@@ -194,14 +194,17 @@ const GostsTable = (props) => {
 
   return (
     <>
-      <div className="sortGosts">
-        <p>Сортировать по: </p>
-        <select id="selectSorting" onChange={() => exampleOfWork()}>
-          <option value={`OKScode`}>коду ОКС - возрастание</option>
-          <option value={`OKScode`}>коду ОКС - антивозрастание</option>
-        </select>
-        <button onClick={() => exampleOfWork()}>test</button>
-      </div>
+      {!(props.favourites || props.archiveGosts || props.searchGosts) && (
+        <div className="sortGosts">
+          <p>Сортировать по: </p>
+          <select id="selectSorting" onChange={() => exampleOfWork()}>
+            <option value={`OKScode`}>коду ОКС - возрастание</option>
+            <option value={`OKScode`}>коду ОКС - антивозрастание</option>
+          </select>
+          <button onClick={() => exampleOfWork()}>test</button>
+        </div>
+      )}
+
       <table className="gostsTable">
         <thead>
           <tr>

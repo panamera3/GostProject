@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using GostProjectAPI.DTOModels.Company;
 using GostProjectAPI.DTOModels.Users;
 using GostProjectAPI.Services;
 using GostProjectAPI.Services.Auth;
@@ -14,15 +15,16 @@ namespace GostProjectAPI.Controllers
         private readonly AuthService _authService;
         private readonly UserService _usersService;
         private readonly NotificationService _notificationsService;
+        private readonly CompanyService _companyService;
 		private readonly IMapper _mapper;
 
-        public AuthController(AuthService authService, UserService usersService, NotificationService notificationsService, IMapper mapper)
+        public AuthController(AuthService authService, UserService usersService, NotificationService notificationsService, IMapper mapper, CompanyService companyService)
         {
             _authService = authService;
             _usersService = usersService;
             _mapper = mapper;
             _notificationsService = notificationsService;
-
+            _companyService = companyService;
 		}
 
         [Microsoft.AspNetCore.Mvc.HttpPost]
@@ -50,5 +52,21 @@ namespace GostProjectAPI.Controllers
         {
             return JSON(await _authService.AuthenticateAsync(authDto));
         }
-    }
+
+
+        [Microsoft.AspNetCore.Mvc.HttpPost]
+        public async Task<JsonResult> RegisterCompany([Microsoft.AspNetCore.Mvc.FromBody] CompanyAddDto companyAddDto)
+        {
+            var newAdmin = await _companyService.AddCompanyAsync(companyAddDto);
+            
+			return JSON(RegisterUser(newAdmin));
+        }
+
+
+        [Microsoft.AspNetCore.Mvc.HttpPost]
+        public async Task<JsonResult> UpdateCompanyCode([Microsoft.AspNetCore.Mvc.FromBody] uint companyId)
+        {
+            return JSON(await _companyService.ResetCompanyCode(companyId));
+        }
+	}
 }

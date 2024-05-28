@@ -76,9 +76,5 @@ namespace GostProjectAPI.Data.Entities
 
         [Description("Заархивироваг ли гост")]
         public bool IsArchived { get; set; }
-
-        [Description("ID прикреплённого к госту файла")]
-        public uint GostFileId { get; set; }
-        public GostFile GostFile { get; set; }
 }
 }

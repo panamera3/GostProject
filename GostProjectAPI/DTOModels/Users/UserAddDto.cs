@@ -12,7 +12,6 @@ namespace GostProjectAPI.DTOModels.Users
         [Required]
         public string Password { get; set; }
 
-        [Required]
         public string CompanyCode { get; set; }
 
         [Required]
@@ -25,5 +24,7 @@ namespace GostProjectAPI.DTOModels.Users
 
         [Required]
         public UserRole Role { get; set; }
-    }
+
+        public string Department { get; set; }
+	}
 }
