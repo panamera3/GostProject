@@ -60,7 +60,8 @@ function App() {
             <Route path="/notification/:id" element={<EditNotification />} />
             <Route path="/search" element={<Search />} />
 
-            сделать "скрытыми" эти пути
+
+
             <Route path="/companyRegistration" element={<CompanyRegistration />} />
 
             перенаправлять пользователя на главную страницу, если ввёл

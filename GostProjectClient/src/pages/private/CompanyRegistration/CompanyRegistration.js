@@ -62,7 +62,16 @@ const CompanyRegistration = () => {
           if (!newUser.data.error) {
             localStorage.setItem("token", newUser.data.token);
             localStorage.setItem("id", newUser.data.id);
-            localStorage.setItem("role", UserRole.Admin);
+            localStorage.setItem("role", "Admin");
+            console.log("LOCAL");
+            console.log(localStorage);
+            try {
+              localStorage.setItem("example", 1);
+              console.log("Data saved in localStorage");
+            } catch (e) {
+              console.error("Error saving data in localStorage:", e);
+            }
+
             navigate("/home");
           } else {
             toast.error(newUser.data.error, {
@@ -76,6 +85,7 @@ const CompanyRegistration = () => {
           }
         })
         .catch((error) => {
+          console.log("THERE'S ERROR");
           console.log(error);
         });
     } else {

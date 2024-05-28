@@ -27,14 +27,14 @@ namespace GostProjectAPI.Controllers
             _companyService = companyService;
 		}
 
-        [Microsoft.AspNetCore.Mvc.HttpPost]
-        public async Task<JsonResult> RegisterUser([Microsoft.AspNetCore.Mvc.FromBody] UserAddDto addDto)
-        {
+		[Microsoft.AspNetCore.Mvc.HttpPost]
+		public async Task<JsonResult> RegisterUser([Microsoft.AspNetCore.Mvc.FromBody] UserAddDto addDto)
+		{
 			try
 			{
 				var newUser = await _usersService.AddUserAsync(addDto);
 				if (newUser != null)
-                {
+				{
 					await _notificationsService.CreateNotification(newUser);
 					return JSON(await _authService.AuthenticateAsync(_mapper.Map<UserAuthDto>(addDto)));
 				}
@@ -47,26 +47,35 @@ namespace GostProjectAPI.Controllers
 			}
 		}
 
-        [Microsoft.AspNetCore.Mvc.HttpPost]
-        public async Task<JsonResult> AuthUser([Microsoft.AspNetCore.Mvc.FromBody] UserAuthDto authDto)
-        {
-            return JSON(await _authService.AuthenticateAsync(authDto));
-        }
+		[Microsoft.AspNetCore.Mvc.HttpPost]
+		public async Task<JsonResult> AuthUser([Microsoft.AspNetCore.Mvc.FromBody] UserAuthDto authDto)
+		{
+			return JSON(await _authService.AuthenticateAsync(authDto));
+		}
 
+		[Microsoft.AspNetCore.Mvc.HttpPost]
+		public async Task<JsonResult> RegisterCompany([Microsoft.AspNetCore.Mvc.FromBody] CompanyAddDto companyAddDto)
+		{
+			var newAdmin = await _companyService.AddCompanyAsync(companyAddDto);
+			try
+			{
+				var newUser = await _usersService.AddUserAsync(newAdmin);
+				if (newUser != null)
+					return JSON(await _authService.AuthenticateAsync(_mapper.Map<UserAuthDto>(newAdmin)));
+				else
+					return JSON(await _authService.AuthenticateAsync(_mapper.Map<UserAuthDto>(null)));
+			}
+			catch (HttpResponseException ex)
+			{
+				return JSON(new { error = ex.Response.Content.ReadAsStringAsync().Result });
+			}
+		}
 
-        [Microsoft.AspNetCore.Mvc.HttpPost]
-        public async Task<JsonResult> RegisterCompany([Microsoft.AspNetCore.Mvc.FromBody] CompanyAddDto companyAddDto)
-        {
-            var newAdmin = await _companyService.AddCompanyAsync(companyAddDto);
-            
-			return JSON(RegisterUser(newAdmin));
-        }
+		[Microsoft.AspNetCore.Mvc.HttpPost]
+		public async Task<JsonResult> UpdateCompanyCode([Microsoft.AspNetCore.Mvc.FromBody] uint companyId)
+		{
+			return JSON(await _companyService.ResetCompanyCode(companyId));
+		}
 
-
-        [Microsoft.AspNetCore.Mvc.HttpPost]
-        public async Task<JsonResult> UpdateCompanyCode([Microsoft.AspNetCore.Mvc.FromBody] uint companyId)
-        {
-            return JSON(await _companyService.ResetCompanyCode(companyId));
-        }
 	}
 }

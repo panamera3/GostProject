@@ -16,6 +16,7 @@ const Registration = () => {
   const passwordRegistrationInputRef = useRef();
   const fullnameRegistrationInputRef = useRef();
   const companyCodeRegistrationInputRef = useRef();
+  const departmentRegistrationInputRef = useRef();
 
   const submitHandler = (event) => {
     event.preventDefault();
@@ -23,6 +24,8 @@ const Registration = () => {
     const password = passwordRegistrationInputRef.current.value;
     const companyCode = companyCodeRegistrationInputRef.current.value;
     const fullname = fullnameRegistrationInputRef.current.value;
+    const department = departmentRegistrationInputRef.current.value;
+
     const fullnameString = fullname.split(" ");
 
     axios({
@@ -37,31 +40,32 @@ const Registration = () => {
         firstName: `${fullnameString[1]}`,
         patronymic: `${fullnameString[2] ? fullnameString[2] : ""}`,
         role: UserRole.Standart,
+        department: `${department}`,
       },
     })
-    .then((user) => {
-      console.log(user);
-      console.log(user.data);
-    
-      if (user.data.role) {
-        const userRole = Object.keys(UserRole).find(
-          (key) => UserRole[key] === user.data.role
-        );
-        localStorage.setItem("token", user.data.token);
-        localStorage.setItem("id", user.data.id);
-        localStorage.setItem("role", userRole);
-        navigate("/home");
-      } else {
-        toast.error(user.data.error, {
-          position: "top-right",
-          autoClose: 5000,
-          hideProgressBar: true,
-          progress: undefined,
-          pauseOnHover: false,
-          draggable: false,
-        });
-      }
-    })    
+      .then((user) => {
+        console.log(user);
+        console.log(user.data);
+
+        if (user.data.role) {
+          const userRole = Object.keys(UserRole).find(
+            (key) => UserRole[key] === user.data.role
+          );
+          localStorage.setItem("token", user.data.token);
+          localStorage.setItem("id", user.data.id);
+          localStorage.setItem("role", userRole);
+          navigate("/home");
+        } else {
+          toast.error(user.data.error, {
+            position: "top-right",
+            autoClose: 5000,
+            hideProgressBar: true,
+            progress: undefined,
+            pauseOnHover: false,
+            draggable: false,
+          });
+        }
+      })
       .catch((error) => {
         console.log(error);
       });
@@ -108,8 +112,16 @@ const Registration = () => {
                   ref={companyCodeRegistrationInputRef}
                   placeholder="Код подключения к организации"
                 />
+                <input
+                  name="department"
+                  id="department_input"
+                  ref={departmentRegistrationInputRef}
+                  placeholder="Департамент"
+                />
               </div>
-              <button type="submit" className="btn_blue">Зарегистрироваться</button>
+              <button type="submit" className="btn_blue">
+                Зарегистрироваться
+              </button>
             </div>
           </form>
         </div>
