@@ -9,7 +9,6 @@ using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Net;
 using System.Security.Claims;
-using System.Web.Http;
 
 namespace GostProjectAPI.Services
 {
@@ -33,13 +32,8 @@ namespace GostProjectAPI.Services
             var isLoginExist = await _dbContext.Users.AnyAsync(u => u.Login == userDTO.Login);
             var isCodeExist = !(await _dbContext.Companies.AnyAsync(c => c.Code == userDTO.CompanyCode));
 			if (isLoginExist || isCodeExist)
-            {
-				var response = new HttpResponseMessage(HttpStatusCode.BadRequest)
-				{
-					Content = new StringContent(isLoginExist ? "Такой логин уже существует" : "Неверный код организации")
-				};
-				throw new HttpResponseException(response);
-			}
+				throw new Exception(isLoginExist ? "Такой логин уже существует" : "Неверный код организации");
+			
 
 			var company = await _dbContext.Companies.FirstOrDefaultAsync(c => c.Code == userDTO.CompanyCode);
             var user = _mapper.Map<UserAddDto, User>(userDTO);

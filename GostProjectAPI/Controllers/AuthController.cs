@@ -3,14 +3,14 @@ using GostProjectAPI.DTOModels.Company;
 using GostProjectAPI.DTOModels.Users;
 using GostProjectAPI.Services;
 using GostProjectAPI.Services.Auth;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Web.Http;
 
 namespace GostProjectAPI.Controllers
 {
 	[AllowAnonymous]
 	[ApiController]
-    [Microsoft.AspNetCore.Mvc.Route("/api/[controller]/[action]")]
+    [Route("/api/[controller]/[action]")]
     public class AuthController : CommonControllerBase
     {
         private readonly AuthService _authService;
@@ -28,8 +28,8 @@ namespace GostProjectAPI.Controllers
             _companyService = companyService;
 		}
 
-		[Microsoft.AspNetCore.Mvc.HttpPost]
-		public async Task<JsonResult> RegisterUser([Microsoft.AspNetCore.Mvc.FromBody] UserAddDto addDto)
+		[HttpPost]
+		public async Task<JsonResult> RegisterUser([FromBody] UserAddDto addDto)
 		{
 			try
 			{
@@ -42,20 +42,20 @@ namespace GostProjectAPI.Controllers
 				else
 					return JSON(await _authService.AuthenticateAsync(_mapper.Map<UserAuthDto>(null)));
 			}
-			catch (HttpResponseException ex)
+			catch (Exception ex)
 			{
-				return JSON(new { error = ex.Response.Content.ReadAsStringAsync().Result });
+				return JSON(new { error = ex.Message });
 			}
 		}
 
-		[Microsoft.AspNetCore.Mvc.HttpPost]
-		public async Task<JsonResult> AuthUser([Microsoft.AspNetCore.Mvc.FromBody] UserAuthDto authDto)
+		[HttpPost]
+		public async Task<JsonResult> AuthUser([FromBody] UserAuthDto authDto)
 		{
 			return JSON(await _authService.AuthenticateAsync(authDto));
 		}
 
-		[Microsoft.AspNetCore.Mvc.HttpPost]
-		public async Task<JsonResult> RegisterCompany([Microsoft.AspNetCore.Mvc.FromBody] CompanyAddDto companyAddDto)
+		[HttpPost]
+		public async Task<JsonResult> RegisterCompany([FromBody] CompanyAddDto companyAddDto)
 		{
 			var newAdmin = await _companyService.AddCompanyAsync(companyAddDto);
 			try
@@ -66,14 +66,14 @@ namespace GostProjectAPI.Controllers
 				else
 					return JSON(await _authService.AuthenticateAsync(_mapper.Map<UserAuthDto>(null)));
 			}
-			catch (HttpResponseException ex)
+			catch (Exception ex)
 			{
-				return JSON(new { error = ex.Response.Content.ReadAsStringAsync().Result });
+				return JSON(new { error = ex.Message });
 			}
 		}
 
-		[Microsoft.AspNetCore.Mvc.HttpPost]
-		public async Task<JsonResult> UpdateCompanyCode([Microsoft.AspNetCore.Mvc.FromQuery] uint companyId)
+		[HttpPost]
+		public async Task<JsonResult> UpdateCompanyCode([FromQuery] uint companyId)
 		{
 			return JSON(await _companyService.ResetCompanyCode(companyId));
 		}

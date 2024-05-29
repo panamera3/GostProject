@@ -21,5 +21,7 @@ namespace GostProjectAPI.Data.Entities
         [Description("ОГРН/ОГРНИП")]
         public string PSRN { get; set; }
 
+        [Description("Электронная почта")]
+        public string Email { get; set; }
 	}
 }

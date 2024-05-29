@@ -1,4 +1,14 @@
 
+using AutoMapper;
+using GostProjectAPI.Data.Entities;
+using GostProjectAPI.Data;
+using GostProjectAPI.Services.Auth;
+using GostProjectAPI.Services;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
+
 namespace GostProjectAPI
 {
 	public class Program

@@ -5,7 +5,6 @@ using GostProjectAPI.DTOModels.Users;
 using GostProjectAPI.Services.Auth;
 using Microsoft.EntityFrameworkCore;
 using System.Net;
-using System.Web.Http;
 
 namespace GostProjectAPI.Services
 {
@@ -38,13 +37,8 @@ namespace GostProjectAPI.Services
 			// сначала создать компанию
 			var isCompanyExist = await _dbContext.Companies.AnyAsync(c => c.PSRN == companyAddDto.PSRN);
 			if (isCompanyExist)
-			{
-				var response = new HttpResponseMessage(HttpStatusCode.BadRequest)
-				{
-					Content = new StringContent("Компания с таким ОГРН уже зарегистрирована")
-				};
-				throw new HttpResponseException(response);
-			}
+				throw new Exception("Компания с таким ОГРН уже зарегистрирована");
+			
 			
 			var company = _mapper.Map<CompanyAddDto, Company>(companyAddDto,
 				opt => opt.AfterMap((src, dest) =>
