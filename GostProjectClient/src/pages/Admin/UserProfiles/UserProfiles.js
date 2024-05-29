@@ -26,7 +26,7 @@ const UserProfiles = () => {
     axios({
       method: "get",
       url: `/api/User/GetUsers`,
-      //headers: { Authorization: `Bearer ${userToken}` },
+      headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
     })
       .then((users) => {
         setUsers(users.data);

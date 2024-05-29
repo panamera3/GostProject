@@ -8,7 +8,8 @@ using System.Web.Http;
 
 namespace GostProjectAPI.Controllers
 {
-    [ApiController]
+	[AllowAnonymous]
+	[ApiController]
     [Microsoft.AspNetCore.Mvc.Route("/api/[controller]/[action]")]
     public class AuthController : CommonControllerBase
     {

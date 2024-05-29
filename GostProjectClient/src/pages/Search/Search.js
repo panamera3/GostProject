@@ -29,7 +29,7 @@ const Search = (props) => {
         data: { userID: localStorage.getItem("id"), pagination, filter },
         headers: {
           "Content-Type": "application/json",
-          //'Authorization': Bearer ${userToken}
+          //'Authorization': Bearer ${localStorage.getItem("token")}
         },
       })
         .then((gosts) => {

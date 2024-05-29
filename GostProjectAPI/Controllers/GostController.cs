@@ -1,11 +1,13 @@
 using GostProjectAPI.Data.Entities;
 using GostProjectAPI.DTOModels.Gosts;
+using Microsoft.AspNetCore.Authorization;
 using GostProjectAPI.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GostProjectAPI.Controllers
 {
-    [ApiController]
+	// [Authorize]
+	[ApiController]
     [Route("/api/[controller]/[action]")]
     public class GostController : CommonControllerBase
     {

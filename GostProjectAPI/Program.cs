@@ -33,17 +33,16 @@ namespace GostProjectAPI
             builder.Services.AddDbContext<GostDBContext>(option => option.UseMySql(conString, new MySqlServerVersion(new Version(10, 4, 24))));
 
             // Вписывать новые сервисы
-            builder.Services.AddSingleton<IPasswordHasherService, SHA256PasswordHasherService>();
             builder.Services.AddSingleton<ICompanyCodeHasherService, SHA256CompanyCodeHasherService>();
-            builder.Services.Configure<AuthOptions>(builder.Configuration.GetSection("Auth"));
-            var authConfig = builder.Configuration.GetSection("Auth").Get<AuthOptions>();
 
+			builder.Services.AddSingleton<IPasswordHasherService, SHA256PasswordHasherService>();
+			builder.Services.Configure<AuthOptions>(builder.Configuration.GetSection("Auth"));
+            var authConfig = builder.Configuration.GetSection("Auth").Get<AuthOptions>();
 
 
             // взятие пути для pdf файлов
 			builder.Services.Configure<FileUploadPaths>(builder.Configuration.GetSection("FileUploadPaths"));
 			var fileUploadPaths = builder.Configuration.GetSection("FileUploadPaths").Get<FileUploadPaths>();
-
 
 
 			builder.Services.AddScoped<GostService>();
@@ -113,12 +112,17 @@ namespace GostProjectAPI
 
             app.UseHttpsRedirection();
 
-            app.UseAuthorization();
+			app.UseAuthentication();
+			app.UseAuthorization();
 
 
             app.MapControllers();
 
-            app.Run();
+			app.MapControllerRoute(
+	            name: "default",
+	            pattern: "{controller=Auth}/{action=Index}/{id?}");
+
+			app.Run();
         }
     }
 }

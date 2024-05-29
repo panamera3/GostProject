@@ -23,6 +23,15 @@ namespace GostProjectAPI.Services
 			_usersService = userService;
 			_companyCodeHasherService = companyCodeHasherService;
 		}
+		public async Task<List<Company>?> GetCompaniesAsync()
+		{
+			return await _dbContext.Companies.ToListAsync();
+		}
+
+		public async Task<Company?> GetCompanyAsync(uint companyID)
+		{
+			return await _dbContext.Companies.FirstOrDefaultAsync(c => c.ID == companyID);
+		}
 
 		public async Task<UserAddDto> AddCompanyAsync(CompanyAddDto companyAddDto)
 		{

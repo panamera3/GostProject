@@ -5,19 +5,21 @@ import "./MyProfile.css";
 import axios from "axios";
 import { useSearchParams } from "react-router-dom";
 import copy from "../../images/copy.svg";
+import { CopyToClipboard } from "react-copy-to-clipboard";
+import { toast } from "react-toastify";
 
-import { translationUserDict } from "../../components/constants/translationUserDict";
+import { translationRolesDict } from "../../components/constants/translationRolesDict";
 
 const MyProfile = () => {
   const [user, setUser] = useState({});
-  const [companyCode, setCompanyCode] = useState();
+  const [company, setCompany] = useState({});
 
   useEffect(() => {
     const userId = localStorage.getItem("id");
     axios({
       method: "get",
       url: `/api/User/GetUser/${userId}`,
-      //headers: { Authorization: `Bearer ${userToken}` },
+      headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
     })
       .then((user) => {
         setUser(user.data);
@@ -31,25 +33,27 @@ const MyProfile = () => {
   useEffect(() => {
     axios({
       method: "get",
-      url: `/api/Company/GetCompanyCode/${user.workCompanyID}`,
+      url: `/api/Company/GetCompany/${user.workCompanyID}`,
     })
-      .then((code) => {
-        setCompanyCode(code.data);
+      .then((company) => {
+        console.log(company.data);
+        setCompany(company.data);
       })
       .catch((error) => {
         console.log(error);
       });
   }, [user]);
 
-  const addFields = [
-    "fullName",
-    "phoneNumber",
-    "email",
-    "login",
-    "role",
-    "ogrn",
-    "workCompany",
-  ];
+  const copyCompanyCode = () => {
+    toast.success("Код успешно скопирован в буфер обмена!", {
+      position: "top-right",
+      autoClose: 3000,
+      hideProgressBar: true,
+      progress: undefined,
+      pauseOnHover: false,
+      draggable: false,
+    });
+  };
 
   return (
     <>
@@ -69,7 +73,7 @@ const MyProfile = () => {
                 <b>ФИО пользователя</b>
               </p>
               <p className="user-field-value">
-                {user["lastName"] + user["firstName"] + user["patronymic"]}
+                {`${user["lastName"]} ${user["firstName"]} ${user["patronymic"]}`}
               </p>
             </div>
             <div className="user-fields">
@@ -94,19 +98,21 @@ const MyProfile = () => {
               <p className="user-field-name">
                 <b>Роль пользователя</b>
               </p>
-              <p className="user-field-value">{user["role"]}</p>
+              <p className="user-field-value">
+                {translationRolesDict[user["role"]]}
+              </p>
             </div>
             <div className="user-fields">
               <p className="user-field-name">
                 <b>ОГРН/ОГРНИП</b>
               </p>
-              <p className="user-field-value">{user['ogrn']}</p>
+              <p className="user-field-value">{company["psrn"]}</p>
             </div>
             <div className="user-fields">
               <p className="user-field-name">
                 <b>Название организации</b>
               </p>
-              <p className="user-field-value">{user['workCompany']}</p>
+              <p className="user-field-value">{company["name"]}</p>
             </div>
           </div>
           {localStorage.getItem("role") == "Admin" && (
@@ -115,8 +121,13 @@ const MyProfile = () => {
                 <p>
                   <b>Код-приглашение</b>
                 </p>
-                <p>{companyCode}</p>
-                <img src={copy} alt="copy" />
+                <p>{company["code"]}</p>
+                <CopyToClipboard
+                  text={company["code"]}
+                  onCopy={copyCompanyCode}
+                >
+                  <img src={copy} alt="copy" />
+                </CopyToClipboard>
               </div>
               <div className="profile-frequency-container">
                 <p>

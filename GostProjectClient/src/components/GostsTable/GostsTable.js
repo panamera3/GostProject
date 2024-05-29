@@ -21,7 +21,7 @@ const GostsTable = (props) => {
     axios({
       method: "get",
       url: `/api/Gost/GetFavouritesGosts/${userId}`,
-      //headers: { Authorization: `Bearer ${userToken}` },
+      headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
     })
       .then((favGosts) => {
         setFavouritesGosts(favGosts.data);
@@ -33,6 +33,7 @@ const GostsTable = (props) => {
   };
 
   useEffect(() => {
+    console.log("localStorage.getItem", localStorage.getItem("token"));
     console.log(props.searchGosts);
     if (props.favourites) {
       console.log("ПЕРВОЕ");
@@ -41,7 +42,10 @@ const GostsTable = (props) => {
       axios({
         method: "get",
         url: `/api/Gost/GetFavouritesGosts/${userId}`,
-        //headers: { Authorization: `Bearer ${userToken}` },
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+          "Content-Type": "application/json",
+        },
       })
         .then((gosts) => {
           console.log(gosts.data);
@@ -62,7 +66,9 @@ const GostsTable = (props) => {
       axios({
         method: "get",
         url: `/api/Gost/GetGosts`,
-        //headers: { Authorization: `Bearer ${userToken}` },
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
       })
         .then((gosts) => {
           setGosts(gosts.data);
@@ -181,7 +187,7 @@ const GostsTable = (props) => {
       data: { userID: localStorage.getItem("id"), pagination, sortField },
       headers: {
         "Content-Type": "application/json",
-        //'Authorization': Bearer ${userToken}
+        //'Authorization': Bearer ${localStorage.getItem("token")}
       },
     })
       .then((gosts) => {

@@ -12,7 +12,7 @@ const Notifications = () => {
     axios({
       method: "get",
       url: `/api/User/GetUser/${userId}`,
-      //headers: { Authorization: `Bearer ${userToken}` },
+      headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
     })
       .then((user) => {
         setUser(user.data);

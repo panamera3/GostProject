@@ -14,7 +14,7 @@ const EditNotification = () => {
     axios({
         method: "get",
         url: `/api/User/GetUser/${params.id}`,
-        //headers: { Authorization: `Bearer ${userToken}` },
+        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
       })
         .then((user) => {
           setUser(user.data);

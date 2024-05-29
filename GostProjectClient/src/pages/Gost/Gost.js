@@ -23,7 +23,7 @@ const Gost = (props) => {
     axios({
       method: "post",
       url: `/api/Gost/AddRequest?gostID=${params.id}`,
-      //headers: { Authorization: `Bearer ${userToken}` },
+      headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
     })
       .then((gost) => {
         console.log("gost.data", gost.data);
@@ -37,7 +37,7 @@ const Gost = (props) => {
       url: `/api/Gost/CheckFavouriteGosts/${localStorage.getItem(
         "id"
       )}/${params.id}`,
-      //headers: { Authorization: `Bearer ${userToken}` },
+      headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
     })
       .then((favourite) => {
         console.log("IS FAV", favourite.data);
@@ -52,7 +52,7 @@ const Gost = (props) => {
     axios({
       method: "delete",
       url: `/api/Gost/DeleteGost/${params.id}`,
-      //headers: { Authorization: `Bearer ${userToken}` },
+      headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
     })
       .then((data) => {
         console.log(data.status);
@@ -76,7 +76,7 @@ const Gost = (props) => {
           console.log("gost.data favourite", gost.data);
           toast.success("Успешно добавлено в избранное!", {
             position: "top-right",
-            autoClose: 2000,
+            autoClose: 3000,
             hideProgressBar: true,
             progress: undefined,
             pauseOnHover: false,
@@ -96,7 +96,7 @@ const Gost = (props) => {
           console.log("gost.data favourite", gost.data);
           toast.success("Успешно удалено из избранного!", {
             position: "top-right",
-            autoClose: 2000,
+            autoClose: 3000,
             hideProgressBar: true,
             progress: undefined,
             pauseOnHover: false,
@@ -114,7 +114,7 @@ const Gost = (props) => {
     axios({
       method: "post",
       url: `/api/Gost/ArchiveGost?gostID=${params.id}`,
-      //headers: { Authorization: `Bearer ${userToken}` },
+      headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
     })
       .then((gost) => {
         console.log("gost.data archive", gost.data);

@@ -19,7 +19,7 @@ const EditUserProfile = () => {
     axios({
       method: "post",
       url: `/api/User/GetUser/1}`,
-      //headers: { Authorization: `Bearer ${userToken}` },
+      headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
     })
       .then((user) => {
         console.log("user.data", user.data);
@@ -74,7 +74,7 @@ const EditUserProfile = () => {
         },
         headers: {
           "Content-Type": "application/json",
-          //'Authorization': Bearer ${userToken}
+          //'Authorization': Bearer ${localStorage.getItem("token")}
         },
       })
         .then((gost) => {

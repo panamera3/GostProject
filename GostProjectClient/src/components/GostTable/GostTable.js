@@ -41,7 +41,7 @@ const GostTable = (props) => {
     axios({
       method: "get",
       url: `/api/Gost/GetUpdateGostDates/${props.id}`,
-      //headers: { Authorization: `Bearer ${userToken}` },
+      headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
     })
       .then((gosts) => {
         console.log(gosts);
@@ -56,7 +56,7 @@ const GostTable = (props) => {
       axios({
         method: "get",
         url: `/api/Gost/GetGost/${props.id}`,
-        //headers: { Authorization: `Bearer ${userToken}` },
+        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
       })
         .then((gost) => {
           console.log("just gosts", gost.data);
@@ -244,7 +244,7 @@ const GostTable = (props) => {
         },
         headers: {
           "Content-Type": "application/json",
-          //'Authorization': Bearer ${userToken}
+          //'Authorization': Bearer ${localStorage.getItem("token")}
         },
       })
         .then((gost) => {
@@ -273,7 +273,7 @@ const GostTable = (props) => {
         },
         headers: {
           "Content-Type": "application/json",
-          //'Authorization': Bearer ${userToken}
+          //'Authorization': Bearer ${localStorage.getItem("token")}
         },
       })
         .then((gost) => {
