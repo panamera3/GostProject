@@ -6,8 +6,11 @@ import axios from "axios";
 import { useSearchParams } from "react-router-dom";
 import copy from "../../images/copy.svg";
 
+import { translationUserDict } from "../../components/constants/translationUserDict";
+
 const MyProfile = () => {
   const [user, setUser] = useState({});
+  const [companyCode, setCompanyCode] = useState();
 
   useEffect(() => {
     const userId = localStorage.getItem("id");
@@ -18,11 +21,35 @@ const MyProfile = () => {
     })
       .then((user) => {
         setUser(user.data);
+        console.log(user.data);
       })
       .catch((error) => {
         console.log(error);
       });
   }, []);
+
+  useEffect(() => {
+    axios({
+      method: "get",
+      url: `/api/Company/GetCompanyCode/${user.workCompanyID}`,
+    })
+      .then((code) => {
+        setCompanyCode(code.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }, [user]);
+
+  const addFields = [
+    "fullName",
+    "phoneNumber",
+    "email",
+    "login",
+    "role",
+    "ogrn",
+    "workCompany",
+  ];
 
   return (
     <>
@@ -37,41 +64,68 @@ const MyProfile = () => {
         </div>
         <div className="profile-container">
           <div className="profile-fields-container">
-            {
-              /*
-                ФИО пользователя
-                Номер телефона
-                Логин
-                Роль пользователя
-                ОГРН/ОГРНИП
-                Название организации
-                Электронная почта
-              */
-            }
-            {Object.keys(user).map((key) => (
-              <div className="user-fields">
-                <p className="user-field-name">
-                  <b>{key}</b>
+            <div className="user-fields">
+              <p className="user-field-name">
+                <b>ФИО пользователя</b>
+              </p>
+              <p className="user-field-value">
+                {user["lastName"] + user["firstName"] + user["patronymic"]}
+              </p>
+            </div>
+            <div className="user-fields">
+              <p className="user-field-name">
+                <b>Номер телефона</b>
+              </p>
+              <p className="user-field-value">{user["phoneNumber"]}</p>
+            </div>
+            <div className="user-fields">
+              <p className="user-field-name">
+                <b>Электронная почта</b>
+              </p>
+              <p className="user-field-value">{user["email"]}</p>
+            </div>
+            <div className="user-fields">
+              <p className="user-field-name">
+                <b>Логин</b>
+              </p>
+              <p className="user-field-value">{user["login"]}</p>
+            </div>
+            <div className="user-fields">
+              <p className="user-field-name">
+                <b>Роль пользователя</b>
+              </p>
+              <p className="user-field-value">{user["role"]}</p>
+            </div>
+            <div className="user-fields">
+              <p className="user-field-name">
+                <b>ОГРН/ОГРНИП</b>
+              </p>
+              <p className="user-field-value">{user['ogrn']}</p>
+            </div>
+            <div className="user-fields">
+              <p className="user-field-name">
+                <b>Название организации</b>
+              </p>
+              <p className="user-field-value">{user['workCompany']}</p>
+            </div>
+          </div>
+          {localStorage.getItem("role") == "Admin" && (
+            <div className="profile-invite">
+              <div className="profile-code-container">
+                <p>
+                  <b>Код-приглашение</b>
                 </p>
-                <p className="user-field-value">{user[key]}</p>
+                <p>{companyCode}</p>
+                <img src={copy} alt="copy" />
               </div>
-            ))}
-          </div>
-          <div className="profile-invite">
-            <div className="profile-code-container">
-              <p>
-                <b>Код-приглашение</b>
-              </p>
-              <p>text</p>
-              <img src={copy} alt="copy" />
+              <div className="profile-frequency-container">
+                <p>
+                  <b>Частота обновления</b>
+                </p>
+                <p>text</p>
+              </div>
             </div>
-            <div className="profile-frequency-container">
-              <p>
-                <b>Частота обновления</b>
-              </p>
-              <p>text</p>
-            </div>
-          </div>
+          )}
           <div className="buttons">
             <button className="btn_blue">Сохранить</button>
             <button className="btn_gray">Отменить</button>

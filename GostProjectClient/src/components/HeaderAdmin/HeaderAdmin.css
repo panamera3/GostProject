@@ -39,11 +39,13 @@ img:hover {
   display: flex;
   flex-direction: column;
   padding: 1em 1.5em;
+  margin-top: 5em;
 }
 
 .modalProfile * {
   margin: 1em;
   cursor: pointer;
+  color: #ffffff;
 }
 
 .main_modal_content.search {

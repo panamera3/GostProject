@@ -14,16 +14,15 @@ const GostTable = (props) => {
   const [gost, setGost] = useState();
   const [formData, setFormData] = useState({});
 
+  // fdsfjkl;
 
-// fdsfjkl;
+  const [selectedFile, setSelectedFile] = useState(null);
 
-const [selectedFile, setSelectedFile] = useState(null);
+  const handleFileChange = (event) => {
+    setSelectedFile(event.target.files[0]);
+  };
 
-    const handleFileChange = (event) => {
-        setSelectedFile(event.target.files[0]);
-    };
-
-// fsdhjkdsf
+  // fsdhjkdsf
 
   const [isModalOpen, setModalOpen] = useState(false);
   const openModalCard = () => {
@@ -115,9 +114,9 @@ const [selectedFile, setSelectedFile] = useState(null);
               </tr>
             ))}
 
-<div>
-            <input type="file" onChange={handleFileChange} />
-        </div>
+            <div>
+              <input type="file" onChange={handleFileChange} />
+            </div>
           </>
         );
       }
@@ -222,7 +221,7 @@ const [selectedFile, setSelectedFile] = useState(null);
       formAddData.append(key, formData[key]);
     }
 
-    formData.append('file', selectedFile);
+    formData.append("file", selectedFile);
 
     console.log("formAddData", formAddData);
     console.log("TEST", formData.id);

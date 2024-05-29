@@ -70,5 +70,15 @@ namespace GostProjectAPI.Services
 
 			return company;
 		}
+
+		public async Task<string> GetCompanyCodeAsync(uint companyId)
+		{
+			var company = await _dbContext.Companies.FindAsync(companyId);
+
+			if (company == null)
+				return null;
+
+			return company.Code;
+		}
 	}
 }

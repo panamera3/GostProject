@@ -72,7 +72,7 @@ namespace GostProjectAPI.Controllers
 		}
 
 		[Microsoft.AspNetCore.Mvc.HttpPost]
-		public async Task<JsonResult> UpdateCompanyCode([Microsoft.AspNetCore.Mvc.FromBody] uint companyId)
+		public async Task<JsonResult> UpdateCompanyCode([Microsoft.AspNetCore.Mvc.FromQuery] uint companyId)
 		{
 			return JSON(await _companyService.ResetCompanyCode(companyId));
 		}
