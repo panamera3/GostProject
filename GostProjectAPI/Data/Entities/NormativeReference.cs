@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace GostProjectAPI.Data.Entities
 {
-	public class NormativeReferences
+	public class NormativeReference
 	{
 		[Description("ID")]
 		[Key]

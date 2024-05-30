@@ -25,7 +25,7 @@ namespace GostProjectAPI.Data
 
         public DbSet<GostFile> GostFiles { get; set; }
 
-        public DbSet<NormativeReferences> NormativeReferencess { get; set; }
+        public DbSet<NormativeReference> NormativeReferences { get; set; }
 
         public GostDBContext(DbContextOptions opt) : base(opt) { }
 

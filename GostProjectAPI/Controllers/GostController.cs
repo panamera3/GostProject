@@ -22,7 +22,13 @@ namespace GostProjectAPI.Controllers
         public async Task<JsonResult> GetGosts()
         {
             return JSON(await _gostService.GetGostsAsync());
-        }
+		}
+
+		[HttpPost]
+		public async Task<JsonResult> GetGostsRange([FromBody] GetGostsInRangeDto getGostsInRangeDto)
+		{
+			return JSON(await _gostService.GetGostsRangeAsync(getGostsInRangeDto));
+		}
 
 		[HttpPost]
         public async Task<JsonResult> GetGosts([FromBody] GetGostsDto getParams)
@@ -108,6 +114,12 @@ namespace GostProjectAPI.Controllers
 		public async Task<JsonResult> GetUpdateGostDates(uint gostID)
 		{
 			return JSON(await _gostService.GetUpdateGostDate(gostID));
+		}
+
+		[HttpGet("{gostID}")]
+		public async Task<JsonResult> GetNormativeReferences(uint gostID)
+		{
+			return JSON(await _gostService.GetNormativeReferencesAsync(gostID));
 		}
 	}
 }

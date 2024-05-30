@@ -29,8 +29,6 @@ namespace GostProjectAPI.DTOModels.Gosts
 
         public string? Text { get; set; }
 
-        public string? NormativeReferences { get; set; }
-
         public string? Amendments { get; set; }
     }
 }

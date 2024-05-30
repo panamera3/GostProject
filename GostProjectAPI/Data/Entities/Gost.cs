@@ -62,9 +62,6 @@ namespace GostProjectAPI.Data.Entities
         [Column(TypeName = "VARCHAR(128)")]
         public string Text { get; set; }
 
-        [Description("Нормативные ссылки")]
-        public string NormativeReferences { get; set; }
-
         [Description("Изменения")]
         public string? Changes { get; set; }
 
