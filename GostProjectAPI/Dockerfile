@@ -18,7 +18,7 @@ WORKDIR /app
 COPY --from=build /app/out ./
 
 # Expose the port your application will run on
-EXPOSE 5229
+EXPOSE 5244
 
 # Start the application
 ENTRYPOINT ["dotnet", "GostProjectAPI.dll"]

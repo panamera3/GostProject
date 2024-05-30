@@ -16,12 +16,55 @@ table {
 .user_profiles_table td:nth-last-child(2),
 .user_profiles_table th:last-child,
 .user_profiles_table td:last-child {
-    width: 3em;
+  width: 3em;
 }
 
 .user_profiles_table th:nth-last-child(2),
 .user_profiles_table td:nth-last-child(2),
 .user_profiles_table th:last-child,
 .user_profiles_table td:last-child {
-    text-align: center;
+  text-align: center;
+}
+
+.modalDelete {
+  display: flex;
+  flex-direction: column;
+  position: fixed;
+  left: 50%;
+  transform: translateX(-50%);
+  top: 50%;
+  background-color: #ffffff;
+  border-radius: 20px;
+  padding: 2em;
+  z-index: 5;
+}
+
+.modalDelete p {
+  color: #000000;
+}
+
+.filter_users {
+  display: flex;
+  align-items: center;
+}
+
+.filter_users select {
+  width: 40%;
+  height: 3em;
+}
+
+.filter_users form {
+  display: flex;
+  flex-direction: row;
+  margin-top: 0;
+}
+
+.filter_users form * {
+  height: 2em;
+}
+
+.filter_users button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }

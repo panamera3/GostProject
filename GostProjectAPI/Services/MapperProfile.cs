@@ -13,7 +13,9 @@ namespace GostProjectAPI.Services
             CreateMap<GostAddDto, Gost>();
             CreateMap<GostEditDto, Gost>();
             CreateMap<UserAddDto, User>();
-            CreateMap<UserAuthDto, User>();
+			CreateMap<UserEditDto, User>();
+			CreateMap<User, UserEditDto>();
+			CreateMap<UserAuthDto, User>();
             CreateMap<UserAddDto, UserAuthDto>();   
             CreateMap<User, SignedInUser>();
 

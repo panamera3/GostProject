@@ -6,6 +6,7 @@ import "./UserProfiles.css";
 // libraries
 import { useState, useEffect, useRef } from "react";
 import UserRole from "../../../types/user/userRole";
+import Modal from "../../../components/Modal/Modal";
 // images
 import deleteImg from "../../../images/delete.svg";
 import editImg from "../../../images/edit.svg";
@@ -16,6 +17,9 @@ const UserProfiles = () => {
 
   // страница с таблицей всех пользоваетелей организации
   const [users, setUsers] = useState();
+  const [isModalDeleteOpen, setIsModalDeleteOpen] = useState(false);
+  const [deleteUserId, setDeleteUserId] = useState();
+  const [fullnameDeleteUserArray, setFullnameDeleteUserArray] = useState([]);
 
   const roleTranslations = {
     Admin: "Администратор",
@@ -23,6 +27,10 @@ const UserProfiles = () => {
   };
 
   useEffect(() => {
+    updateUsers();
+  }, []);
+
+  const updateUsers = () => {
     axios({
       method: "get",
       url: `/api/User/GetUsers`,
@@ -35,7 +43,7 @@ const UserProfiles = () => {
       .catch((error) => {
         console.log(error);
       });
-  }, []);
+  };
 
   const changeDepartment = () => {
     return 0;
@@ -43,8 +51,38 @@ const UserProfiles = () => {
 
   const renderOptions = () => {
     if (users) {
-      return users.map((user) => <option>user.department</option>);
+      var departmentsSet = [...new Set(users.map((user) => user.department))];
+      return departmentsSet.map((department) => <option>{department}</option>);
     }
+  };
+
+  const openModalDelete = (userId, fullnameArray) => {
+    setIsModalDeleteOpen(true);
+    console.log(userId, userId);
+    setDeleteUserId(userId);
+    setFullnameDeleteUserArray(fullnameArray);
+  };
+  const closeModalDelete = () => {
+    setIsModalDeleteOpen(false);
+  };
+
+  useEffect(() => {
+    console.log(isModalDeleteOpen);
+  }, [isModalDeleteOpen]);
+
+  const deleteUser = () => {
+    axios({
+      method: "delete",
+      url: `/api/User/DeleteUser/${deleteUserId}`,
+      headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+    })
+      .then(() => {
+        closeModalDelete();
+        updateUsers();
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   };
 
   const renderUsers = () => {
@@ -78,7 +116,7 @@ const UserProfiles = () => {
               src={editImg}
               alt="редактировать"
               onClick={() => {
-                navigate(`/editUser`);
+                navigate(`/editUser/${user.id}`);
               }}
             />
           </td>
@@ -86,14 +124,39 @@ const UserProfiles = () => {
             <img
               src={deleteImg}
               alt="удалить"
-              onClick={() => {
-                console.log(1);
-              }}
+              onClick={() =>
+                openModalDelete(user.id, [
+                  user.lastName,
+                  user.firstName,
+                  user.patronymic,
+                ])
+              }
             />
           </td>
         </tr>
       ));
     }
+  };
+
+  const filterUsers = () => {
+    console.log(1);
+    /*
+    axios({
+      method: "post",
+      url: `/api/User/GetUsers`,
+      data: {
+        fullname: "example",
+      },
+      headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+    })
+      .then((filteredUsers) => {
+        setUsers(filteredUsers.data);
+        console.log("filteredUsers", filteredUsers.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+      */
   };
 
   return (
@@ -103,12 +166,17 @@ const UserProfiles = () => {
         <div className="activities_container">
           <a href="/home">Назад</a>
         </div>
-        <select placeholder="Отдел" onChange={() => changeDepartment()}>
-          <option>example</option>
-          {/*
-            renderOptions()
-            */}
-        </select>
+        <div className="filter_users">
+          <select placeholder="Отдел" onChange={() => changeDepartment()}>
+            {renderOptions()}
+          </select>
+          <form onSubmit={() => filterUsers()}>
+            <input placeholder="ФИО пользователя" />
+            <button className="btn_blue" type="sumbit">
+              Найти
+            </button>
+          </form>
+        </div>
         <table className="user_profiles_table">
           <thead>
             <tr>
@@ -123,6 +191,37 @@ const UserProfiles = () => {
           <tbody>{renderUsers()}</tbody>
         </table>
       </div>
+
+      {isModalDeleteOpen && (
+        <Modal
+          isOpen={isModalDeleteOpen}
+          onClose={closeModalDelete}
+          contentClassName="delete"
+        >
+          <div className="modalDelete">
+            <p>
+              Вы точно хотите удалить пользователя{" "}
+              <b>
+                {fullnameDeleteUserArray[0]}
+                {fullnameDeleteUserArray[1]}
+                {fullnameDeleteUserArray[2]}
+              </b>
+              ?
+            </p>
+            <div>
+              <button className="btn_blue" onClick={() => deleteUser()}>
+                Удалить
+              </button>
+              <button
+                className="btn_darkGray"
+                onClick={() => closeModalDelete()}
+              >
+                Отменить
+              </button>
+            </div>
+          </div>
+        </Modal>
+      )}
     </>
   );
 };

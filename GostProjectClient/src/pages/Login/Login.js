@@ -34,6 +34,9 @@ const Login = () => {
         login: `${username}`,
         password: `${password}`,
       },
+      headers: {
+        "Content-Type": "application/json",
+      },
     })
       .then((user) => {
         console.log(user);

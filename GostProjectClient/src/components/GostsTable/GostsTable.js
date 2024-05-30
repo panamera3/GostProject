@@ -191,7 +191,8 @@ const GostsTable = (props) => {
       },
     })
       .then((gosts) => {
-        console.log("gosts.data", gosts.data);
+        console.log("gosts.data", gosts.data.data);
+        setGosts(gosts.data.data);
       })
       .catch((error) => {
         console.log(error);

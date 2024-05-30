@@ -1,13 +1,12 @@
-
-using AutoMapper;
-using GostProjectAPI.Data.Entities;
 using GostProjectAPI.Data;
-using GostProjectAPI.Services.Auth;
+using GostProjectAPI.Data.Entities;
 using GostProjectAPI.Services;
+using GostProjectAPI.Services.Auth;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using Swashbuckle.AspNetCore.Filters;
 
 namespace GostProjectAPI
 {
@@ -35,16 +34,13 @@ namespace GostProjectAPI
 
 			// Вписывать новые сервисы
 			builder.Services.AddSingleton<ICompanyCodeHasherService, SHA256CompanyCodeHasherService>();
-
 			builder.Services.AddSingleton<IPasswordHasherService, SHA256PasswordHasherService>();
 			builder.Services.Configure<AuthOptions>(builder.Configuration.GetSection("Auth"));
 			var authConfig = builder.Configuration.GetSection("Auth").Get<AuthOptions>();
 
-
 			// взятие пути для pdf файлов
 			builder.Services.Configure<FileUploadPaths>(builder.Configuration.GetSection("FileUploadPaths"));
 			var fileUploadPaths = builder.Configuration.GetSection("FileUploadPaths").Get<FileUploadPaths>();
-
 
 			builder.Services.AddScoped<GostService>();
 			builder.Services.AddScoped<UserService>();
@@ -53,23 +49,22 @@ namespace GostProjectAPI
 			builder.Services.AddScoped<CompanyService>();
 
 			builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-			.AddJwtBearer(options =>
-			{
-				options.RequireHttpsMetadata = false;
-				options.TokenValidationParameters = new TokenValidationParameters
+				.AddJwtBearer(options =>
 				{
-					ValidateIssuer = true,
-					ValidIssuer = authConfig.Issuer,
-					ValidateAudience = true,
-					ValidAudience = authConfig.Audience,
-					ValidateLifetime = true,
-					IssuerSigningKey = authConfig.SecurityKey,
-					ValidateIssuerSigningKey = true
-				};
-			});
+					options.RequireHttpsMetadata = false;
+					options.TokenValidationParameters = new TokenValidationParameters
+					{
+						ValidateIssuer = true,
+						ValidIssuer = authConfig.Issuer,
+						ValidateAudience = true,
+						ValidAudience = authConfig.Audience,
+						ValidateLifetime = true,
+						IssuerSigningKey = authConfig.SecurityKey,
+						ValidateIssuerSigningKey = true
+					};
+				});
 
 			builder.Services.AddAuthorization();
-
 			builder.Services.AddEndpointsApiExplorer();
 			builder.Services.AddSwaggerGen(c =>
 			{
@@ -88,12 +83,15 @@ namespace GostProjectAPI
 				};
 
 				c.AddSecurityDefinition("oauth2", jwtSecurityScheme);
+				c.OperationFilter<SecurityRequirementsOperationFilter>();
 			});
 
-			builder.Services.AddControllers().AddJsonOptions(options => {
+			builder.Services.AddControllers().AddJsonOptions(options =>
+			{
 				options.JsonSerializerOptions.PropertyNameCaseInsensitive = true;
 			});
 
+			builder.Services.AddCors();
 
 			var app = builder.Build();
 
@@ -102,22 +100,23 @@ namespace GostProjectAPI
 			{
 				app.UseSwagger();
 				app.UseSwaggerUI();
-
-				app.UseCors(c => c
-					.AllowAnyHeader()
-					.AllowAnyMethod()
-					.AllowAnyOrigin()
-				);
 			}
 
 			app.UseHttpsRedirection();
+			app.UseStaticFiles();
+			app.UseRouting();
+
+			app.UseCors(options =>
+			{
+				options.AllowAnyOrigin()
+					   .AllowAnyMethod()
+					   .AllowAnyHeader();
+			});
 
 			app.UseAuthentication();
 			app.UseAuthorization();
 
-
 			app.MapControllers();
-
 			app.MapControllerRoute(
 				name: "default",
 				pattern: "{controller=Auth}/{action=Index}/{id?}");

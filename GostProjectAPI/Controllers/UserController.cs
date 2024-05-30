@@ -24,6 +24,21 @@ namespace GostProjectAPI.Controllers
         public async Task<JsonResult> GetUser(uint userID)
         {
             return JSON(await _usersService.GetUserAsync(userID));
-        }
-    }
+		}
+
+		[HttpPost]
+		public async Task<JsonResult> FilterUsers([FromBody]string fullName)
+		{
+			return JSON(await _usersService.FilterUsersAsync(fullName));
+		}
+
+		[HttpDelete("{userID}")]
+		public async Task<IActionResult> DeleteUser(uint userID)
+		{
+			if (await _usersService.TryDeleteUserAsync(userID))
+				return Ok();
+
+			return BadRequest();
+		}
+	}
 }

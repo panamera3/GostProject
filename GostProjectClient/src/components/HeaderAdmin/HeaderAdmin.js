@@ -34,7 +34,9 @@ const HeaderAdmin = (props) => {
     <>
       <div className="header" ref={header}>
         <div>
-          <a href="/home" className="a_header">Все документы</a>
+          <a href="/home" className="a_header">
+            Все документы
+          </a>
           {!props.user && <a href="/gostAdd">Создать документ</a>}
 
           {!props.user && (
@@ -75,7 +77,9 @@ const HeaderAdmin = (props) => {
           contentClassName="profile"
         >
           <div className="modalProfile">
-            <a href="/myProfile">Мой профиль</a>
+            {localStorage.getItem("role") == "Admin" && (
+              <a href="/myProfile">Мой профиль</a>
+            )}
             <a href="/favourites">Избранное</a>
             <p onClick={exitHandler}>Выход</p>
           </div>

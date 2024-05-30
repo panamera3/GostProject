@@ -8,7 +8,7 @@ import { useParams } from "react-router-dom";
 import axios from "axios";
 
 const EditUserProfile = () => {
-  const params = useParams(); // params.id
+  const params = useParams();
   const navigate = useNavigate();
 
   const [isModalOpen, setModalOpen] = useState(false);
@@ -17,18 +17,21 @@ const EditUserProfile = () => {
 
   useEffect(() => {
     axios({
-      method: "post",
-      url: `/api/User/GetUser/1}`,
+      method: "get",
+      url: `/api/User/GetUser/${params.id}`,
       headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
     })
       .then((user) => {
         console.log("user.data", user.data);
-        setUser(user.data);
+        const fullname =
+          `${user.data.lastName} ${user.data.firstName} ${user.data.patronymic}`.trim();
+        const userWithFullname = { ...user.data, fullname };
+        setUser(userWithFullname);
       })
       .catch((error) => {
         console.log(error);
       });
-  });
+  }, []);
 
   const openModalCard = () => {
     setModalOpen(true);
@@ -39,7 +42,7 @@ const EditUserProfile = () => {
   };
 
   const cancelHandler = () => {
-    navigate("/home");
+    navigate("/userProfiles");
   };
 
   const submitHandler = (event) => {
@@ -64,13 +67,6 @@ const EditUserProfile = () => {
           denomination: formData.denomination,
           oksCode: formData.oksCode,
           okpdCode: formData.okpdCode,
-          developerId: localStorage.getItem("id"),
-          content: formData.content,
-          keywords: formData.keywords.split(","),
-          keyphrases: formData.keyphrases.split(","),
-          acceptanceLevel: Number(formData.acceptanceLevel),
-          text: formData.text,
-          normativeReferences: formData.normativeReferences,
         },
         headers: {
           "Content-Type": "application/json",
@@ -120,11 +116,27 @@ const EditUserProfile = () => {
             </div>
             <div>
               <label htmlFor="login">Логин</label>
-              <input id="login" name="login" />
+              <input
+                id="login"
+                name="login"
+                value={
+                  formData["login"] != undefined
+                    ? formData["login"]
+                    : user["login"]
+                }
+              />
             </div>
             <div>
               <label htmlFor="department">Отдел</label>
-              <input id="department" name="department" />
+              <input
+                id="department"
+                name="department"
+                value={
+                  formData["department"] != undefined
+                    ? formData["department"]
+                    : user["department"]
+                }
+              />
             </div>
             <div>
               <label htmlFor="role">Роль пользователя</label>
