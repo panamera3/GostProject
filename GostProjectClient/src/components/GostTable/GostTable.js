@@ -193,7 +193,7 @@ const GostTable = (props) => {
               />
             ),
             updateDate:
-              updateGostDates !== undefined &&
+              !updateGostDates &&
               updateGostDates.some((item) => item.name.toLowerCase() === key)
                 ? updateGostDates
                     .find((item) => item.name.toLowerCase() === key)

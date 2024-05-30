@@ -1,4 +1,5 @@
 ﻿using GostProjectAPI.Data.Entities;
+using GostProjectAPI.Data.Enums;
 using GostProjectAPI.Migrations;
 using GostProjectAPI.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -35,9 +36,9 @@ namespace GostProjectAPI.Controllers
 		}
 		
 		[HttpPost]
-		public async Task<IActionResult> AcceptUser([FromQuery] uint notificationID)
+		public async Task<IActionResult> AcceptUser([FromQuery] uint notificationID, UserRole role)
 		{
-			if (await _notificationService.AcceptUserAsync(notificationID))
+			if (await _notificationService.AcceptUserAsync(notificationID, role))
 				return Ok();
 
 			return BadRequest();

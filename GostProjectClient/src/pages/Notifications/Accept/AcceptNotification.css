@@ -1,18 +1,24 @@
 .notification_container {
-    width: 100%;
-    border: 1px solid gray;
-    border-radius: 1em;
+  width: 100%;
+  border: 1px solid gray;
+  border-radius: 1em;
 }
 
 .notification_container > div {
-    display: flex;
-    padding: 0.5em;
+  display: flex;
+  padding: 0.5em;
 }
 
 .notification_container > div:not(:last-child) {
-    border-bottom: 1px solid lightgray;
+  border-bottom: 1px solid lightgray;
 }
 
 .notification_container > div > p:first-child {
-   width: 25%;
+  width: 25%;
+}
+
+.notification_container select {
+  width: 80%;
+  border-radius: 1em;
+  border: 0px solid #ffffff;
 }

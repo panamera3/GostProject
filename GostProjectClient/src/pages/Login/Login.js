@@ -39,7 +39,7 @@ const Login = () => {
       },
     })
       .then((user) => {
-        console.log("LOGIN user.data",user.data);
+        console.log("LOGIN user.data", user.data);
         const userRole = Object.keys(UserRole).find(
           (key) => UserRole[key] === user.data.role
         );

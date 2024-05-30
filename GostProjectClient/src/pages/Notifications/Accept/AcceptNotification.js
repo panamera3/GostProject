@@ -11,6 +11,7 @@ const AcceptNotification = () => {
   const navigate = useNavigate();
 
   const [notification, setNotification] = useState(null);
+  const [selectedRole, setSelectedRole] = useState(null);
 
   useEffect(() => {
     axios({
@@ -27,9 +28,11 @@ const AcceptNotification = () => {
   }, [params.id]);
 
   const acceptUser = () => {
+    const newRole =
+      selectedRole !== null ? selectedRole : notification.user?.role;
     axios({
       method: "post",
-      url: `/api/Notification/AcceptUser/?notificationID=${params.id}`,
+      url: `/api/Notification/AcceptUser/?notificationID=${params.id}&role=${newRole}`,
       headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
     })
       .then((response) => {
@@ -79,7 +82,19 @@ const AcceptNotification = () => {
                 <p>
                   <b>Роль пользователя</b>
                 </p>
-                <p>{translationRolesDict[notification.user?.role]}</p>
+                <select
+                  id="role"
+                  name="role"
+                  value={
+                    selectedRole !== null
+                      ? selectedRole
+                      : notification.user?.role
+                  }
+                  onChange={(e) => setSelectedRole(parseInt(e.target.value))}
+                >
+                  <option value={1}>Администратор</option>
+                  <option value={2}>Пользователь</option>
+                </select>
               </div>
             </>
           )}

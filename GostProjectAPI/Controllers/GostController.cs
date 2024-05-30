@@ -25,16 +25,16 @@ namespace GostProjectAPI.Controllers
 		}
 
 		[HttpPost]
+		public async Task<JsonResult> GetGosts([FromBody] GetGostsDto getParams)
+		{
+			return JSON(await _gostService.GetGostsAsync(getParams));
+		}
+
+		[HttpPost]
 		public async Task<JsonResult> GetGostsRange([FromBody] GetGostsInRangeDto getGostsInRangeDto)
 		{
 			return JSON(await _gostService.GetGostsRangeAsync(getGostsInRangeDto));
 		}
-
-		[HttpPost]
-        public async Task<JsonResult> GetGosts([FromBody] GetGostsDto getParams)
-        {
-            return JSON(await _gostService.GetGostsAsync(getParams));
-        }
 
         [HttpGet("{gostID}")]
         public async Task<JsonResult> GetGost(uint gostID)
@@ -49,10 +49,9 @@ namespace GostProjectAPI.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> AddFileToGost(IFormFile gostFile)
+        public async Task<JsonResult> AddFileToGost(IFormFile gostFile, uint gostID)
         {
-            await _gostService.AddFileToGostAsync(gostFile);
-			return Ok();
+            return JSON(await _gostService.AddFileToGostAsync(gostFile, gostID));
         }
 
         [HttpPost]

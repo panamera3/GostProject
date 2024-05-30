@@ -33,7 +33,7 @@ const GostsTable = (props) => {
   };
 
   useEffect(() => {
-    console.log("localStorage.getItem", localStorage.getItem("token"));
+    console.log("localStorage.getItem(token)", localStorage.getItem("token"));
     console.log(props.searchGosts);
     if (props.favourites) {
       console.log("ПЕРВОЕ");
@@ -63,20 +63,23 @@ const GostsTable = (props) => {
       setGosts(searchGostsFromHeader);
     } else {
       console.log("ТРЕТЬЕ");
-      axios({
-        method: "get",
-        url: `/api/Gost/GetGosts`,
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-      })
-        .then((gosts) => {
-          setGosts(gosts.data);
-          console.log("setGosts", gosts.data);
+      console.log("localStorage.getItem(token)", localStorage.getItem("token"));
+      if (localStorage.getItem("token")) {
+        axios({
+          method: "get",
+          url: `/api/Gost/GetGosts`,
+          headers: {
+            Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySWQiOiIyMiIsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL25hbWUiOiJ0ZXN0MyIsImh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vd3MvMjAwOC8wNi9pZGVudGl0eS9jbGFpbXMvcm9sZSI6IkFkbWluIiwibmJmIjoxNzE3MDg1MzcxLCJleHAiOjE3MTcxNzE3NzEsImlzcyI6IkF1dGhTZXJ2ZXIiLCJhdWQiOiJBdXRoQ2xpZW50In0.0G3Dlu8snjBnsZX2J5eNOlaWh1czUjjK74o3G43mx6o`,
+          },
         })
-        .catch((error) => {
-          console.log(error);
-        });
+          .then((gosts) => {
+            setGosts(gosts.data);
+            console.log("setGosts", gosts.data);
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+      }
     }
 
     refreshFavouritesGosts();
@@ -148,7 +151,7 @@ const GostsTable = (props) => {
               />
             </td>
             <td>
-              {favouritesGosts !== undefined &&
+              {!favouritesGosts &&
                 favouritesGosts.some((favGost) => favGost.id === gost.id) && (
                   <img
                     className="gostsTableButton"
@@ -157,7 +160,7 @@ const GostsTable = (props) => {
                     onClick={() => likeHandler(false, gost.id)}
                   />
                 )}
-              {favouritesGosts !== undefined &&
+              {!favouritesGosts &&
                 !favouritesGosts.some((favGost) => favGost.id === gost.id) && (
                   <img
                     className="gostsTableButton"
@@ -220,11 +223,17 @@ const GostsTable = (props) => {
               )
             }
           >
+            <option value={`ID`} asc="true">
+              Порядковому номеру - возрастание
+            </option>
+            <option value={`ID`} asc="false">
+              Порядковому номеру - убывание
+            </option>
             <option value={`OKScode`} asc="true">
-              коду ОКС - возрастание
+              Коду ОКС - возрастание
             </option>
             <option value={`OKScode`} asc="false">
-              коду ОКС - убывание
+              Коду ОКС - убывание
             </option>
             <option value={`Designation`} asc="true">
               Обозначению - возрастание

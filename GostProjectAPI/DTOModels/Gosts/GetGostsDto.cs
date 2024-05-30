@@ -19,5 +19,6 @@ namespace GostProjectAPI.DTOModels.Gosts
 		public FilterGosts? Filter { get; set; }
 
         // добавить ещё поле поиска по тексту
+        public string? SearchInFilePrompt { get; set; }
     }
 }

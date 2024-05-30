@@ -1,5 +1,6 @@
 ﻿using GostProjectAPI.Data;
 using GostProjectAPI.Data.Entities;
+using GostProjectAPI.Data.Enums;
 using GostProjectAPI.DTOModels.Notification;
 using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.Design;
@@ -99,7 +100,7 @@ namespace GostProjectAPI.Services
 		}
 
 
-		public async Task<bool> AcceptUserAsync(uint notificationID)
+		public async Task<bool> AcceptUserAsync(uint notificationID, UserRole role)
 		{
 			var notification = await _dbContext.Notifications.FirstOrDefaultAsync(n => n.ID == notificationID);
 			if (notification == null)
@@ -110,6 +111,7 @@ namespace GostProjectAPI.Services
 				return false;
 
 			user.IsConfirmed = true;
+			user.Role = role;
 
 			_dbContext.Users.Update(user);
 			await _dbContext.SaveChangesAsync();

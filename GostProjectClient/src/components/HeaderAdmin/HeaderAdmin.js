@@ -8,18 +8,44 @@ import notificationActive from "../../images/notificationActive.svg";
 import { useNavigate } from "react-router-dom";
 import { useRef, useState, useEffect } from "react";
 import Modal from "../Modal/Modal";
+import axios from "axios";
 
 const HeaderAdmin = (props) => {
   const header = useRef();
   const navigate = useNavigate();
 
   const [isModalOpen, setModalOpen] = useState(false);
+  const [isModalNotificationOpen, setModalNotificationOpen] = useState(false);
+  const [notificationsCount, setnotificationsCount] = useState(0);
+
+  useEffect(() => {
+    const companyID = localStorage.getItem("workCompanyID");
+    axios({
+      method: "get",
+      url: `/api/Notification/GetNotifications/?companyID=${companyID}`,
+      headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+    })
+      .then((notifications) => {
+        console.log(notifications.data.length);
+        setnotificationsCount(notifications.data.length);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }, []);
 
   const openModalCard = () => {
     setModalOpen(true);
   };
   const closeModalCard = () => {
     setModalOpen(false);
+  };
+
+  const openModalNotification = () => {
+    setModalNotificationOpen(true);
+  };
+  const closeModalNotification = () => {
+    setModalNotificationOpen(false);
   };
 
   const exitHandler = () => {
@@ -55,22 +81,30 @@ const HeaderAdmin = (props) => {
               <img
                 alt="Notifications"
                 src={notification}
-                onClick={() => navigate("/notifications")}
+                onClick={() => openModalNotification()}
               />
-              {/*
-              
-              <img
-                alt="Notifications"
-                src={notificationActive}
-                onClick={() => openModalCard()}
-              />
-              
-              */}
             </>
           )}
           <img alt="User" src={user} onClick={() => openModalCard()} />
         </div>
       </div>
+      {isModalNotificationOpen && (
+        <Modal
+          isOpen={isModalNotificationOpen}
+          onClose={closeModalNotification}
+          contentClassName="notification"
+        >
+          <div className="modalNotification">
+            {notificationsCount > 0 && (
+              <a href="/notifications">
+                У вас {notificationsCount} новых заявок
+              </a>
+            )}
+            {!(notificationsCount > 0) && <p>У вас нет новых заявок</p>}
+          </div>
+        </Modal>
+      )}
+
       {isModalOpen && (
         <Modal
           isOpen={isModalOpen}

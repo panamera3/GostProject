@@ -3,11 +3,13 @@ using GostProjectAPI.Data.Entities;
 using GostProjectAPI.DTOModels;
 using GostProjectAPI.DTOModels.Gosts;
 using GostProjectAPI.Extensions;
+using GostProjectAPI.Migrations;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using System.Data;
 using System.Linq.Expressions;
 using System.Reflection;
+using System.Text;
 
 namespace GostProjectAPI.Services
 {
@@ -39,52 +41,105 @@ namespace GostProjectAPI.Services
 
 		public async Task<PagedList<Gost>> GetGostsAsync(GetGostsDto getParams)
 		{
-			var gosts = _dbContext.Gosts.AsQueryable();
-
-			var filteredGosts = gosts;
-
-			if (getParams?.Filter?.Designation != null)
-				filteredGosts = filteredGosts.Where(o => o.Designation.Contains(getParams.Filter.Designation)).AsQueryable();
-
-			if (getParams?.Filter?.Denomination != null)
-				filteredGosts = filteredGosts.Where(o => o.Denomination.Contains(getParams.Filter.Denomination)).AsQueryable();
-
-			if (getParams?.Filter?.OKSCode != null)
-				filteredGosts = filteredGosts.Where(o => o.OKSCode.Contains(getParams.Filter.OKSCode)).AsQueryable();
-
-			if (getParams?.Filter?.OKPDCode != null)
-				filteredGosts = filteredGosts.Where(o => o.OKPDCode.Contains(getParams.Filter.OKPDCode)).AsQueryable();
-
-			if (getParams?.Filter?.DeveloperId != null)
-				filteredGosts = filteredGosts.Where(o => o.DeveloperId == getParams.Filter.DeveloperId).AsQueryable();
-
-			if (getParams?.Filter?.AcceptanceLevel != null)
-				filteredGosts = filteredGosts.Where(o => o.AcceptanceLevel == getParams.Filter.AcceptanceLevel).AsQueryable();
-
-			if (getParams?.Filter?.Text != null)
-				filteredGosts = filteredGosts.Where(o => o.Text.Contains(getParams.Filter.Text)).AsQueryable();
-
-			var sortedOrders = filteredGosts;
-
-			if (getParams.SortField != null)
+			using (var dbContext = _dbContext)
 			{
-				PropertyInfo propertyInfo = typeof(Gost).GetProperty(getParams.SortField, BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Instance);
+				var gosts = dbContext.Gosts.AsQueryable();
 
-				var parameter = Expression.Parameter(typeof(Gost), "g");
-				var property = Expression.Property(parameter, propertyInfo);
-				var convertedProperty = Expression.Convert(property, typeof(object));
-				var lambda = Expression.Lambda<Func<Gost, object>>(convertedProperty, parameter);
+				var filteredGosts = gosts;
 
-				sortedOrders = getParams.SortDirection switch
+				if (getParams?.Filter?.Designation != null)
+					filteredGosts = filteredGosts.Where(o => o.Designation.Contains(getParams.Filter.Designation)).AsQueryable();
+
+				if (getParams?.Filter?.Denomination != null)
+					filteredGosts = filteredGosts.Where(o => o.Denomination.Contains(getParams.Filter.Denomination)).AsQueryable();
+
+				if (getParams?.Filter?.OKSCode != null)
+					filteredGosts = filteredGosts.Where(o => o.OKSCode.Contains(getParams.Filter.OKSCode)).AsQueryable();
+
+				if (getParams?.Filter?.OKPDCode != null)
+					filteredGosts = filteredGosts.Where(o => o.OKPDCode.Contains(getParams.Filter.OKPDCode)).AsQueryable();
+
+				if (getParams?.Filter?.DeveloperId != null)
+					filteredGosts = filteredGosts.Where(o => o.DeveloperId == getParams.Filter.DeveloperId).AsQueryable();
+
+				if (getParams?.Filter?.AcceptanceLevel != null)
+					filteredGosts = filteredGosts.Where(o => o.AcceptanceLevel == getParams.Filter.AcceptanceLevel).AsQueryable();
+
+				if (getParams?.Filter?.Text != null)
+					filteredGosts = filteredGosts.Where(o => o.Text.Contains(getParams.Filter.Text)).AsQueryable();
+
+				var sortedGosts = filteredGosts;
+
+				if (getParams.SortField != null)
 				{
-					"DESC" => filteredGosts.OrderByDescending(lambda).AsQueryable(),
-					_ => filteredGosts.OrderBy(lambda).AsQueryable()
-				};
+					PropertyInfo propertyInfo = typeof(Gost).GetProperty(getParams.SortField, BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Instance);
+
+					var parameter = Expression.Parameter(typeof(Gost), "g");
+					var property = Expression.Property(parameter, propertyInfo);
+					var convertedProperty = Expression.Convert(property, typeof(object));
+					var lambda = Expression.Lambda<Func<Gost, object>>(convertedProperty, parameter);
+
+					sortedGosts = getParams.SortDirection switch
+					{
+						"DESC" => filteredGosts.OrderByDescending(lambda).AsQueryable(),
+						_ => filteredGosts.OrderBy(lambda).AsQueryable()
+					};
+				}
+
+				var searchedGosts = sortedGosts;
+				var foundGosts = new List<Gost>();
+
+				if (getParams.SearchInFilePrompt != null)
+				{
+					var tasks = new List<Task<bool>>();
+
+					foreach (var gost in searchedGosts)
+					{
+						tasks.Add(SearchInFileAsync(gost, getParams.SearchInFilePrompt));
+					}
+
+					var searchResults = await Task.WhenAll(tasks);
+
+					var searchedGostsList = await searchedGosts.ToListAsync(); // Преобразуем IQueryable в List
+
+					for (int i = 0; i < searchedGostsList.Count; i++)
+					{
+						if (searchResults[i])
+						{
+							foundGosts.Add(searchedGostsList[i]);
+						}
+					}
+				}
+
+				var test = await foundGosts.AsQueryable().ToPagedListAsync(getParams.Pagination);
+
+				return await foundGosts.AsQueryable().ToPagedListAsync(getParams.Pagination);
+			}
+		}
+
+		private async Task<bool> SearchInFileAsync(Gost gost, string searchPrompt)
+		{
+			var gostFile = await _dbContext.GostFiles.FirstOrDefaultAsync(gf => gf.GostId == gost.ID);
+
+			if (gostFile != null)
+			{
+				var fileContent = await ReadFileContent(gostFile.Path);
+
+				return fileContent.Contains(searchPrompt);
 			}
 
-			var test = await sortedOrders.ToPagedListAsync(getParams.Pagination);
+			return false;
+		}
 
-			return await sortedOrders.ToPagedListAsync(getParams.Pagination);
+		private async Task<string> ReadFileContent(string filePath)
+		{
+			using (var fileStream = new FileStream(filePath, FileMode.Open, FileAccess.Read))
+			{
+				using (var streamReader = new StreamReader(fileStream, Encoding.UTF8))
+				{
+					return await streamReader.ReadToEndAsync();
+				}
+			}
 		}
 
 		public async Task<Gost?> GetGostAsync(uint gostID)
@@ -92,13 +147,25 @@ namespace GostProjectAPI.Services
 			return await _dbContext.Gosts.FirstOrDefaultAsync(g => g.ID == gostID);
 		}
 
-		public async Task AddFileToGostAsync(IFormFile gostFile)
+		public async Task<GostFile> AddFileToGostAsync(IFormFile gostFile, uint gostID)
 		{
 			// записывать в бд id/хэш, путь до файла, связать с гостом
 			string filePath = _env.IsDevelopment() ? _fileUploadPaths.Local : _fileUploadPaths.Global;
 			string path = Path.Join(filePath, gostFile.FileName);
 			using var fileStream = new FileStream(path, FileMode.Create);
 			await gostFile.CopyToAsync(fileStream);
+
+
+			var gostFileEntity = new GostFile
+			{
+				Path = path,
+				GostId = gostID
+			};
+
+			await _dbContext.GostFiles.AddAsync(gostFileEntity);
+			await _dbContext.SaveChangesAsync();
+
+			return gostFileEntity;
 		}
 
 

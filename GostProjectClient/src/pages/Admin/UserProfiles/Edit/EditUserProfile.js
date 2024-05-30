@@ -150,7 +150,7 @@ const EditUserProfile = () => {
                 id="role"
                 name="role"
                 value={
-                  formData["role"] !== undefined
+                  !formData["role"]
                     ? formData["role"]
                     : user["role"]
                 }
