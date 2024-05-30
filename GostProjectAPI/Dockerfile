@@ -1,24 +1,20 @@
-# Use the official .NET Core SDK as a parent image
+FROM mcr.microsoft.com/dotnet/aspnet:7.0 AS base
+WORKDIR /app
+EXPOSE 80
+EXPOSE 443
+
 FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
-WORKDIR /app
-
-# Copy the project file and restore any dependencies (use .csproj for the project name)
-COPY *.csproj ./
-RUN dotnet restore
-
-# Copy the rest of the application code
+WORKDIR /src
+COPY ["GostProjectAPI.csproj", "."]
+RUN dotnet restore "./GostProjectAPI.csproj"
 COPY . .
+WORKDIR "/src/."
+RUN dotnet build "GostProjectAPI.csproj" -c Release -o /app/build
 
-# Publish the application
-RUN dotnet publish -c Release -o out
+FROM build AS publish
+RUN dotnet publish "GostProjectAPI.csproj" -c Release -o /app/publish /p:UseAppHost=false
 
-# Build the runtime image
-FROM mcr.microsoft.com/dotnet/aspnet:7.0 AS runtime
+FROM base AS final
 WORKDIR /app
-COPY --from=build /app/out ./
-
-# Expose the port your application will run on
-EXPOSE 5244
-
-# Start the application
+COPY --from=publish /app/publish .
 ENTRYPOINT ["dotnet", "GostProjectAPI.dll"]
