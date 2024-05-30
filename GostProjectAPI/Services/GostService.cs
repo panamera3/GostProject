@@ -41,33 +41,33 @@ namespace GostProjectAPI.Services
 		{
 			var gosts = _dbContext.Gosts.AsQueryable();
 
-			var filteredOrders = gosts;
+			var filteredGosts = gosts;
 
 			if (getParams?.Filter?.Designation != null)
-				filteredOrders = filteredOrders.Where(o => o.Designation.Contains(getParams.Filter.Designation)).AsQueryable();
+				filteredGosts = filteredGosts.Where(o => o.Designation.Contains(getParams.Filter.Designation)).AsQueryable();
 
 			if (getParams?.Filter?.Denomination != null)
-				filteredOrders = filteredOrders.Where(o => o.Denomination.Contains(getParams.Filter.Denomination)).AsQueryable();
+				filteredGosts = filteredGosts.Where(o => o.Denomination.Contains(getParams.Filter.Denomination)).AsQueryable();
 
 			if (getParams?.Filter?.OKSCode != null)
-				filteredOrders = filteredOrders.Where(o => o.OKSCode.Contains(getParams.Filter.OKSCode)).AsQueryable();
+				filteredGosts = filteredGosts.Where(o => o.OKSCode.Contains(getParams.Filter.OKSCode)).AsQueryable();
 
 			if (getParams?.Filter?.OKPDCode != null)
-				filteredOrders = filteredOrders.Where(o => o.OKPDCode.Contains(getParams.Filter.OKPDCode)).AsQueryable();
+				filteredGosts = filteredGosts.Where(o => o.OKPDCode.Contains(getParams.Filter.OKPDCode)).AsQueryable();
 
 			if (getParams?.Filter?.DeveloperId != null)
-				filteredOrders = filteredOrders.Where(o => o.DeveloperId == getParams.Filter.DeveloperId).AsQueryable();
+				filteredGosts = filteredGosts.Where(o => o.DeveloperId == getParams.Filter.DeveloperId).AsQueryable();
 
 			if (getParams?.Filter?.AcceptanceLevel != null)
-				filteredOrders = filteredOrders.Where(o => o.AcceptanceLevel == getParams.Filter.AcceptanceLevel).AsQueryable();
+				filteredGosts = filteredGosts.Where(o => o.AcceptanceLevel == getParams.Filter.AcceptanceLevel).AsQueryable();
 
 			if (getParams?.Filter?.Text != null)
-				filteredOrders = filteredOrders.Where(o => o.Text.Contains(getParams.Filter.Text)).AsQueryable();
+				filteredGosts = filteredGosts.Where(o => o.Text.Contains(getParams.Filter.Text)).AsQueryable();
 
 			if (getParams?.Filter?.NormativeReferences != null)
-				filteredOrders = filteredOrders.Where(o => o.NormativeReferences.Contains(getParams.Filter.NormativeReferences)).AsQueryable();
+				filteredGosts = filteredGosts.Where(o => o.NormativeReferences.Contains(getParams.Filter.NormativeReferences)).AsQueryable();
 
-            var sortedOrders = filteredOrders;
+            var sortedOrders = filteredGosts;
 
 			if (getParams.SortField != null)
 			{
@@ -80,10 +80,12 @@ namespace GostProjectAPI.Services
 
 				sortedOrders = getParams.SortDirection switch
 				{
-					"DESC" => filteredOrders.OrderByDescending(lambda).AsQueryable(),
-					_ => filteredOrders.OrderBy(lambda).AsQueryable()
+					"DESC" => filteredGosts.OrderByDescending(lambda).AsQueryable(),
+					_ => filteredGosts.OrderBy(lambda).AsQueryable()
 				};
 			}
+
+            var test = await sortedOrders.ToPagedListAsync(getParams.Pagination);
 
 			return await sortedOrders.ToPagedListAsync(getParams.Pagination);
 		}

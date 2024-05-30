@@ -1,4 +1,5 @@
-﻿using GostProjectAPI.Services;
+﻿using GostProjectAPI.DTOModels.Users;
+using GostProjectAPI.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GostProjectAPI.Controllers
@@ -27,9 +28,9 @@ namespace GostProjectAPI.Controllers
 		}
 
 		[HttpPost]
-		public async Task<JsonResult> FilterUsers([FromBody]string fullName)
+		public async Task<JsonResult> FilterUsers([FromBody]FilterUsers filterUsers)
 		{
-			return JSON(await _usersService.FilterUsersAsync(fullName));
+			return JSON(await _usersService.FilterUsersAsync(filterUsers));
 		}
 
 		[HttpDelete("{userID}")]
@@ -40,5 +41,17 @@ namespace GostProjectAPI.Controllers
 
 			return BadRequest();
 		}
+
+        [HttpPost]
+        public async Task<JsonResult> EditUser([FromBody] UserEditDto userEdit)
+        {
+            return JSON(await _usersService.EditUserAsync(userEdit));
+        }
+
+        [HttpGet]
+        public async Task<JsonResult> GetUniqueDepartments()
+        {
+            return JSON(await _usersService.GetUniqueDepartmentsAsync());
+        }
 	}
 }

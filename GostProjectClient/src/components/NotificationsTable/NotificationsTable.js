@@ -8,10 +8,10 @@ const NotificationsTable = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    /*
+    const companyID = localStorage.getItem("workCompanyID");
     axios({
       method: "get",
-      url: `/api/GetNotifications/`, // userID/companyID ?
+      url: `/api/Notification/GetNotifications/?companyID=${companyID}`,
       headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
     })
       .then((notifications) => {
@@ -21,7 +21,6 @@ const NotificationsTable = () => {
       .catch((error) => {
         console.log(error);
       });
-      */
   }, []);
 
   const renderNotificationsTable = () => {
@@ -32,10 +31,10 @@ const NotificationsTable = () => {
             <p>{notification.id}</p>
           </td>
           <td>
-            <p>{notification.fullname}</p>
+            <p>{notification.user.fullName}</p>
           </td>
           <td>
-            <p>{notification.login}</p>
+            <p>{notification.user.login}</p>
           </td>
           <td>
             <img
@@ -54,7 +53,7 @@ const NotificationsTable = () => {
   return (
     <>
       <p>Список заявок</p>
-      <table className="gostsTable">
+      <table className="notificationsTable">
         <thead>
           <tr>
             <th scope="col">№</th>

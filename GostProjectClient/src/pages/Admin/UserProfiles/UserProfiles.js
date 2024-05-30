@@ -20,6 +20,7 @@ const UserProfiles = () => {
   const [isModalDeleteOpen, setIsModalDeleteOpen] = useState(false);
   const [deleteUserId, setDeleteUserId] = useState();
   const [fullnameDeleteUserArray, setFullnameDeleteUserArray] = useState([]);
+  const [uniqueDepartments, setUniqueDepartments] = useState();
 
   const roleTranslations = {
     Admin: "Администратор",
@@ -28,6 +29,18 @@ const UserProfiles = () => {
 
   useEffect(() => {
     updateUsers();
+    axios({
+      method: "get",
+      url: `/api/User/GetUniqueDepartments`,
+      headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+    })
+      .then((departments) => {
+        console.log("departments", departments.data);
+        setUniqueDepartments(departments.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   }, []);
 
   const updateUsers = () => {
@@ -45,14 +58,37 @@ const UserProfiles = () => {
       });
   };
 
-  const changeDepartment = () => {
-    return 0;
+  const changeDepartment = (selectedDepartment) => {
+    console.log(selectedDepartment);
+
+    axios({
+      method: "post",
+      url: `/api/User/FilterUsers`,
+      data: {
+        department: selectedDepartment,
+      },
+      headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+    })
+      .then((filteredUsers) => {
+        setUsers(filteredUsers.data);
+        console.log("filteredUsers", filteredUsers.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   };
 
   const renderOptions = () => {
     if (users) {
-      var departmentsSet = [...new Set(users.map((user) => user.department))];
-      return departmentsSet.map((department) => <option>{department}</option>);
+      if (uniqueDepartments) {
+        console.log("uniqueDepartments", uniqueDepartments);
+        return [
+          <option key="reset" value="" />,
+          ...uniqueDepartments.map((department) => (
+            <option key={department}>{department}</option>
+          )),
+        ];
+      }
     }
   };
 
@@ -138,14 +174,25 @@ const UserProfiles = () => {
     }
   };
 
-  const filterUsers = () => {
-    console.log(1);
-    /*
+  const filterUsers = (event) => {
+    event.preventDefault();
+    const form = event.target;
+    const formData = new FormData(form);
+    const values = {};
+
+    for (let [name, value] of formData) {
+      if (value.trim() !== "") {
+        values[name] = value.trim();
+      }
+    }
+    console.log("form", form, formData);
+    console.log("values", values);
+
     axios({
       method: "post",
-      url: `/api/User/GetUsers`,
+      url: `/api/User/FilterUsers`,
       data: {
-        fullname: "example",
+        fullname: values.fullname ? values.fullname : "",
       },
       headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
     })
@@ -156,7 +203,6 @@ const UserProfiles = () => {
       .catch((error) => {
         console.log(error);
       });
-      */
   };
 
   return (
@@ -167,11 +213,14 @@ const UserProfiles = () => {
           <a href="/home">Назад</a>
         </div>
         <div className="filter_users">
-          <select placeholder="Отдел" onChange={() => changeDepartment()}>
+          <select
+            placeholder="Отдел"
+            onChange={(e) => changeDepartment(e.target.value)}
+          >
             {renderOptions()}
           </select>
-          <form onSubmit={() => filterUsers()}>
-            <input placeholder="ФИО пользователя" />
+          <form onSubmit={filterUsers}>
+            <input placeholder="ФИО пользователя" name="fullname" />
             <button className="btn_blue" type="sumbit">
               Найти
             </button>
@@ -197,18 +246,18 @@ const UserProfiles = () => {
           isOpen={isModalDeleteOpen}
           onClose={closeModalDelete}
           contentClassName="delete"
+          overlay
         >
           <div className="modalDelete">
             <p>
               Вы точно хотите удалить пользователя{" "}
               <b>
-                {fullnameDeleteUserArray[0]}
-                {fullnameDeleteUserArray[1]}
+                {fullnameDeleteUserArray[0]} {fullnameDeleteUserArray[1]}{" "}
                 {fullnameDeleteUserArray[2]}
               </b>
               ?
             </p>
-            <div>
+            <div className="modalDelete_buttons_container">
               <button className="btn_blue" onClick={() => deleteUser()}>
                 Удалить
               </button>

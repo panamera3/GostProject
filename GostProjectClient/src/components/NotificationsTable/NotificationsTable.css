@@ -1,0 +1,19 @@
+.notificationsTable {
+  width: 100%;
+  margin-top: 1em;
+}
+.notificationsTable th:first-child,
+.notificationsTable td:first-child,
+.notificationsTable th:nth-last-child(2),
+.notificationsTable td:nth-last-child(2),
+.notificationsTable th:last-child,
+.notificationsTable td:last-child {
+  width: 3em;
+}
+
+.notificationsTable th:nth-last-child(2),
+.notificationsTable td:nth-last-child(2),
+.notificationsTable th:last-child,
+.notificationsTable td:last-child {
+  text-align: center;
+}

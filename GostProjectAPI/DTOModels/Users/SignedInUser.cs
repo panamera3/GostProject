@@ -11,5 +11,7 @@ namespace GostProjectAPI.DTOModels.Users
         public string Login { get; set; }
 
         public UserRole Role { get; set; }
-    }
+
+		public uint WorkCompanyID { get; set; }
+	}
 }

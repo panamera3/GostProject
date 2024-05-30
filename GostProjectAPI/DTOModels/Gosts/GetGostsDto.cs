@@ -12,7 +12,7 @@ namespace GostProjectAPI.DTOModels.Gosts
         public PagingOptions Pagination { get; set; }
 
         [EnumDataType(typeof(SortDirection))]
-        public string? SortDirection { get; set; } = "ASC";
+        public string? SortDirection { get; set; }
 
 		public string? SortField { get; set; }
 

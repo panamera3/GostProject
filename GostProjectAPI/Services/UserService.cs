@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
+using System.Linq;
 using System.Net;
 using System.Security.Claims;
 
@@ -84,11 +85,24 @@ namespace GostProjectAPI.Services
 			return await _dbContext.Users.FirstOrDefaultAsync(u => u.ID == userID);
 		}
 
-		public async Task<List<User>?> FilterUsersAsync(string fullname)
+		public async Task<List<User>?> FilterUsersAsync(FilterUsers filterUsers)
 		{
-			var fullNameParts = fullname.Split(' ');
+			var users = _dbContext.Users.AsQueryable();
 
-			return await _dbContext.Users.Where(u => u.LastName.Contains(fullNameParts[0]) || (fullNameParts.Length > 1 && u.FirstName.Contains(fullNameParts[1])) || (fullNameParts.Length > 2 && u.Patronymic.Contains(fullNameParts[2]))).ToListAsync();
+			var result = users;
+
+			if(filterUsers.Fullname != null)
+			{
+				var fullNameParts = filterUsers.Fullname.Split(' ');
+				result = result.Where(u => u.LastName.Contains(fullNameParts[0]) || (fullNameParts.Length > 1 && u.FirstName.Contains(fullNameParts[1])) || (fullNameParts.Length > 2 && u.Patronymic.Contains(fullNameParts[2]))).AsQueryable();
+			}
+
+			if(filterUsers.Department != null)
+			{
+				result = result.Where(u => u.Department.Contains(filterUsers.Department)).AsQueryable();
+			}
+
+			return await result.ToListAsync();
 		}
 
 		public async Task<bool> TryDeleteUserAsync(uint userID)
@@ -109,7 +123,15 @@ namespace GostProjectAPI.Services
 
 			if (userEditDto == null)
 				return null;
-			_mapper.Map(userEditDto, oldUser);
+
+			if (userEditDto.Login != null)
+				oldUser.Login = userEditDto.Login;
+
+			if (userEditDto.Department != null)
+				oldUser.Department = userEditDto.Department;
+
+			if (userEditDto.Role != null)
+				oldUser.Role = (Data.Enums.UserRole)userEditDto.Role;
 
 			if (userEditDto.FullName != null)
 			{
@@ -124,6 +146,14 @@ namespace GostProjectAPI.Services
 			await _dbContext.SaveChangesAsync();
 
 			return oldUser;
+		}
+
+		public async Task<List<string>> GetUniqueDepartmentsAsync()
+		{
+			return _dbContext.Users
+					.Select(u => u.Department)
+					.Distinct()
+					.ToList();
 		}
 	}
 }

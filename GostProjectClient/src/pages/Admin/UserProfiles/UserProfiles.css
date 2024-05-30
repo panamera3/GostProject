@@ -68,3 +68,9 @@ table {
   align-items: center;
   justify-content: center;
 }
+
+.modalDelete_buttons_container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

@@ -173,18 +173,23 @@ const GostsTable = (props) => {
   };
 
   const [pagination, setPagination] = useState({
-    pageSize: 10,
+    pageSize: 100,
     offset: 0,
-    total: 10,
+    total: 100,
   });
-  const sortField = "Designation";
-  const exampleOfWork = () => {
-    var selectedOptionSort = document.getElementById("selectSorting").value;
+
+  const sortGosts = (selectedSort, selectedAsc) => {
+    console.log("selectedSort, selectedAsc", selectedSort, selectedAsc);
 
     axios({
       method: "post",
       url: `/api/Gost/GetGosts`,
-      data: { userID: localStorage.getItem("id"), pagination, sortField },
+      data: {
+        userID: localStorage.getItem("id"),
+        pagination,
+        sortField: selectedSort,
+        sortDirection: selectedAsc ? "ASC" : "DESC",
+      },
       headers: {
         "Content-Type": "application/json",
         //'Authorization': Bearer ${localStorage.getItem("token")}
@@ -204,11 +209,42 @@ const GostsTable = (props) => {
       {!(props.favourites || props.archiveGosts || props.searchGosts) && (
         <div className="sortGosts">
           <p>Сортировать по: </p>
-          <select id="selectSorting" onChange={() => exampleOfWork()}>
-            <option value={`OKScode`}>коду ОКС - возрастание</option>
-            <option value={`OKScode`}>коду ОКС - антивозрастание</option>
+          <select
+            id="selectSorting"
+            onChange={(e) =>
+              sortGosts(
+                e.target.value,
+                JSON.parse(
+                  e.target.options[e.target.selectedIndex].getAttribute("asc")
+                )
+              )
+            }
+          >
+            <option value={`OKScode`} asc="true">
+              коду ОКС - возрастание
+            </option>
+            <option value={`OKScode`} asc="false">
+              коду ОКС - убывание
+            </option>
+            <option value={`Designation`} asc="true">
+              Обозначению - возрастание
+            </option>
+            <option value={`Designation`} asc="false">
+              Обозначению - убывание
+            </option>
+            <option value={`Denomination`} asc="true">
+              Наименованию - возрастание
+            </option>
+            <option value={`Denomination`} asc="false">
+              Наименованию - убывание
+            </option>
+            <option value={`RequestsNumber`} asc="true">
+              Количеству обращений - возрастание
+            </option>
+            <option value={`RequestsNumber`} asc="false">
+              Количеству обращений - убывание
+            </option>
           </select>
-          <button onClick={() => exampleOfWork()}>test</button>
         </div>
       )}
 

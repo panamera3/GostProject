@@ -6,6 +6,8 @@ import { useNavigate } from "react-router-dom";
 import Modal from "../../../../components/Modal/Modal";
 import { useParams } from "react-router-dom";
 import axios from "axios";
+import { toast } from "react-toastify";
+import UserRole from "../../../../types/user/userRole";
 
 const EditUserProfile = () => {
   const params = useParams();
@@ -46,42 +48,42 @@ const EditUserProfile = () => {
   };
 
   const submitHandler = (event) => {
-    /*
     event.preventDefault();
     console.log(formData);
     console.log("ok");
-    const formAddData = new FormData();
-    formAddData.append("gostAddDto", JSON.stringify(formData));
-    for (const key in formData) {
-      formAddData.append(key, formData[key]);
-    }
 
-    console.log("formAddData", formAddData);
-    console.log("TEST", formData.id);
-    
-      axios({
-        method: "post",
-        url: `/api/Gost/AddGost`,
-        data: {
-          designation: formData.designation,
-          denomination: formData.denomination,
-          oksCode: formData.oksCode,
-          okpdCode: formData.okpdCode,
-        },
-        headers: {
-          "Content-Type": "application/json",
-          //'Authorization': Bearer ${localStorage.getItem("token")}
-        },
-      })
-        .then((gost) => {
-          console.log(gost.data);
-          setGost(gost.data);
-          navigate("/home");
-        })
-        .catch((error) => {
-          console.log(error);
+    console.log("TEST", formData.fullname);
+
+    axios({
+      method: "post",
+      url: `/api/User/EditUser`,
+      data: {
+        id: params.id,
+        fullname: formData.fullname,
+        login: formData.login,
+        department: formData.department,
+        role: formData.role == 1 ? UserRole.Admin : UserRole.Standart,
+      },
+      headers: {
+        "Content-Type": "application/json",
+        //'Authorization': Bearer ${localStorage.getItem("token")}
+      },
+    })
+      .then((user) => {
+        console.log(user.data);
+        // navigate("/home");
+        toast.success("Пользователь был успешно отредактирован!", {
+          position: "top-right",
+          autoClose: 3000,
+          hideProgressBar: true,
+          progress: undefined,
+          pauseOnHover: false,
+          draggable: false,
         });
-    */
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   };
 
   const handleInputChange = (key, value) => {
@@ -124,6 +126,7 @@ const EditUserProfile = () => {
                     ? formData["login"]
                     : user["login"]
                 }
+                onChange={(e) => handleInputChange("login", e.target.value)}
               />
             </div>
             <div>
@@ -136,13 +139,25 @@ const EditUserProfile = () => {
                     ? formData["department"]
                     : user["department"]
                 }
+                onChange={(e) =>
+                  handleInputChange("department", e.target.value)
+                }
               />
             </div>
             <div>
               <label htmlFor="role">Роль пользователя</label>
-              <select id="role" name="role">
-                <option value="admin">Администратор</option>
-                <option value="user">Пользователь</option>
+              <select
+                id="role"
+                name="role"
+                value={
+                  formData["role"] !== undefined
+                    ? formData["role"]
+                    : user["role"]
+                }
+                onChange={(e) => handleInputChange("role", e.target.value)}
+              >
+                <option value={1}>Администратор</option>
+                <option value={2}>Пользователь</option>
               </select>
             </div>
           </div>

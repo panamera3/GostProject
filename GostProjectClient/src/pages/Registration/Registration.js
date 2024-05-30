@@ -53,6 +53,7 @@ const Registration = () => {
           );
           localStorage.setItem("token", user.data.token);
           localStorage.setItem("id", user.data.id);
+          localStorage.setItem("workCompanyID", user.data.WorkCompanyID);
           localStorage.setItem("role", userRole);
           navigate("/home");
         } else {

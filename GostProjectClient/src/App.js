@@ -20,7 +20,7 @@ import Activity from "./pages/Admin/Activity/Activity";
 import CompanyRegistration from "./pages/private/CompanyRegistration/CompanyRegistration";
 import EditUserProfile from "./pages/Admin/UserProfiles/Edit/EditUserProfile";
 import Notifications from "./pages/Notifications/Notifications";
-import EditNotification from "./pages/Notifications/Edit/EditNotification";
+import AcceptNotification from "./pages/Notifications/Accept/AcceptNotification";
 import Search from "./pages/Search/Search";
 
 
@@ -57,7 +57,7 @@ function App() {
             <Route path="/archive" element={<ArchiveGosts />} />
             <Route path="/activity" element={<Activity />} />
             <Route path="/notifications" element={<Notifications />} />
-            <Route path="/notification/:id" element={<EditNotification />} />
+            <Route path="/notification/:id" element={<AcceptNotification />} />
             <Route path="/search" element={<Search />} />
 
 

@@ -26,6 +26,7 @@ const HeaderAdmin = (props) => {
     console.log(123234);
     localStorage.setItem("token", "");
     localStorage.setItem("id", "");
+    localStorage.setItem("workCompanyID", "");
     localStorage.setItem("role", "");
     navigate("/login");
   };

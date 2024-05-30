@@ -62,6 +62,7 @@ const CompanyRegistration = () => {
           if (!newUser.data.error) {
             localStorage.setItem("token", newUser.data.token);
             localStorage.setItem("id", newUser.data.id);
+            localStorage.setItem("workCompanyID", newUser.data.WorkCompanyID);
             localStorage.setItem("role", "Admin");
             console.log("LOCAL");
             console.log(localStorage);

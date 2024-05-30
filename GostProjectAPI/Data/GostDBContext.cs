@@ -25,6 +25,8 @@ namespace GostProjectAPI.Data
 
         public DbSet<GostFile> GostFiles { get; set; }
 
+        public DbSet<NormativeReferences> NormativeReferencess { get; set; }
+
         public GostDBContext(DbContextOptions opt) : base(opt) { }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
