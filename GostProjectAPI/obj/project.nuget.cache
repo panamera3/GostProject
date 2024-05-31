@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "vVEbF/MnxtNPMXU1QyxcYTVT0jKpPPK+/BVSw36rvPoSv7S4jrfgzTqGC0U3JvB6tMQayejeA9x55p2KIgvWJw==",
+  "dgSpecHash": "0sYtnlrpi3r9CjXojUHbYNGjdKABVdg9/wFI3jEP+AkzeFnfNOo2pYOz9jx/X4J9S7XPQYfvcXYBmHOY/Dzr7w==",
   "success": true,
   "projectFilePath": "C:\\Users\\pjanv\\OneDrive\\Рабочий стол\\Study\\ВУЗ\\5 семестр\\ПП\\GostProject\\GostProjectAPI\\GostProjectAPI.csproj",
   "expectedPackageFiles": [
@@ -34,10 +34,11 @@
     "C:\\Users\\pjanv\\.nuget\\packages\\microsoft.identitymodel.tokens\\6.35.0\\microsoft.identitymodel.tokens.6.35.0.nupkg.sha512",
     "C:\\Users\\pjanv\\.nuget\\packages\\microsoft.netcore.platforms\\1.1.0\\microsoft.netcore.platforms.1.1.0.nupkg.sha512",
     "C:\\Users\\pjanv\\.nuget\\packages\\microsoft.netcore.targets\\1.1.0\\microsoft.netcore.targets.1.1.0.nupkg.sha512",
+    "C:\\Users\\pjanv\\.nuget\\packages\\microsoft.office.interop.word\\15.0.4797.1004\\microsoft.office.interop.word.15.0.4797.1004.nupkg.sha512",
     "C:\\Users\\pjanv\\.nuget\\packages\\microsoft.openapi\\1.4.3\\microsoft.openapi.1.4.3.nupkg.sha512",
-    "C:\\Users\\pjanv\\.nuget\\packages\\microsoft.visualstudio.azure.containers.tools.targets\\1.17.2\\microsoft.visualstudio.azure.containers.tools.targets.1.17.2.nupkg.sha512",
     "C:\\Users\\pjanv\\.nuget\\packages\\mono.texttemplating\\2.2.1\\mono.texttemplating.2.2.1.nupkg.sha512",
     "C:\\Users\\pjanv\\.nuget\\packages\\mysqlconnector\\2.2.5\\mysqlconnector.2.2.5.nupkg.sha512",
+    "C:\\Users\\pjanv\\.nuget\\packages\\pdfpig\\0.1.8\\pdfpig.0.1.8.nupkg.sha512",
     "C:\\Users\\pjanv\\.nuget\\packages\\pomelo.entityframeworkcore.mysql\\7.0.0\\pomelo.entityframeworkcore.mysql.7.0.0.nupkg.sha512",
     "C:\\Users\\pjanv\\.nuget\\packages\\scrutor\\3.3.0\\scrutor.3.3.0.nupkg.sha512",
     "C:\\Users\\pjanv\\.nuget\\packages\\swashbuckle.aspnetcore\\6.4.0\\swashbuckle.aspnetcore.6.4.0.nupkg.sha512",

@@ -4,11 +4,8 @@ module.exports = function (app) {
   app.use(
     "/api",
     createProxyMiddleware({
-      target: "http://localhost:5244/api",
+      target: "http://localhost:5175/api",
       changeOrigin: true,
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
-      },
     })
   );
 };

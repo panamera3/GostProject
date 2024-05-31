@@ -14,7 +14,8 @@
           "Microsoft.EntityFrameworkCore": "7.0.20",
           "Microsoft.EntityFrameworkCore.Design": "7.0.20",
           "Microsoft.EntityFrameworkCore.Tools": "7.0.20",
-          "Microsoft.VisualStudio.Azure.Containers.Tools.Targets": "1.17.2",
+          "Microsoft.Office.Interop.Word": "15.0.4797.1004",
+          "PdfPig": "0.1.8",
           "Pomelo.EntityFrameworkCore.MySql": "7.0.0",
           "Swashbuckle.AspNetCore": "6.4.0",
           "Swashbuckle.AspNetCore.Filters": "7.0.12"
@@ -246,6 +247,14 @@
       },
       "Microsoft.NETCore.Platforms/1.1.0": {},
       "Microsoft.NETCore.Targets/1.1.0": {},
+      "Microsoft.Office.Interop.Word/15.0.4797.1004": {
+        "runtime": {
+          "lib/netstandard2.0/Microsoft.Office.Interop.Word.dll": {
+            "assemblyVersion": "15.0.0.0",
+            "fileVersion": "15.0.4797.1003"
+          }
+        }
+      },
       "Microsoft.OpenApi/1.4.3": {
         "runtime": {
           "lib/netstandard2.0/Microsoft.OpenApi.dll": {
@@ -254,7 +263,6 @@
           }
         }
       },
-      "Microsoft.VisualStudio.Azure.Containers.Tools.Targets/1.17.2": {},
       "Mono.TextTemplating/2.2.1": {
         "dependencies": {
           "System.CodeDom": "4.4.0"
@@ -271,6 +279,38 @@
           "lib/net7.0/MySqlConnector.dll": {
             "assemblyVersion": "2.0.0.0",
             "fileVersion": "2.2.5.0"
+          }
+        }
+      },
+      "PdfPig/0.1.8": {
+        "runtime": {
+          "lib/net6.0/UglyToad.PdfPig.Core.dll": {
+            "assemblyVersion": "0.1.8.0",
+            "fileVersion": "0.1.8.0"
+          },
+          "lib/net6.0/UglyToad.PdfPig.DocumentLayoutAnalysis.dll": {
+            "assemblyVersion": "0.1.8.0",
+            "fileVersion": "0.1.8.0"
+          },
+          "lib/net6.0/UglyToad.PdfPig.Fonts.dll": {
+            "assemblyVersion": "0.1.8.0",
+            "fileVersion": "0.1.8.0"
+          },
+          "lib/net6.0/UglyToad.PdfPig.Package.dll": {
+            "assemblyVersion": "0.1.8.0",
+            "fileVersion": "0.1.8.0"
+          },
+          "lib/net6.0/UglyToad.PdfPig.Tokenization.dll": {
+            "assemblyVersion": "0.1.8.0",
+            "fileVersion": "0.1.8.0"
+          },
+          "lib/net6.0/UglyToad.PdfPig.Tokens.dll": {
+            "assemblyVersion": "0.1.8.0",
+            "fileVersion": "0.1.8.0"
+          },
+          "lib/net6.0/UglyToad.PdfPig.dll": {
+            "assemblyVersion": "0.1.8.0",
+            "fileVersion": "0.1.8.0"
           }
         }
       },
@@ -617,19 +657,19 @@
       "path": "microsoft.netcore.targets/1.1.0",
       "hashPath": "microsoft.netcore.targets.1.1.0.nupkg.sha512"
     },
+    "Microsoft.Office.Interop.Word/15.0.4797.1004": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-lavTOrMGK/o/t3+gGr7JuVrL8XDdnS0DwPLcYv/StOiysXO4L0C36IXTVtEJo1Mh9Aoxo9a8dgGcPi+faTlv0g==",
+      "path": "microsoft.office.interop.word/15.0.4797.1004",
+      "hashPath": "microsoft.office.interop.word.15.0.4797.1004.nupkg.sha512"
+    },
     "Microsoft.OpenApi/1.4.3": {
       "type": "package",
       "serviceable": true,
       "sha512": "sha512-rURwggB+QZYcSVbDr7HSdhw/FELvMlriW10OeOzjPT7pstefMo7IThhtNtDudxbXhW+lj0NfX72Ka5EDsG8x6w==",
       "path": "microsoft.openapi/1.4.3",
       "hashPath": "microsoft.openapi.1.4.3.nupkg.sha512"
-    },
-    "Microsoft.VisualStudio.Azure.Containers.Tools.Targets/1.17.2": {
-      "type": "package",
-      "serviceable": true,
-      "sha512": "sha512-5daNXm8Hb016oETmuHXiW8jclmRR9CzM7XrOh2htYhQ/7AAYtqntZ1MrZkh09+JTtdjYdGsy2XIMPe9cg83x5w==",
-      "path": "microsoft.visualstudio.azure.containers.tools.targets/1.17.2",
-      "hashPath": "microsoft.visualstudio.azure.containers.tools.targets.1.17.2.nupkg.sha512"
     },
     "Mono.TextTemplating/2.2.1": {
       "type": "package",
@@ -644,6 +684,13 @@
       "sha512": "sha512-6sinY78RvryhHwpup3awdjYO7d5hhWahb5p/1VDODJhSxJggV/sBbYuKK5IQF9TuzXABiddqUbmRfM884tqA3Q==",
       "path": "mysqlconnector/2.2.5",
       "hashPath": "mysqlconnector.2.2.5.nupkg.sha512"
+    },
+    "PdfPig/0.1.8": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-lrqrQPAwziQV2E5uImAg1i3SpxDn5XdJ8q3sjRBgEdx1quq1ZftnKNyfp3sTY0J7OxpA14ryGBSSUdoGLGCHjw==",
+      "path": "pdfpig/0.1.8",
+      "hashPath": "pdfpig.0.1.8.nupkg.sha512"
     },
     "Pomelo.EntityFrameworkCore.MySql/7.0.0": {
       "type": "package",

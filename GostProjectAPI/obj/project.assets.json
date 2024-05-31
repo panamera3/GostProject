@@ -493,6 +493,15 @@
           "lib/netstandard1.0/_._": {}
         }
       },
+      "Microsoft.Office.Interop.Word/15.0.4797.1004": {
+        "type": "package",
+        "compile": {
+          "lib/netstandard2.0/Microsoft.Office.Interop.Word.dll": {}
+        },
+        "runtime": {
+          "lib/netstandard2.0/Microsoft.Office.Interop.Word.dll": {}
+        }
+      },
       "Microsoft.OpenApi/1.4.3": {
         "type": "package",
         "compile": {
@@ -504,13 +513,6 @@
           "lib/netstandard2.0/Microsoft.OpenApi.dll": {
             "related": ".pdb;.xml"
           }
-        }
-      },
-      "Microsoft.VisualStudio.Azure.Containers.Tools.Targets/1.17.2": {
-        "type": "package",
-        "build": {
-          "build/Microsoft.VisualStudio.Azure.Containers.Tools.Targets.props": {},
-          "build/Microsoft.VisualStudio.Azure.Containers.Tools.Targets.targets": {}
         }
       },
       "Mono.TextTemplating/2.2.1": {
@@ -535,6 +537,55 @@
         "runtime": {
           "lib/net7.0/MySqlConnector.dll": {
             "related": ".xml"
+          }
+        }
+      },
+      "PdfPig/0.1.8": {
+        "type": "package",
+        "compile": {
+          "lib/net6.0/UglyToad.PdfPig.Core.dll": {
+            "related": ".pdb;.xml"
+          },
+          "lib/net6.0/UglyToad.PdfPig.DocumentLayoutAnalysis.dll": {
+            "related": ".pdb;.xml"
+          },
+          "lib/net6.0/UglyToad.PdfPig.Fonts.dll": {
+            "related": ".pdb;.xml"
+          },
+          "lib/net6.0/UglyToad.PdfPig.Package.dll": {
+            "related": ".pdb;.xml"
+          },
+          "lib/net6.0/UglyToad.PdfPig.Tokenization.dll": {
+            "related": ".pdb;.xml"
+          },
+          "lib/net6.0/UglyToad.PdfPig.Tokens.dll": {
+            "related": ".pdb;.xml"
+          },
+          "lib/net6.0/UglyToad.PdfPig.dll": {
+            "related": ".Core.pdb;.Core.xml;.DocumentLayoutAnalysis.pdb;.DocumentLayoutAnalysis.xml;.Fonts.pdb;.Fonts.xml;.Package.pdb;.Package.xml;.pdb;.Tokenization.pdb;.Tokenization.xml;.Tokens.pdb;.Tokens.xml;.xml"
+          }
+        },
+        "runtime": {
+          "lib/net6.0/UglyToad.PdfPig.Core.dll": {
+            "related": ".pdb;.xml"
+          },
+          "lib/net6.0/UglyToad.PdfPig.DocumentLayoutAnalysis.dll": {
+            "related": ".pdb;.xml"
+          },
+          "lib/net6.0/UglyToad.PdfPig.Fonts.dll": {
+            "related": ".pdb;.xml"
+          },
+          "lib/net6.0/UglyToad.PdfPig.Package.dll": {
+            "related": ".pdb;.xml"
+          },
+          "lib/net6.0/UglyToad.PdfPig.Tokenization.dll": {
+            "related": ".pdb;.xml"
+          },
+          "lib/net6.0/UglyToad.PdfPig.Tokens.dll": {
+            "related": ".pdb;.xml"
+          },
+          "lib/net6.0/UglyToad.PdfPig.dll": {
+            "related": ".Core.pdb;.Core.xml;.DocumentLayoutAnalysis.pdb;.DocumentLayoutAnalysis.xml;.Fonts.pdb;.Fonts.xml;.Package.pdb;.Package.xml;.pdb;.Tokenization.pdb;.Tokenization.xml;.Tokens.pdb;.Tokens.xml;.xml"
           }
         }
       },
@@ -1723,6 +1774,19 @@
         "runtime.json"
       ]
     },
+    "Microsoft.Office.Interop.Word/15.0.4797.1004": {
+      "sha512": "lavTOrMGK/o/t3+gGr7JuVrL8XDdnS0DwPLcYv/StOiysXO4L0C36IXTVtEJo1Mh9Aoxo9a8dgGcPi+faTlv0g==",
+      "type": "package",
+      "path": "microsoft.office.interop.word/15.0.4797.1004",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "lib/net20/Microsoft.Office.Interop.Word.dll",
+        "lib/netstandard2.0/Microsoft.Office.Interop.Word.dll",
+        "microsoft.office.interop.word.15.0.4797.1004.nupkg.sha512",
+        "microsoft.office.interop.word.nuspec"
+      ]
+    },
     "Microsoft.OpenApi/1.4.3": {
       "sha512": "rURwggB+QZYcSVbDr7HSdhw/FELvMlriW10OeOzjPT7pstefMo7IThhtNtDudxbXhW+lj0NfX72Ka5EDsG8x6w==",
       "type": "package",
@@ -1735,87 +1799,6 @@
         "lib/netstandard2.0/Microsoft.OpenApi.xml",
         "microsoft.openapi.1.4.3.nupkg.sha512",
         "microsoft.openapi.nuspec"
-      ]
-    },
-    "Microsoft.VisualStudio.Azure.Containers.Tools.Targets/1.17.2": {
-      "sha512": "5daNXm8Hb016oETmuHXiW8jclmRR9CzM7XrOh2htYhQ/7AAYtqntZ1MrZkh09+JTtdjYdGsy2XIMPe9cg83x5w==",
-      "type": "package",
-      "path": "microsoft.visualstudio.azure.containers.tools.targets/1.17.2",
-      "hasTools": true,
-      "files": [
-        ".nupkg.metadata",
-        ".signature.p7s",
-        "CHANGELOG.md",
-        "EULA.md",
-        "ThirdPartyNotices.txt",
-        "build/Container.props",
-        "build/Container.targets",
-        "build/Microsoft.VisualStudio.Azure.Containers.Tools.Targets.props",
-        "build/Microsoft.VisualStudio.Azure.Containers.Tools.Targets.targets",
-        "build/Rules/GeneralBrowseObject.xaml",
-        "build/Rules/cs-CZ/GeneralBrowseObject.xaml",
-        "build/Rules/de-DE/GeneralBrowseObject.xaml",
-        "build/Rules/es-ES/GeneralBrowseObject.xaml",
-        "build/Rules/fr-FR/GeneralBrowseObject.xaml",
-        "build/Rules/it-IT/GeneralBrowseObject.xaml",
-        "build/Rules/ja-JP/GeneralBrowseObject.xaml",
-        "build/Rules/ko-KR/GeneralBrowseObject.xaml",
-        "build/Rules/pl-PL/GeneralBrowseObject.xaml",
-        "build/Rules/pt-BR/GeneralBrowseObject.xaml",
-        "build/Rules/ru-RU/GeneralBrowseObject.xaml",
-        "build/Rules/tr-TR/GeneralBrowseObject.xaml",
-        "build/Rules/zh-CN/GeneralBrowseObject.xaml",
-        "build/Rules/zh-TW/GeneralBrowseObject.xaml",
-        "build/ToolsTarget.props",
-        "build/ToolsTarget.targets",
-        "icon.png",
-        "microsoft.visualstudio.azure.containers.tools.targets.1.17.2.nupkg.sha512",
-        "microsoft.visualstudio.azure.containers.tools.targets.nuspec",
-        "tools/Microsoft.VisualStudio.Containers.Tools.Common.dll",
-        "tools/Microsoft.VisualStudio.Containers.Tools.Shared.dll",
-        "tools/Microsoft.VisualStudio.Containers.Tools.Tasks.dll",
-        "tools/Newtonsoft.Json.dll",
-        "tools/System.Security.Principal.Windows.dll",
-        "tools/cs/Microsoft.VisualStudio.Containers.Tools.Common.resources.dll",
-        "tools/cs/Microsoft.VisualStudio.Containers.Tools.Shared.resources.dll",
-        "tools/cs/Microsoft.VisualStudio.Containers.Tools.Tasks.resources.dll",
-        "tools/de/Microsoft.VisualStudio.Containers.Tools.Common.resources.dll",
-        "tools/de/Microsoft.VisualStudio.Containers.Tools.Shared.resources.dll",
-        "tools/de/Microsoft.VisualStudio.Containers.Tools.Tasks.resources.dll",
-        "tools/es/Microsoft.VisualStudio.Containers.Tools.Common.resources.dll",
-        "tools/es/Microsoft.VisualStudio.Containers.Tools.Shared.resources.dll",
-        "tools/es/Microsoft.VisualStudio.Containers.Tools.Tasks.resources.dll",
-        "tools/fr/Microsoft.VisualStudio.Containers.Tools.Common.resources.dll",
-        "tools/fr/Microsoft.VisualStudio.Containers.Tools.Shared.resources.dll",
-        "tools/fr/Microsoft.VisualStudio.Containers.Tools.Tasks.resources.dll",
-        "tools/it/Microsoft.VisualStudio.Containers.Tools.Common.resources.dll",
-        "tools/it/Microsoft.VisualStudio.Containers.Tools.Shared.resources.dll",
-        "tools/it/Microsoft.VisualStudio.Containers.Tools.Tasks.resources.dll",
-        "tools/ja/Microsoft.VisualStudio.Containers.Tools.Common.resources.dll",
-        "tools/ja/Microsoft.VisualStudio.Containers.Tools.Shared.resources.dll",
-        "tools/ja/Microsoft.VisualStudio.Containers.Tools.Tasks.resources.dll",
-        "tools/ko/Microsoft.VisualStudio.Containers.Tools.Common.resources.dll",
-        "tools/ko/Microsoft.VisualStudio.Containers.Tools.Shared.resources.dll",
-        "tools/ko/Microsoft.VisualStudio.Containers.Tools.Tasks.resources.dll",
-        "tools/pl/Microsoft.VisualStudio.Containers.Tools.Common.resources.dll",
-        "tools/pl/Microsoft.VisualStudio.Containers.Tools.Shared.resources.dll",
-        "tools/pl/Microsoft.VisualStudio.Containers.Tools.Tasks.resources.dll",
-        "tools/pt-BR/Microsoft.VisualStudio.Containers.Tools.Common.resources.dll",
-        "tools/pt-BR/Microsoft.VisualStudio.Containers.Tools.Shared.resources.dll",
-        "tools/pt-BR/Microsoft.VisualStudio.Containers.Tools.Tasks.resources.dll",
-        "tools/ru/Microsoft.VisualStudio.Containers.Tools.Common.resources.dll",
-        "tools/ru/Microsoft.VisualStudio.Containers.Tools.Shared.resources.dll",
-        "tools/ru/Microsoft.VisualStudio.Containers.Tools.Tasks.resources.dll",
-        "tools/tr/Microsoft.VisualStudio.Containers.Tools.Common.resources.dll",
-        "tools/tr/Microsoft.VisualStudio.Containers.Tools.Shared.resources.dll",
-        "tools/tr/Microsoft.VisualStudio.Containers.Tools.Tasks.resources.dll",
-        "tools/utils/KillProcess.exe",
-        "tools/zh-Hans/Microsoft.VisualStudio.Containers.Tools.Common.resources.dll",
-        "tools/zh-Hans/Microsoft.VisualStudio.Containers.Tools.Shared.resources.dll",
-        "tools/zh-Hans/Microsoft.VisualStudio.Containers.Tools.Tasks.resources.dll",
-        "tools/zh-Hant/Microsoft.VisualStudio.Containers.Tools.Common.resources.dll",
-        "tools/zh-Hant/Microsoft.VisualStudio.Containers.Tools.Shared.resources.dll",
-        "tools/zh-Hant/Microsoft.VisualStudio.Containers.Tools.Tasks.resources.dll"
       ]
     },
     "Mono.TextTemplating/2.2.1": {
@@ -1856,6 +1839,186 @@
         "logo.png",
         "mysqlconnector.2.2.5.nupkg.sha512",
         "mysqlconnector.nuspec"
+      ]
+    },
+    "PdfPig/0.1.8": {
+      "sha512": "lrqrQPAwziQV2E5uImAg1i3SpxDn5XdJ8q3sjRBgEdx1quq1ZftnKNyfp3sTY0J7OxpA14ryGBSSUdoGLGCHjw==",
+      "type": "package",
+      "path": "pdfpig/0.1.8",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "lib/net451/UglyToad.PdfPig.Core.dll",
+        "lib/net451/UglyToad.PdfPig.Core.pdb",
+        "lib/net451/UglyToad.PdfPig.Core.xml",
+        "lib/net451/UglyToad.PdfPig.DocumentLayoutAnalysis.dll",
+        "lib/net451/UglyToad.PdfPig.DocumentLayoutAnalysis.pdb",
+        "lib/net451/UglyToad.PdfPig.DocumentLayoutAnalysis.xml",
+        "lib/net451/UglyToad.PdfPig.Fonts.dll",
+        "lib/net451/UglyToad.PdfPig.Fonts.pdb",
+        "lib/net451/UglyToad.PdfPig.Fonts.xml",
+        "lib/net451/UglyToad.PdfPig.Package.dll",
+        "lib/net451/UglyToad.PdfPig.Package.pdb",
+        "lib/net451/UglyToad.PdfPig.Package.xml",
+        "lib/net451/UglyToad.PdfPig.Tokenization.dll",
+        "lib/net451/UglyToad.PdfPig.Tokenization.pdb",
+        "lib/net451/UglyToad.PdfPig.Tokenization.xml",
+        "lib/net451/UglyToad.PdfPig.Tokens.dll",
+        "lib/net451/UglyToad.PdfPig.Tokens.pdb",
+        "lib/net451/UglyToad.PdfPig.Tokens.xml",
+        "lib/net451/UglyToad.PdfPig.dll",
+        "lib/net451/UglyToad.PdfPig.pdb",
+        "lib/net451/UglyToad.PdfPig.xml",
+        "lib/net452/UglyToad.PdfPig.Core.dll",
+        "lib/net452/UglyToad.PdfPig.Core.pdb",
+        "lib/net452/UglyToad.PdfPig.Core.xml",
+        "lib/net452/UglyToad.PdfPig.DocumentLayoutAnalysis.dll",
+        "lib/net452/UglyToad.PdfPig.DocumentLayoutAnalysis.pdb",
+        "lib/net452/UglyToad.PdfPig.DocumentLayoutAnalysis.xml",
+        "lib/net452/UglyToad.PdfPig.Fonts.dll",
+        "lib/net452/UglyToad.PdfPig.Fonts.pdb",
+        "lib/net452/UglyToad.PdfPig.Fonts.xml",
+        "lib/net452/UglyToad.PdfPig.Package.dll",
+        "lib/net452/UglyToad.PdfPig.Package.pdb",
+        "lib/net452/UglyToad.PdfPig.Package.xml",
+        "lib/net452/UglyToad.PdfPig.Tokenization.dll",
+        "lib/net452/UglyToad.PdfPig.Tokenization.pdb",
+        "lib/net452/UglyToad.PdfPig.Tokenization.xml",
+        "lib/net452/UglyToad.PdfPig.Tokens.dll",
+        "lib/net452/UglyToad.PdfPig.Tokens.pdb",
+        "lib/net452/UglyToad.PdfPig.Tokens.xml",
+        "lib/net452/UglyToad.PdfPig.dll",
+        "lib/net452/UglyToad.PdfPig.pdb",
+        "lib/net452/UglyToad.PdfPig.xml",
+        "lib/net46/UglyToad.PdfPig.Core.dll",
+        "lib/net46/UglyToad.PdfPig.Core.pdb",
+        "lib/net46/UglyToad.PdfPig.Core.xml",
+        "lib/net46/UglyToad.PdfPig.DocumentLayoutAnalysis.dll",
+        "lib/net46/UglyToad.PdfPig.DocumentLayoutAnalysis.pdb",
+        "lib/net46/UglyToad.PdfPig.DocumentLayoutAnalysis.xml",
+        "lib/net46/UglyToad.PdfPig.Fonts.dll",
+        "lib/net46/UglyToad.PdfPig.Fonts.pdb",
+        "lib/net46/UglyToad.PdfPig.Fonts.xml",
+        "lib/net46/UglyToad.PdfPig.Package.dll",
+        "lib/net46/UglyToad.PdfPig.Package.pdb",
+        "lib/net46/UglyToad.PdfPig.Package.xml",
+        "lib/net46/UglyToad.PdfPig.Tokenization.dll",
+        "lib/net46/UglyToad.PdfPig.Tokenization.pdb",
+        "lib/net46/UglyToad.PdfPig.Tokenization.xml",
+        "lib/net46/UglyToad.PdfPig.Tokens.dll",
+        "lib/net46/UglyToad.PdfPig.Tokens.pdb",
+        "lib/net46/UglyToad.PdfPig.Tokens.xml",
+        "lib/net46/UglyToad.PdfPig.dll",
+        "lib/net46/UglyToad.PdfPig.pdb",
+        "lib/net46/UglyToad.PdfPig.xml",
+        "lib/net461/UglyToad.PdfPig.Core.dll",
+        "lib/net461/UglyToad.PdfPig.Core.pdb",
+        "lib/net461/UglyToad.PdfPig.Core.xml",
+        "lib/net461/UglyToad.PdfPig.DocumentLayoutAnalysis.dll",
+        "lib/net461/UglyToad.PdfPig.DocumentLayoutAnalysis.pdb",
+        "lib/net461/UglyToad.PdfPig.DocumentLayoutAnalysis.xml",
+        "lib/net461/UglyToad.PdfPig.Fonts.dll",
+        "lib/net461/UglyToad.PdfPig.Fonts.pdb",
+        "lib/net461/UglyToad.PdfPig.Fonts.xml",
+        "lib/net461/UglyToad.PdfPig.Package.dll",
+        "lib/net461/UglyToad.PdfPig.Package.pdb",
+        "lib/net461/UglyToad.PdfPig.Package.xml",
+        "lib/net461/UglyToad.PdfPig.Tokenization.dll",
+        "lib/net461/UglyToad.PdfPig.Tokenization.pdb",
+        "lib/net461/UglyToad.PdfPig.Tokenization.xml",
+        "lib/net461/UglyToad.PdfPig.Tokens.dll",
+        "lib/net461/UglyToad.PdfPig.Tokens.pdb",
+        "lib/net461/UglyToad.PdfPig.Tokens.xml",
+        "lib/net461/UglyToad.PdfPig.dll",
+        "lib/net461/UglyToad.PdfPig.pdb",
+        "lib/net461/UglyToad.PdfPig.xml",
+        "lib/net462/UglyToad.PdfPig.Core.dll",
+        "lib/net462/UglyToad.PdfPig.Core.pdb",
+        "lib/net462/UglyToad.PdfPig.Core.xml",
+        "lib/net462/UglyToad.PdfPig.DocumentLayoutAnalysis.dll",
+        "lib/net462/UglyToad.PdfPig.DocumentLayoutAnalysis.pdb",
+        "lib/net462/UglyToad.PdfPig.DocumentLayoutAnalysis.xml",
+        "lib/net462/UglyToad.PdfPig.Fonts.dll",
+        "lib/net462/UglyToad.PdfPig.Fonts.pdb",
+        "lib/net462/UglyToad.PdfPig.Fonts.xml",
+        "lib/net462/UglyToad.PdfPig.Package.dll",
+        "lib/net462/UglyToad.PdfPig.Package.pdb",
+        "lib/net462/UglyToad.PdfPig.Package.xml",
+        "lib/net462/UglyToad.PdfPig.Tokenization.dll",
+        "lib/net462/UglyToad.PdfPig.Tokenization.pdb",
+        "lib/net462/UglyToad.PdfPig.Tokenization.xml",
+        "lib/net462/UglyToad.PdfPig.Tokens.dll",
+        "lib/net462/UglyToad.PdfPig.Tokens.pdb",
+        "lib/net462/UglyToad.PdfPig.Tokens.xml",
+        "lib/net462/UglyToad.PdfPig.dll",
+        "lib/net462/UglyToad.PdfPig.pdb",
+        "lib/net462/UglyToad.PdfPig.xml",
+        "lib/net47/UglyToad.PdfPig.Core.dll",
+        "lib/net47/UglyToad.PdfPig.Core.pdb",
+        "lib/net47/UglyToad.PdfPig.Core.xml",
+        "lib/net47/UglyToad.PdfPig.DocumentLayoutAnalysis.dll",
+        "lib/net47/UglyToad.PdfPig.DocumentLayoutAnalysis.pdb",
+        "lib/net47/UglyToad.PdfPig.DocumentLayoutAnalysis.xml",
+        "lib/net47/UglyToad.PdfPig.Fonts.dll",
+        "lib/net47/UglyToad.PdfPig.Fonts.pdb",
+        "lib/net47/UglyToad.PdfPig.Fonts.xml",
+        "lib/net47/UglyToad.PdfPig.Package.dll",
+        "lib/net47/UglyToad.PdfPig.Package.pdb",
+        "lib/net47/UglyToad.PdfPig.Package.xml",
+        "lib/net47/UglyToad.PdfPig.Tokenization.dll",
+        "lib/net47/UglyToad.PdfPig.Tokenization.pdb",
+        "lib/net47/UglyToad.PdfPig.Tokenization.xml",
+        "lib/net47/UglyToad.PdfPig.Tokens.dll",
+        "lib/net47/UglyToad.PdfPig.Tokens.pdb",
+        "lib/net47/UglyToad.PdfPig.Tokens.xml",
+        "lib/net47/UglyToad.PdfPig.dll",
+        "lib/net47/UglyToad.PdfPig.pdb",
+        "lib/net47/UglyToad.PdfPig.xml",
+        "lib/net6.0/UglyToad.PdfPig.Core.dll",
+        "lib/net6.0/UglyToad.PdfPig.Core.pdb",
+        "lib/net6.0/UglyToad.PdfPig.Core.xml",
+        "lib/net6.0/UglyToad.PdfPig.DocumentLayoutAnalysis.dll",
+        "lib/net6.0/UglyToad.PdfPig.DocumentLayoutAnalysis.pdb",
+        "lib/net6.0/UglyToad.PdfPig.DocumentLayoutAnalysis.xml",
+        "lib/net6.0/UglyToad.PdfPig.Fonts.dll",
+        "lib/net6.0/UglyToad.PdfPig.Fonts.pdb",
+        "lib/net6.0/UglyToad.PdfPig.Fonts.xml",
+        "lib/net6.0/UglyToad.PdfPig.Package.dll",
+        "lib/net6.0/UglyToad.PdfPig.Package.pdb",
+        "lib/net6.0/UglyToad.PdfPig.Package.xml",
+        "lib/net6.0/UglyToad.PdfPig.Tokenization.dll",
+        "lib/net6.0/UglyToad.PdfPig.Tokenization.pdb",
+        "lib/net6.0/UglyToad.PdfPig.Tokenization.xml",
+        "lib/net6.0/UglyToad.PdfPig.Tokens.dll",
+        "lib/net6.0/UglyToad.PdfPig.Tokens.pdb",
+        "lib/net6.0/UglyToad.PdfPig.Tokens.xml",
+        "lib/net6.0/UglyToad.PdfPig.dll",
+        "lib/net6.0/UglyToad.PdfPig.pdb",
+        "lib/net6.0/UglyToad.PdfPig.xml",
+        "lib/netstandard2.0/UglyToad.PdfPig.Core.dll",
+        "lib/netstandard2.0/UglyToad.PdfPig.Core.pdb",
+        "lib/netstandard2.0/UglyToad.PdfPig.Core.xml",
+        "lib/netstandard2.0/UglyToad.PdfPig.DocumentLayoutAnalysis.dll",
+        "lib/netstandard2.0/UglyToad.PdfPig.DocumentLayoutAnalysis.pdb",
+        "lib/netstandard2.0/UglyToad.PdfPig.DocumentLayoutAnalysis.xml",
+        "lib/netstandard2.0/UglyToad.PdfPig.Fonts.dll",
+        "lib/netstandard2.0/UglyToad.PdfPig.Fonts.pdb",
+        "lib/netstandard2.0/UglyToad.PdfPig.Fonts.xml",
+        "lib/netstandard2.0/UglyToad.PdfPig.Package.dll",
+        "lib/netstandard2.0/UglyToad.PdfPig.Package.pdb",
+        "lib/netstandard2.0/UglyToad.PdfPig.Package.xml",
+        "lib/netstandard2.0/UglyToad.PdfPig.Tokenization.dll",
+        "lib/netstandard2.0/UglyToad.PdfPig.Tokenization.pdb",
+        "lib/netstandard2.0/UglyToad.PdfPig.Tokenization.xml",
+        "lib/netstandard2.0/UglyToad.PdfPig.Tokens.dll",
+        "lib/netstandard2.0/UglyToad.PdfPig.Tokens.pdb",
+        "lib/netstandard2.0/UglyToad.PdfPig.Tokens.xml",
+        "lib/netstandard2.0/UglyToad.PdfPig.dll",
+        "lib/netstandard2.0/UglyToad.PdfPig.pdb",
+        "lib/netstandard2.0/UglyToad.PdfPig.xml",
+        "pdfpig.0.1.8.nupkg.sha512",
+        "pdfpig.nuspec",
+        "pdfpig.png"
       ]
     },
     "Pomelo.EntityFrameworkCore.MySql/7.0.0": {
@@ -2382,7 +2545,8 @@
       "Microsoft.EntityFrameworkCore >= 7.0.20",
       "Microsoft.EntityFrameworkCore.Design >= 7.0.20",
       "Microsoft.EntityFrameworkCore.Tools >= 7.0.20",
-      "Microsoft.VisualStudio.Azure.Containers.Tools.Targets >= 1.17.2",
+      "Microsoft.Office.Interop.Word >= 15.0.4797.1004",
+      "PdfPig >= 0.1.8",
       "Pomelo.EntityFrameworkCore.MySql >= 7.0.0",
       "Swashbuckle.AspNetCore >= 6.4.0",
       "Swashbuckle.AspNetCore.Filters >= 7.0.12"
@@ -2461,9 +2625,13 @@
             "target": "Package",
             "version": "[7.0.20, )"
           },
-          "Microsoft.VisualStudio.Azure.Containers.Tools.Targets": {
+          "Microsoft.Office.Interop.Word": {
             "target": "Package",
-            "version": "[1.17.2, )"
+            "version": "[15.0.4797.1004, )"
+          },
+          "PdfPig": {
+            "target": "Package",
+            "version": "[0.1.8, )"
           },
           "Pomelo.EntityFrameworkCore.MySql": {
             "target": "Package",

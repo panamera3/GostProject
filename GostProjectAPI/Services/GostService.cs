@@ -3,13 +3,16 @@ using GostProjectAPI.Data.Entities;
 using GostProjectAPI.DTOModels;
 using GostProjectAPI.DTOModels.Gosts;
 using GostProjectAPI.Extensions;
-using GostProjectAPI.Migrations;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
+using Microsoft.Office.Interop.Word;
 using System.Data;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Text;
+using UglyToad.PdfPig.DocumentLayoutAnalysis.TextExtractor;
+using UglyToad.PdfPig;
+using Word = Microsoft.Office.Interop.Word;
 
 namespace GostProjectAPI.Services
 {
@@ -41,106 +44,116 @@ namespace GostProjectAPI.Services
 
 		public async Task<PagedList<Gost>> GetGostsAsync(GetGostsDto getParams)
 		{
-			using (var dbContext = _dbContext)
+			var gosts = _dbContext.Gosts.AsQueryable();
+
+			var filteredGosts = gosts;
+
+			if (getParams?.Filter?.Designation != null)
+				filteredGosts = filteredGosts.Where(o => o.Designation.Contains(getParams.Filter.Designation)).AsQueryable();
+
+			if (getParams?.Filter?.Denomination != null)
+				filteredGosts = filteredGosts.Where(o => o.Denomination.Contains(getParams.Filter.Denomination)).AsQueryable();
+
+			if (getParams?.Filter?.OKSCode != null)
+				filteredGosts = filteredGosts.Where(o => o.OKSCode.Contains(getParams.Filter.OKSCode)).AsQueryable();
+
+			if (getParams?.Filter?.OKPDCode != null)
+				filteredGosts = filteredGosts.Where(o => o.OKPDCode.Contains(getParams.Filter.OKPDCode)).AsQueryable();
+
+			if (getParams?.Filter?.DeveloperId != null)
+				filteredGosts = filteredGosts.Where(o => o.DeveloperId == getParams.Filter.DeveloperId).AsQueryable();
+
+			if (getParams?.Filter?.AcceptanceLevel != null)
+				filteredGosts = filteredGosts.Where(o => o.AcceptanceLevel == getParams.Filter.AcceptanceLevel).AsQueryable();
+
+			if (getParams?.Filter?.Text != null)
+				filteredGosts = filteredGosts.Where(o => o.Text.Contains(getParams.Filter.Text)).AsQueryable();
+
+			var sortedGosts = filteredGosts.ToList().AsQueryable();
+
+			if (getParams.SortField != null)
 			{
-				var gosts = dbContext.Gosts.AsQueryable();
+				PropertyInfo propertyInfo = typeof(Gost).GetProperty(getParams.SortField, BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Instance);
 
-				var filteredGosts = gosts;
+				var parameter = Expression.Parameter(typeof(Gost), "g");
+				var property = Expression.Property(parameter, propertyInfo);
+				var convertedProperty = Expression.Convert(property, typeof(object));
+				var lambda = Expression.Lambda<Func<Gost, object>>(convertedProperty, parameter);
 
-				if (getParams?.Filter?.Designation != null)
-					filteredGosts = filteredGosts.Where(o => o.Designation.Contains(getParams.Filter.Designation)).AsQueryable();
-
-				if (getParams?.Filter?.Denomination != null)
-					filteredGosts = filteredGosts.Where(o => o.Denomination.Contains(getParams.Filter.Denomination)).AsQueryable();
-
-				if (getParams?.Filter?.OKSCode != null)
-					filteredGosts = filteredGosts.Where(o => o.OKSCode.Contains(getParams.Filter.OKSCode)).AsQueryable();
-
-				if (getParams?.Filter?.OKPDCode != null)
-					filteredGosts = filteredGosts.Where(o => o.OKPDCode.Contains(getParams.Filter.OKPDCode)).AsQueryable();
-
-				if (getParams?.Filter?.DeveloperId != null)
-					filteredGosts = filteredGosts.Where(o => o.DeveloperId == getParams.Filter.DeveloperId).AsQueryable();
-
-				if (getParams?.Filter?.AcceptanceLevel != null)
-					filteredGosts = filteredGosts.Where(o => o.AcceptanceLevel == getParams.Filter.AcceptanceLevel).AsQueryable();
-
-				if (getParams?.Filter?.Text != null)
-					filteredGosts = filteredGosts.Where(o => o.Text.Contains(getParams.Filter.Text)).AsQueryable();
-
-				var sortedGosts = filteredGosts;
-
-				if (getParams.SortField != null)
+				sortedGosts = getParams.SortDirection switch
 				{
-					PropertyInfo propertyInfo = typeof(Gost).GetProperty(getParams.SortField, BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Instance);
-
-					var parameter = Expression.Parameter(typeof(Gost), "g");
-					var property = Expression.Property(parameter, propertyInfo);
-					var convertedProperty = Expression.Convert(property, typeof(object));
-					var lambda = Expression.Lambda<Func<Gost, object>>(convertedProperty, parameter);
-
-					sortedGosts = getParams.SortDirection switch
-					{
-						"DESC" => filteredGosts.OrderByDescending(lambda).AsQueryable(),
-						_ => filteredGosts.OrderBy(lambda).AsQueryable()
-					};
-				}
-
-				var searchedGosts = sortedGosts;
-				var foundGosts = new List<Gost>();
-
-				if (getParams.SearchInFilePrompt != null)
-				{
-					var tasks = new List<Task<bool>>();
-
-					foreach (var gost in searchedGosts)
-					{
-						tasks.Add(SearchInFileAsync(gost, getParams.SearchInFilePrompt));
-					}
-
-					var searchResults = await Task.WhenAll(tasks);
-
-					var searchedGostsList = await searchedGosts.ToListAsync(); // Преобразуем IQueryable в List
-
-					for (int i = 0; i < searchedGostsList.Count; i++)
-					{
-						if (searchResults[i])
-						{
-							foundGosts.Add(searchedGostsList[i]);
-						}
-					}
-				}
-
-				var test = await foundGosts.AsQueryable().ToPagedListAsync(getParams.Pagination);
-
-				return await foundGosts.AsQueryable().ToPagedListAsync(getParams.Pagination);
+					"DESC" => sortedGosts.OrderByDescending(lambda).AsQueryable(),
+					_ => sortedGosts.OrderBy(lambda).AsQueryable()
+				};
 			}
+
+			var searchedGosts = sortedGosts;
+			var foundGosts = new List<Gost>();
+
+			if (getParams?.SearchInFilePrompt != null)
+			{
+				var searchPrompt = getParams.SearchInFilePrompt;
+
+				foreach (var gost in searchedGosts)
+				{
+					var gostFile = await _dbContext.GostFiles.FirstOrDefaultAsync(gf => gf.GostId == gost.ID);
+					var isWordInFile = false;
+
+					if (gostFile == null)
+						continue;
+
+					isWordInFile = Path.GetExtension(gostFile.Path) switch
+					{
+						".pdf" => SearchInPdfFile(gostFile.Path, searchPrompt),
+						var extension when extension == ".docx" || extension == ".doc" => SearchInWordFile(gostFile.Path, searchPrompt)
+					};
+					
+					if (isWordInFile)
+						foundGosts.Add(gost);
+				}
+
+				searchedGosts = foundGosts.AsQueryable();
+			}
+
+			var test = await searchedGosts.ToPagedListAsync(getParams.Pagination);
+
+			return await searchedGosts.ToPagedListAsync(getParams.Pagination);
 		}
 
-		private async Task<bool> SearchInFileAsync(Gost gost, string searchPrompt)
+		private bool SearchInWordFile(string documentLocation, string stringToSearchFor, bool caseSensitive = false)
 		{
-			var gostFile = await _dbContext.GostFiles.FirstOrDefaultAsync(gf => gf.GostId == gost.ID);
+			// Create an application object if the passed in object is null
+			var winword = new Application();
 
-			if (gostFile != null)
-			{
-				var fileContent = await ReadFileContent(gostFile.Path);
+			// Use the application object to open our word document in ReadOnly mode
+			var wordDoc = winword.Documents.Open(documentLocation, ReadOnly: true);
 
-				return fileContent.Contains(searchPrompt);
-			}
+			// Search for our string in the document
+			bool result;
+			if (caseSensitive)
+				result = wordDoc.Content.Text.IndexOf(stringToSearchFor) >= 0;
+			else
+				result = wordDoc.Content.Text.IndexOf(stringToSearchFor, StringComparison.CurrentCultureIgnoreCase) >= 0;
+
+			// Close the document and the application since we're done searching
+			wordDoc.Close();
+			winword.Quit();
+
+			return result;
+		}
+
+		public static bool SearchInPdfFile(string pdfFilePath, string searchText)
+		{
+			using var pcontent = PdfDocument.Open(pdfFilePath);
+
+			string rawText = pcontent.GetPages().Aggregate("", (acc, curr) => acc += curr.Text);
+
+			if (rawText.Contains(searchText))
+				return true;
 
 			return false;
 		}
 
-		private async Task<string> ReadFileContent(string filePath)
-		{
-			using (var fileStream = new FileStream(filePath, FileMode.Open, FileAccess.Read))
-			{
-				using (var streamReader = new StreamReader(fileStream, Encoding.UTF8))
-				{
-					return await streamReader.ReadToEndAsync();
-				}
-			}
-		}
 
 		public async Task<Gost?> GetGostAsync(uint gostID)
 		{

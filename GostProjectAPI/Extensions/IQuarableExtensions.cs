@@ -1,5 +1,4 @@
 ﻿using GostProjectAPI.DTOModels;
-using Microsoft.EntityFrameworkCore;
 
 namespace GostProjectAPI.Extensions
 {
@@ -7,14 +6,14 @@ namespace GostProjectAPI.Extensions
     {
         public static async Task<PagedList<T>> ToPagedListAsync<T>(this IQueryable<T> source, PagingOptions pagingOptions) where T : class
         {
-            var total = await source.CountAsync();
+            var total = source.Count();
 
-            if (pagingOptions.Offset > 0) source = source.Skip(pagingOptions.Offset);
-            if (pagingOptions.PageSize > 0) source = source.Take(pagingOptions.PageSize);
+            var data = source.ToList();
 
-            var items = await source.ToListAsync();
+            if (pagingOptions.Offset > 0) data = data.Skip(pagingOptions.Offset).ToList();
+            if (pagingOptions.PageSize > 0) data = data.Take(pagingOptions.PageSize).ToList();
 
-            return new PagedList<T>(items, total, pagingOptions.Offset, pagingOptions.PageSize);
+            return new PagedList<T>(data, total, pagingOptions.Offset, pagingOptions.PageSize);
         }
     }
 }

@@ -69,6 +69,33 @@ const Search = (props) => {
 
   const submitTextSearchHandler = (event) => {
     event.preventDefault();
+
+    const searchInFilePrompt = event.target.searchText.value;
+    console.log("Введенный текст:", searchInFilePrompt);
+
+    axios({
+      method: "post",
+      url: `/api/Gost/GetGosts`,
+      data: {
+        userID: localStorage.getItem("id"),
+        pagination,
+        searchInFilePrompt,
+      },
+      headers: {
+        "Content-Type": "application/json",
+        //'Authorization': Bearer ${localStorage.getItem("token")}
+      },
+    })
+      .then((gosts) => {
+        if (gosts.data) {
+          console.log("gosts.data", gosts.data.data);
+          localStorage.setItem("searchGosts", JSON.stringify(gosts.data.data));
+          navigate("/afterSearch");
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   };
 
   return (
@@ -122,10 +149,19 @@ const Search = (props) => {
 
         {textSearch && (
           <>
-            <p className="text_search_back" onClick={() => setTextSearch(false)}>Назад</p>
+            <p
+              className="text_search_back"
+              onClick={() => setTextSearch(false)}
+            >
+              Назад
+            </p>
             <form onSubmit={submitTextSearchHandler}>
               <div className="text_search_container">
-                <input id="text" placeholder="Введите текст" />
+                <input
+                  id="text"
+                  name="searchText"
+                  placeholder="Введите текст"
+                />
                 <button className="btn_blue" type="submit">
                   Применить
                 </button>
