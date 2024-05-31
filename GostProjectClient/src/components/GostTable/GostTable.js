@@ -254,7 +254,7 @@ const GostTable = (props) => {
           "keyphrases",
           "acceptanceLevel",
           "text",
-          "normativeReferences",
+          "actionStatus",
         ];
 
         return (
@@ -302,7 +302,7 @@ const GostTable = (props) => {
       formAddData.append(key, formData[key]);
     }
 
-    formData.append("file", selectedFile);
+    // formData.append("file", selectedFile);
 
     console.log("formAddData", formAddData);
     console.log("TEST", formData.id);
@@ -321,7 +321,7 @@ const GostTable = (props) => {
           keyphrases: formData.keyphrases.split(","),
           acceptanceLevel: Number(formData.acceptanceLevel),
           text: formData.text,
-          normativeReferences: formData.normativeReferences,
+          actionStatus: formData.actionStatus,
         },
         headers: {
           "Content-Type": "application/json",

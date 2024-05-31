@@ -42,6 +42,26 @@ namespace GostProjectAPI.Services
 			return gosts;
 		}
 
+		public async Task<GostFile> AddFileToGostAsync(IFormFile gostFile, uint gostID)
+		{
+			string filePath = _env.IsDevelopment() ? _fileUploadPaths.Local : _fileUploadPaths.Global;
+			string path = Path.Join(filePath, gostFile.FileName);
+			using var fileStream = new FileStream(path, FileMode.Create);
+			await gostFile.CopyToAsync(fileStream);
+
+
+			var gostFileEntity = new GostFile
+			{
+				Path = path,
+				GostId = gostID
+			};
+
+			await _dbContext.GostFiles.AddAsync(gostFileEntity);
+			await _dbContext.SaveChangesAsync();
+
+			return gostFileEntity;
+		}
+
 		public async Task<PagedList<Gost>> GetGostsAsync(GetGostsDto getParams)
 		{
 			var gosts = _dbContext.Gosts.AsQueryable();
@@ -154,33 +174,10 @@ namespace GostProjectAPI.Services
 			return false;
 		}
 
-
 		public async Task<Gost?> GetGostAsync(uint gostID)
 		{
 			return await _dbContext.Gosts.FirstOrDefaultAsync(g => g.ID == gostID);
 		}
-
-		public async Task<GostFile> AddFileToGostAsync(IFormFile gostFile, uint gostID)
-		{
-			// записывать в бд id/хэш, путь до файла, связать с гостом
-			string filePath = _env.IsDevelopment() ? _fileUploadPaths.Local : _fileUploadPaths.Global;
-			string path = Path.Join(filePath, gostFile.FileName);
-			using var fileStream = new FileStream(path, FileMode.Create);
-			await gostFile.CopyToAsync(fileStream);
-
-
-			var gostFileEntity = new GostFile
-			{
-				Path = path,
-				GostId = gostID
-			};
-
-			await _dbContext.GostFiles.AddAsync(gostFileEntity);
-			await _dbContext.SaveChangesAsync();
-
-			return gostFileEntity;
-		}
-
 
 		public async Task<Gost?> AddGostAsync(GostAddDto gostAddDto)
 		{

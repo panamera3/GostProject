@@ -1,16 +1,9 @@
 ﻿using GostProjectAPI.Data;
 using GostProjectAPI.Data.Entities;
-using GostProjectAPI.DTOModels.Company;
 using GostProjectAPI.DTOModels.Users;
 using GostProjectAPI.Services.Auth;
-using Microsoft.AspNetCore.Authentication.OAuth;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
-using Microsoft.IdentityModel.Tokens;
-using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
-using System.Net;
-using System.Security.Claims;
 
 namespace GostProjectAPI.Services
 {
@@ -91,13 +84,29 @@ namespace GostProjectAPI.Services
 
 			var result = users;
 
-			if(filterUsers.Fullname != null)
+			if (filterUsers.Fullname != null)
 			{
 				var fullNameParts = filterUsers.Fullname.Split(' ');
-				result = result.Where(u => u.LastName.Contains(fullNameParts[0]) || (fullNameParts.Length > 1 && u.FirstName.Contains(fullNameParts[1])) || (fullNameParts.Length > 2 && u.Patronymic.Contains(fullNameParts[2]))).AsQueryable();
+				result = result.Where(u =>
+										(fullNameParts.Length == 1 &&
+											(u.LastName.Contains(fullNameParts[0]) ||
+											u.FirstName.Contains(fullNameParts[0]) ||
+											u.Patronymic.Contains(fullNameParts[0]))
+										) ||
+										(fullNameParts.Length == 2 &&
+											(u.LastName.Contains(fullNameParts[0]) &&
+											u.FirstName.Contains(fullNameParts[1]))
+										) ||
+										(fullNameParts.Length == 3 &&
+											(u.LastName.Contains(fullNameParts[0]) &&
+											u.FirstName.Contains(fullNameParts[1]) &&
+											u.Patronymic.Contains(fullNameParts[2]))
+										)
+									).AsQueryable();
+
 			}
 
-			if(filterUsers.Department != null)
+			if (filterUsers.Department != null)
 			{
 				result = result.Where(u => u.Department.Contains(filterUsers.Department)).AsQueryable();
 			}

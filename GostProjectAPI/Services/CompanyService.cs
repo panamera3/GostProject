@@ -39,7 +39,6 @@ namespace GostProjectAPI.Services
 			if (isCompanyExist)
 				throw new Exception("Компания с таким ОГРН уже зарегистрирована");
 			
-			
 			var company = _mapper.Map<CompanyAddDto, Company>(companyAddDto,
 				opt => opt.AfterMap((src, dest) =>
 				{

@@ -53,6 +53,7 @@ const CompanyRegistration = () => {
           psrn: `${psrn}`,
           name: `${name}`,
           role: UserRole.Admin,
+          email: `${emailCompanyRegistrationInputRef}`,
         },
       })
         .then((newUser) => {

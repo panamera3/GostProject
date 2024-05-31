@@ -31,7 +31,7 @@ function App() {
       const headerHeight = header.offsetHeight;
       const bodyContainer = document.querySelector(".body_container");
       if (bodyContainer) {
-        bodyContainer.style.paddingTop = `${1.3 * headerHeight}px`;
+        bodyContainer.style.paddingTop = `${1.4 * headerHeight}px`;
       }
     }
   }, []);

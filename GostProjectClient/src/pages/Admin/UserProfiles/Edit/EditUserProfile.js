@@ -150,14 +150,16 @@ const EditUserProfile = () => {
                 id="role"
                 name="role"
                 value={
-                  !formData["role"]
+                  formData["role"] !== undefined
                     ? formData["role"]
-                    : user["role"]
+                    : user["role"] === UserRole.Admin
+                    ? 1
+                    : 2
                 }
                 onChange={(e) => handleInputChange("role", e.target.value)}
               >
                 <option value={1}>Администратор</option>
-                <option value={2}>Пользователь</option>
+                <option value={2}>Обычный пользователь</option>
               </select>
             </div>
           </div>

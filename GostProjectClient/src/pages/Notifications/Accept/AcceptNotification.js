@@ -93,7 +93,7 @@ const AcceptNotification = () => {
                   onChange={(e) => setSelectedRole(parseInt(e.target.value))}
                 >
                   <option value={1}>Администратор</option>
-                  <option value={2}>Пользователь</option>
+                  <option value={2}>Обычный пользователь</option>
                 </select>
               </div>
             </>

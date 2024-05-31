@@ -8,6 +8,7 @@ import { useRef, useState, useEffect } from "react";
 import axios from "axios";
 import HeaderAdmin from "../../components/HeaderAdmin/HeaderAdmin";
 import HeaderUser from "../../components/Header/HeaderUser";
+import GostsTable from "../../components/GostsTable/GostsTable";
 
 const Search = (props) => {
   const navigate = useNavigate();
@@ -20,6 +21,7 @@ const Search = (props) => {
   const [filter, setFilter] = useState();
   const [search, setSearch] = useState();
   const [textSearch, setTextSearch] = useState(false);
+  const [afterTextSearch, setAfterTextSearch] = useState(false);
 
   const searchGosts = () => {
     if (search) {
@@ -90,12 +92,21 @@ const Search = (props) => {
         if (gosts.data) {
           console.log("gosts.data", gosts.data.data);
           localStorage.setItem("searchGosts", JSON.stringify(gosts.data.data));
-          navigate("/afterSearch");
+          setAfterTextSearch(true);
         }
       })
       .catch((error) => {
         console.log(error);
       });
+  };
+
+  const changeToTextSearch = () => {
+    setTextSearch(true);
+  };
+
+  const changeToFilterSearch = () => {
+    setAfterTextSearch(false);
+    setTextSearch(false);
   };
 
   return (
@@ -138,7 +149,7 @@ const Search = (props) => {
                 Применить
               </button>
               <button
-                onClick={() => setTextSearch(true)}
+                onClick={() => changeToTextSearch()}
                 className="btn_darkGray"
               >
                 К поиску по тексту
@@ -151,7 +162,7 @@ const Search = (props) => {
           <>
             <p
               className="text_search_back"
-              onClick={() => setTextSearch(false)}
+              onClick={() => changeToFilterSearch()}
             >
               Назад
             </p>
@@ -167,6 +178,11 @@ const Search = (props) => {
                 </button>
               </div>
             </form>
+            {afterTextSearch && (
+              <>
+                <GostsTable searchGosts />
+              </>
+            )}
           </>
         )}
       </div>

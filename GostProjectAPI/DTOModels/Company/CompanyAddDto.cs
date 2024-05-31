@@ -11,6 +11,8 @@ namespace GostProjectAPI.DTOModels.Company
 		[Required]
 		public string PSRN { get; set; }
 
+		public string Email { get; set; }
+
 		[Required]
 		public string Login { get; set; }
 
