@@ -4,21 +4,27 @@ import "./GostTable.css";
 
 // libraries
 import { useNavigate } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import axios from "axios";
 import Modal from "../Modal/Modal";
 import { translationGostDict } from "../constants/translationGostDict";
+import { actionStatusOptions } from "../constants/ActionStatusOptions";
+import { acceptanceLevelOptions } from "../constants/AcceptanceLevelOptions";
 
 const GostTable = (props) => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({});
   const [gost, setGost] = useState();
   const [normativeReferences, setNormativeReferences] = useState([]);
+  const [keywords, setKeywords] = useState([]);
+  const [keyphrases, setKeyphrases] = useState([]);
   const [referenceGostNames, setReferenceGostNames] = useState({});
+  const [gostsNormativeReferences, setGostsNormativeReferences] = useState([]);
 
   // fdsfjkl
 
-  const [selectedFile, setSelectedFile] = useState(null);
+  const [selectedFile, setSelectedFile] = useState("");
+  const selectedFile2Ref = useRef("");
 
   const handleFileChange = (event) => {
     setSelectedFile(event.target.files[0]);
@@ -66,7 +72,10 @@ const GostTable = (props) => {
       })
         .then((gost) => {
           console.log("just gosts", gost.data);
-          setGost(gost.data);
+          setGost(gost.data.gost);
+
+          setKeywords(gost.data.keywords);
+          setKeyphrases(gost.data.keyphrases);
         })
         .catch((error) => {
           console.log(error);
@@ -78,8 +87,22 @@ const GostTable = (props) => {
         headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
       })
         .then((references) => {
-          console.log(references.data);
+          console.log("references.data", references.data);
           setNormativeReferences(references.data);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    }
+    if (props.add) {
+      axios({
+        method: "get",
+        url: `/api/Gost/GetDataForNormativeReferences`,
+        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+      })
+        .then((gostsNormativeReferences) => {
+          console.log("GetKeyPhrases", gostsNormativeReferences.data);
+          setGostsNormativeReferences(gostsNormativeReferences.data);
         })
         .catch((error) => {
           console.log(error);
@@ -113,6 +136,19 @@ const GostTable = (props) => {
     }
   }, [normativeReferences]);
 
+  const [selectedItems, setSelectedItems] = useState([]);
+
+  const handleSelectChange = (event) => {
+    const selectedOption = {
+      id: event.target.value,
+      designation: event.target.options[event.target.selectedIndex].text,
+    };
+    if (!selectedItems.some((item) => item.id === selectedOption.id)) {
+      setSelectedItems((prevItems) => [...prevItems, selectedOption]);
+    }
+  };
+
+
   const renderGostTable = () => {
     if (gost) {
       if (props.edit) {
@@ -122,9 +158,8 @@ const GostTable = (props) => {
           "oksCode",
           "okpdCode",
           "content",
-          "keywords",
-          "keyphrases",
           "acceptanceLevel",
+          "actionStatus",
         ];
 
         console.log("formData", formData);
@@ -148,20 +183,60 @@ const GostTable = (props) => {
                   <label htmlFor={key}>{translationGostDict[key]}</label>
                 </td>
                 <td>
-                  <input
-                    className="gostInputEdit"
-                    value={
-                      formData[key] != undefined ? formData[key] : gost[key]
-                    }
-                    onChange={(e) => handleInputChange(key, e.target.value)}
-                  />
+                  {key === "actionStatus" ? (
+                    <select
+                      className="gostInputEdit"
+                      value={formData.actionStatus || gost.actionStatus}
+                      onChange={(e) =>
+                        handleInputChange("actionStatus", e.target.value)
+                      }
+                    >
+                      <option value="">Выберите статус</option>
+                      {actionStatusOptions.map((option) => (
+                        <option key={option.value} value={option.value}>
+                          {option.label}
+                        </option>
+                      ))}
+                    </select>
+                  ) : key === "acceptanceLevel" ? (
+                    <select
+                      className="gostInputEdit"
+                      value={formData.acceptanceLevel || gost.acceptanceLevel}
+                      onChange={(e) =>
+                        handleInputChange("acceptanceLevel", e.target.value)
+                      }
+                    >
+                      <option value="">Выберите уровень принятия</option>
+                      {acceptanceLevelOptions.map((option) => (
+                        <option key={option.value} value={option.value}>
+                          {option.label}
+                        </option>
+                      ))}
+                    </select>
+                  ) : (
+                    <input
+                      className="gostInputEdit"
+                      value={
+                        formData[key] !== undefined ? formData[key] : gost[key]
+                      }
+                      onChange={(e) => handleInputChange(key, e.target.value)}
+                    />
+                  )}
                 </td>
               </tr>
             ))}
 
-            <div>
-              <input type="file" onChange={handleFileChange} />
-            </div>
+            <tr>
+              <td colspan="2">
+                <div className="file-input-container">
+                  <input
+                    type="file"
+                    onChange={handleFileChange}
+                    ref={selectedFile2Ref}
+                  />
+                </div>
+              </td>
+            </tr>
           </>
         );
       }
@@ -178,6 +253,16 @@ const GostTable = (props) => {
               gost[key] ? (
                 gost[key] === true ? (
                   "Да"
+                ) : key === "acceptanceLevel" ? (
+                  acceptanceLevelOptions.find(
+                    (option) => option.value === gost[key]
+                  )?.label
+                ) : key === "actionStatus" ? (
+                  actionStatusOptions.find(
+                    (option) => option.value === gost[key]
+                  )?.label
+                ) : key === "acceptanceDate" || key === "introdutionDate" ? (
+                  gost[key].split("T")[0]
                 ) : (
                   gost[key]
                 )
@@ -193,10 +278,12 @@ const GostTable = (props) => {
               />
             ),
             updateDate:
-              !updateGostDates &&
-              updateGostDates.some((item) => item.name.toLowerCase() === key)
+              updateGostDates &&
+              updateGostDates.some(
+                (item) => item.name.toLowerCase() === key.toLowerCase()
+              )
                 ? updateGostDates
-                    .find((item) => item.name.toLowerCase() === key)
+                    .find((item) => item.name.toLowerCase() === key.toLowerCase())
                     .updateDate.split("T")[0]
                 : "",
           })),
@@ -233,12 +320,45 @@ const GostTable = (props) => {
             </ul>
           ),
         },
-      ].map(({ key, label, value }) => (
+        {
+          key: "keywords",
+          label: "Ключевые слова",
+          value:
+            keywords && keywords.length > 0 ? (
+              <ul>
+                {keywords.map((keyword) => (
+                  <li>
+                    <p>{keyword.name}</p>
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p>Нет ключевых слов</p>
+            ),
+        },
+        {
+          key: "keyphrases",
+          label: "Ключевые фразы",
+          value:
+            keyphrases && keyphrases.length > 0 ? (
+              <ul>
+                {keyphrases.map((keyphrase) => (
+                  <li>
+                    <p>{keyphrase.name}</p>
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p>Нет ключевых фраз</p>
+            ),
+        },
+      ].map(({ key, label, value, updateDate }) => (
         <tr key={key}>
           <td>
             <label htmlFor={key}>{label}</label>
           </td>
           <td>{value}</td>
+          <td>{updateDate}</td>
         </tr>
       ));
     } else {
@@ -248,12 +368,11 @@ const GostTable = (props) => {
           "denomination",
           "oksCode",
           "okpdCode",
-          "developerId",
           "content",
           "keywords",
           "keyphrases",
-          "acceptanceLevel",
           "text",
+          "acceptanceLevel",
           "actionStatus",
         ];
 
@@ -265,14 +384,82 @@ const GostTable = (props) => {
                   <label htmlFor={key}>{translationGostDict[key]}</label>
                 </td>
                 <td>
-                  <input
-                    className="gostInputAdd"
-                    value={formData[key]}
-                    onChange={(e) => handleInputChange(key, e.target.value)}
-                  />
+                  {key === "actionStatus" ? (
+                    <select
+                      className="gostInputAdd"
+                      value={formData.actionStatus}
+                      onChange={(e) =>
+                        handleInputChange("actionStatus", e.target.value)
+                      }
+                    >
+                      <option value="">Выберите статус</option>
+                      {actionStatusOptions.map((option) => (
+                        <option key={option.value} value={option.value}>
+                          {option.label}
+                        </option>
+                      ))}
+                    </select>
+                  ) : key === "acceptanceLevel" ? (
+                    <select
+                      className="gostInputAdd"
+                      value={formData.acceptanceLevel}
+                      onChange={(e) =>
+                        handleInputChange("acceptanceLevel", e.target.value)
+                      }
+                    >
+                      <option value="">Выберите уровень принятия</option>
+                      {acceptanceLevelOptions.map((option) => (
+                        <option key={option.value} value={option.value}>
+                          {option.label}
+                        </option>
+                      ))}
+                    </select>
+                  ) : (
+                    <input
+                      className="gostInputAdd"
+                      value={formData[key]}
+                      onChange={(e) => handleInputChange(key, e.target.value)}
+                    />
+                  )}
                 </td>
               </tr>
             ))}
+            <tr>
+              <td>
+                <label>Нормативные ссылки</label>
+              </td>
+              <td>
+                {selectedItems && selectedItems.length > 0 ? (
+                  <ul>
+                    {" "}
+                    {selectedItems.map((item) => (
+                      <li key={item.id}>{item.designation}</li>
+                    ))}{" "}
+                  </ul>
+                ) : (
+                  <p>Нет ссылок</p>
+                )}
+
+                <select onChange={handleSelectChange}>
+                  {gostsNormativeReferences.map((item) => (
+                    <option key={item.id} value={item.id}>
+                      {item.designation}
+                    </option>
+                  ))}
+                </select>
+              </td>
+            </tr>
+            <tr>
+              <td colspan="2">
+                <div className="file-input-container">
+                  <input
+                    type="file"
+                    onChange={handleFileChange}
+                    ref={selectedFile2Ref}
+                  />
+                </div>
+              </td>
+            </tr>
           </>
         );
       }
@@ -287,6 +474,7 @@ const GostTable = (props) => {
               onChange={(e) => handleInputChange(key, e.target.value)}
             />
           </td>
+          <td/>
         </tr>
       ));
     }
@@ -294,6 +482,7 @@ const GostTable = (props) => {
 
   const submitHandler = (event) => {
     event.preventDefault();
+
     console.log(formData);
     console.log("ok");
     const formAddData = new FormData();
@@ -306,6 +495,9 @@ const GostTable = (props) => {
 
     console.log("formAddData", formAddData);
     console.log("TEST", formData.id);
+
+    const normativeReferencesAdd = selectedItems.map((item) => item.id);
+
     if (props.add) {
       axios({
         method: "post",
@@ -321,21 +513,37 @@ const GostTable = (props) => {
           keyphrases: formData.keyphrases.split(","),
           acceptanceLevel: Number(formData.acceptanceLevel),
           text: formData.text,
-          actionStatus: formData.actionStatus,
+          actionStatus: Number(formData.actionStatus),
+          normativeReferences: normativeReferencesAdd,
         },
         headers: {
           "Content-Type": "application/json",
           //'Authorization': Bearer ${localStorage.getItem("token")}
         },
+      }).then((gost) => {
+        console.log(gost.data);
+        setGost(gost.data);
+
+        /*
+
+      var formData = new FormData();
+      formData.append("gostFile", selectedFile2Ref.current.files[0]);
+
+      axios({
+        method: "post",
+        url: `/api/Gost/AddFileToGost/?gostID=65`,
+        data: formData,
+        headers: { "Content-Type": "multipart/form-data" },
       })
-        .then((gost) => {
-          console.log(gost.data);
-          setGost(gost.data);
-          navigate("/home");
+        .then((file) => {
+          console.log(file.data);
         })
         .catch((error) => {
           console.log(error);
         });
+        */
+        navigate("/home");
+      });
     }
     if (props.edit) {
       axios({

@@ -1,6 +1,6 @@
 // libraries
 import { Routes, Route, Navigate, BrowserRouter } from "react-router-dom";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 // styles
 import "./App.css";
 // pages
@@ -22,55 +22,51 @@ import EditUserProfile from "./pages/Admin/UserProfiles/Edit/EditUserProfile";
 import Notifications from "./pages/Notifications/Notifications";
 import AcceptNotification from "./pages/Notifications/Accept/AcceptNotification";
 import Search from "./pages/Search/Search";
-
+import NotConfirmed from "./pages/NotConfirmed/NotConfirmed";
+import PrivateRoute from "./components/PrivateRoute/PrivateRoute";
 
 function App() {
-  useEffect(() => {
-    const header = document.querySelector(".header");
-    if (header) {
-      const headerHeight = header.offsetHeight;
-      const bodyContainer = document.querySelector(".body_container");
-      if (bodyContainer) {
-        bodyContainer.style.paddingTop = `${1.4 * headerHeight}px`;
-      }
-    }
-  }, []);
-
   return (
     <>
       <div className="body">
-      <ToastContainer />
+        <ToastContainer />
         <BrowserRouter>
           <Routes>
-            <Route path="/" element={<Login />} />
+            <Route path="/" element={<NotConfirmed />} />
             <Route path="/login" element={<Login />} />
             <Route path="/registration" element={<Registration />} />
-            <Route path="/home" element={<Home />} />
-            <Route path="/userProfiles" element={<UserProfiles />} />
-            <Route path="/editUser/:id" element={<EditUserProfile />} />
-            <Route path="/gostAdd" element={<GostAdd />} />
-            <Route path="/gostEdit/:id" element={<GostEdit />} />
-            <Route path="/gost/:id" element={<Gost />} />
-            <Route path="/favourites" element={<FavouritesGosts />} />
-            <Route path="/afterSearch" element={<SearchGosts />} />
-            <Route path="/myProfile" element={<MyProfile />} />
-            <Route path="/archive" element={<ArchiveGosts />} />
-            <Route path="/activity" element={<Activity />} />
-            <Route path="/notifications" element={<Notifications />} />
-            <Route path="/notification/:id" element={<AcceptNotification />} />
-            <Route path="/search" element={<Search />} />
 
+            <Route path="/" element={<PrivateRoute />}>
+              <Route path="/home" element={<Home />} />
+              <Route path="/userProfiles" element={<UserProfiles />} />
+              <Route path="/editUser/:id" element={<EditUserProfile />} />
+              <Route path="/gostAdd" element={<GostAdd />} />
+              <Route path="/gostEdit/:id" element={<GostEdit />} />
+              <Route path="/gost/:id" element={<Gost />} />
+              <Route path="/favourites" element={<FavouritesGosts />} />
+              <Route path="/afterSearch" element={<SearchGosts />} />
+              <Route path="/myProfile" element={<MyProfile />} />
+              <Route path="/archive" element={<ArchiveGosts />} />
+              <Route path="/activity" element={<Activity />} />
+              <Route path="/notifications" element={<Notifications />} />
+              <Route
+                path="/notification/:id"
+                element={<AcceptNotification />}
+              />
+              <Route path="/search" element={<Search />} />
+            </Route>
 
+            {/*
+            <Route path="/" element={<NotConfirmed />} />
+            */}
 
-            <Route path="/companyRegistration" element={<CompanyRegistration />} />
+            <Route
+              path="/companyRegistration"
+              element={<CompanyRegistration />}
+            />
+            {/* перенаправлять пользователя на главную страницу, если ввёл несуществующий путь */}
 
-            перенаправлять пользователя на главную страницу, если ввёл
-            несуществующий путь
-            {
-              /*
-                <Route path="*" element={<Navigate to="/" />} />
-              */
-            }
+            <Route path="*" element={<Navigate to="/" />} />
           </Routes>
         </BrowserRouter>
       </div>

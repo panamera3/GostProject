@@ -28,3 +28,8 @@
   text-align: center;
   display: block;
 }
+
+.file-input-container{
+  display: flex;
+  justify-content: center;
+}

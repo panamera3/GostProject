@@ -47,6 +47,7 @@ namespace GostProjectAPI
 			builder.Services.AddScoped<AuthService>();
 			builder.Services.AddScoped<NotificationService>();
 			builder.Services.AddScoped<CompanyService>();
+			builder.Services.AddScoped<KeysService>();
 
 			builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 				.AddJwtBearer(options =>
@@ -96,11 +97,15 @@ namespace GostProjectAPI
 			var app = builder.Build();
 
 			// Configure the HTTP request pipeline.
+			/*
 			if (app.Environment.IsDevelopment())
 			{
 				app.UseSwagger();
 				app.UseSwaggerUI();
 			}
+			*/
+			app.UseSwagger();
+			app.UseSwaggerUI();
 
 			app.UseHttpsRedirection();
 			app.UseStaticFiles();

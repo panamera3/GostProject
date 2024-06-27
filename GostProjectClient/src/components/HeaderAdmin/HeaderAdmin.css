@@ -77,4 +77,12 @@ img:hover {
 .header a {
   text-decoration: none;
   color: #ffffff;
+  white-space: nowrap;
+  display: inline-block;
+}
+
+.navigation-container{
+  display: flex;
+    justify-content: space-evenly;
+    flex-wrap: wrap;
 }

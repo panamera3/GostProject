@@ -9,10 +9,7 @@ using Microsoft.Office.Interop.Word;
 using System.Data;
 using System.Linq.Expressions;
 using System.Reflection;
-using System.Text;
-using UglyToad.PdfPig.DocumentLayoutAnalysis.TextExtractor;
 using UglyToad.PdfPig;
-using Word = Microsoft.Office.Interop.Word;
 
 namespace GostProjectAPI.Services
 {
@@ -22,13 +19,15 @@ namespace GostProjectAPI.Services
 		private readonly GostDBContext _dbContext;
 		private readonly FileUploadPaths _fileUploadPaths;
 		private readonly IWebHostEnvironment _env;
+		private readonly KeysService _keysService;
 
-		public GostService(GostDBContext dbContext, IMapper mapper, IOptions<FileUploadPaths> fileUploadPaths, IWebHostEnvironment env)
+		public GostService(GostDBContext dbContext, IMapper mapper, IOptions<FileUploadPaths> fileUploadPaths, IWebHostEnvironment env, KeysService keysService)
 		{
 			_dbContext = dbContext;
 			_mapper = mapper;
 			_fileUploadPaths = fileUploadPaths.Value;
 			_env = env;
+			_keysService = keysService;
 		}
 
 		public async Task<List<Gost>?> GetGostsAsync()
@@ -44,6 +43,11 @@ namespace GostProjectAPI.Services
 
 		public async Task<GostFile> AddFileToGostAsync(IFormFile gostFile, uint gostID)
 		{
+			// всё это поменять на запрос в бакет
+
+			// в этой дирекктории создать папку и в эту папку кидать
+			// Environment.CurrentDirectory
+
 			string filePath = _env.IsDevelopment() ? _fileUploadPaths.Local : _fileUploadPaths.Global;
 			string path = Path.Join(filePath, gostFile.FileName);
 			using var fileStream = new FileStream(path, FileMode.Create);
@@ -127,7 +131,7 @@ namespace GostProjectAPI.Services
 						".pdf" => SearchInPdfFile(gostFile.Path, searchPrompt),
 						var extension when extension == ".docx" || extension == ".doc" => SearchInWordFile(gostFile.Path, searchPrompt)
 					};
-					
+
 					if (isWordInFile)
 						foundGosts.Add(gost);
 				}
@@ -179,6 +183,15 @@ namespace GostProjectAPI.Services
 			return await _dbContext.Gosts.FirstOrDefaultAsync(g => g.ID == gostID);
 		}
 
+		public async Task<GostWithKeys?> GetFullGostAsync(uint gostID)
+		{
+			Gost gost = await _dbContext.Gosts.FirstOrDefaultAsync(g => g.ID == gostID);
+			List<Keyword> keywords = await _keysService.GetKeyWordsAsync(gostID);
+			List<Keyphrase> keyphrases = await _keysService.GetKeyPhrasesAsync(gostID);
+			GostWithKeys gostWithKeys = new() { Gost = gost, Keywords = keywords, Keyphrases = keyphrases };
+			return gostWithKeys;
+		}
+
 		public async Task<Gost?> AddGostAsync(GostAddDto gostAddDto)
 		{
 			var gost = _mapper.Map<GostAddDto, Gost>(gostAddDto);
@@ -217,6 +230,20 @@ namespace GostProjectAPI.Services
 			keyphrases.ForEach(async keyphrase =>
 			{
 				await _dbContext.Keyphrases.AddAsync(keyphrase);
+			});
+
+			List<NormativeReference> normativeReferences = new();
+			foreach (var normativeReferenceValue in gostAddDto.NormativeReferences)
+			{
+				if (_dbContext.Gosts.Any(gost => gost.ID == normativeReferenceValue))
+				{
+					var normativeReference = new NormativeReference { ReferenceGostId = normativeReferenceValue, RootGostId = gost.ID };
+					normativeReferences.Add(normativeReference);
+				}
+			}
+			normativeReferences.ForEach(async normativeReference =>
+			{
+				await _dbContext.NormativeReferences.AddAsync(normativeReference);
 			});
 
 
@@ -399,6 +426,12 @@ namespace GostProjectAPI.Services
 		{
 			var updateGostDates = await _dbContext.NormativeReferences.Where(g => g.RootGostId == gostID).ToListAsync();
 			return updateGostDates;
+		}
+
+		public async Task<List<DataForNormativeReference>> GetDataForNormativeReferencesAsync()
+		{
+			var dataForNormativeReference = await _dbContext.Gosts.Select(g => new DataForNormativeReference { ID = g.ID, Designation = g.Designation }).ToListAsync();
+			return dataForNormativeReference;
 		}
 	}
 }

@@ -3,6 +3,7 @@ using GostProjectAPI.DTOModels.Gosts;
 using Microsoft.AspNetCore.Authorization;
 using GostProjectAPI.Services;
 using Microsoft.AspNetCore.Mvc;
+using GostProjectAPI.Migrations;
 
 namespace GostProjectAPI.Controllers
 {
@@ -39,7 +40,7 @@ namespace GostProjectAPI.Controllers
         [HttpGet("{gostID}")]
         public async Task<JsonResult> GetGost(uint gostID)
         {
-            return JSON(await _gostService.GetGostAsync(gostID));
+            return JSON(await _gostService.GetFullGostAsync(gostID));
         }
 
         [HttpPost]
@@ -54,6 +55,7 @@ namespace GostProjectAPI.Controllers
             return JSON(await _gostService.AddFileToGostAsync(gostFile, gostID));
         }
 
+        // HttpPut
         [HttpPost]
         public async Task<JsonResult> EditGost([FromBody] GostEditDto gostEditDto)
         {
@@ -119,6 +121,12 @@ namespace GostProjectAPI.Controllers
 		public async Task<JsonResult> GetNormativeReferences(uint gostID)
 		{
 			return JSON(await _gostService.GetNormativeReferencesAsync(gostID));
+		}
+
+		[HttpGet]
+		public async Task<JsonResult> GetDataForNormativeReferences()
+		{
+			return JSON(await _gostService.GetDataForNormativeReferencesAsync());
 		}
 	}
 }

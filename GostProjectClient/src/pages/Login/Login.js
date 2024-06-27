@@ -47,6 +47,7 @@ const Login = () => {
         localStorage.setItem("id", user.data.id);
         localStorage.setItem("workCompanyID", user.data.workCompanyID);
         localStorage.setItem("role", userRole);
+        localStorage.setItem("isConfirmed", user.data.isConfirmed)
         navigate("/home");
       })
       .catch((error) => {

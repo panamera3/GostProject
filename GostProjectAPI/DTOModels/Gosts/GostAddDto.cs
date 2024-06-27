@@ -28,5 +28,7 @@ namespace GostProjectAPI.DTOModels.Gosts
 		public ActionStatus ActionStatus { get; set; }
 
 		public string Text { get; set; }
-    }
+
+        public List<uint> NormativeReferences { get; set; }
+	}
 }

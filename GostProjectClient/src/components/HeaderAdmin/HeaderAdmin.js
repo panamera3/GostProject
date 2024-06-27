@@ -54,13 +54,14 @@ const HeaderAdmin = (props) => {
     localStorage.setItem("id", "");
     localStorage.setItem("workCompanyID", "");
     localStorage.setItem("role", "");
+    localStorage.setItem("isConfirmed", "");
     navigate("/login");
   };
 
   return (
     <>
       <div className="header" ref={header}>
-        <div>
+        <div className="navigation-container">
           <a href="/home" className="a_header">
             Все документы
           </a>
