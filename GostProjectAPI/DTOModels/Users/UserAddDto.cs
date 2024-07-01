@@ -26,5 +26,7 @@ namespace GostProjectAPI.DTOModels.Users
         public UserRole Role { get; set; }
 
         public string Department { get; set; }
+
+		public bool? IsConfirmed { get; set; } = false;
 	}
 }

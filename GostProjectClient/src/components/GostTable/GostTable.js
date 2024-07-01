@@ -20,6 +20,9 @@ const GostTable = (props) => {
   const [keyphrases, setKeyphrases] = useState([]);
   const [referenceGostNames, setReferenceGostNames] = useState({});
   const [gostsNormativeReferences, setGostsNormativeReferences] = useState([]);
+  const [gostReplacedName, setGostReplacedName] = useState("");
+  const [replacedContainerVisibility, setReplacedContainerVisibility] =
+    useState(false);
 
   // fdsfjkl
 
@@ -46,6 +49,25 @@ const GostTable = (props) => {
   useEffect(() => {
     console.log("referenceGostNames", referenceGostNames);
   }, [referenceGostNames]);
+
+  useEffect(() => {
+    if (gost !== undefined) {
+      if (gost.gostIdReplaced != undefined) {
+        axios({
+          method: "get",
+          url: `/api/Gost/GetGostName/${gost.gostIdReplaced}`,
+          headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+        })
+          .then((gostReplacedName) => {
+            console.log("gostReplacedName", gostReplacedName.data);
+            setGostReplacedName(gostReplacedName.data);
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+      }
+    }
+  }, [gost]);
 
   useEffect(() => {
     console.log("props.id", props.id);
@@ -148,6 +170,17 @@ const GostTable = (props) => {
     }
   };
 
+  const replacedVisibilityChange = (event) => {
+    event.preventDefault();
+    setReplacedContainerVisibility(true);
+  };
+
+  const [gostIdReplaced, setGostIdReplaced] = useState([]);
+
+  const handleReplacedChange = (event) => {
+    setGostIdReplaced(event.target.value);
+    console.log("REPLACED", event.target.value)
+  };
 
   const renderGostTable = () => {
     if (gost) {
@@ -244,7 +277,10 @@ const GostTable = (props) => {
       return [
         ...Object.keys(gost)
           .filter(
-            (key) => key !== "developerUser" && key !== "normativeReferences"
+            (key) =>
+              key !== "developerUser" &&
+              key !== "normativeReferences" &&
+              key !== "developerId"
           )
           .map((key) => ({
             key,
@@ -261,8 +297,6 @@ const GostTable = (props) => {
                   actionStatusOptions.find(
                     (option) => option.value === gost[key]
                   )?.label
-                ) : key === "acceptanceDate" || key === "introdutionDate" ? (
-                  gost[key].split("T")[0]
                 ) : (
                   gost[key]
                 )
@@ -283,7 +317,9 @@ const GostTable = (props) => {
                 (item) => item.name.toLowerCase() === key.toLowerCase()
               )
                 ? updateGostDates
-                    .find((item) => item.name.toLowerCase() === key.toLowerCase())
+                    .find(
+                      (item) => item.name.toLowerCase() === key.toLowerCase()
+                    )
                     .updateDate.split("T")[0]
                 : "",
           })),
@@ -352,6 +388,24 @@ const GostTable = (props) => {
               <p>Нет ключевых фраз</p>
             ),
         },
+        {
+          key: "gestReplacedWith",
+          label: "Принят взамен",
+          value:
+            gost.gostIdReplaced != undefined ? (
+              <p>
+                Взамен{" "}
+                <a
+                  href={`/gost/${gost.gostIdReplaced}`}
+                  className="gostReplacedName"
+                >
+                  {gostReplacedName}
+                </a>
+              </p>
+            ) : (
+              <p>-</p>
+            ),
+        },
       ].map(({ key, label, value, updateDate }) => (
         <tr key={key}>
           <td>
@@ -371,7 +425,11 @@ const GostTable = (props) => {
           "content",
           "keywords",
           "keyphrases",
+          "acceptanceYear",
+          "introdutionYear",
           "text",
+          "changes",
+          "amendments",
           "acceptanceLevel",
           "actionStatus",
         ];
@@ -450,6 +508,28 @@ const GostTable = (props) => {
               </td>
             </tr>
             <tr>
+              <td>
+                <label>Принят взамен</label>
+              </td>
+              <td>
+                <select onChange={replacedVisibilityChange}>
+                  <option value={1}>Принят впервые</option>
+                  <option value={2}>Принят взамен</option>
+                </select>
+                {replacedContainerVisibility && (
+                  <>
+                    <select onChange={handleReplacedChange}>
+                      {gostsNormativeReferences.map((item) => (
+                        <option key={item.id} value={item.id}>
+                          {item.designation}
+                        </option>
+                      ))}
+                    </select>
+                  </>
+                )}
+              </td>
+            </tr>
+            <tr>
               <td colspan="2">
                 <div className="file-input-container">
                   <input
@@ -474,7 +554,7 @@ const GostTable = (props) => {
               onChange={(e) => handleInputChange(key, e.target.value)}
             />
           </td>
-          <td/>
+          <td />
         </tr>
       ));
     }
@@ -498,6 +578,8 @@ const GostTable = (props) => {
 
     const normativeReferencesAdd = selectedItems.map((item) => item.id);
 
+    console.log("gostIdReplaced", Number(gostIdReplaced));
+
     if (props.add) {
       axios({
         method: "post",
@@ -515,6 +597,9 @@ const GostTable = (props) => {
           text: formData.text,
           actionStatus: Number(formData.actionStatus),
           normativeReferences: normativeReferencesAdd,
+          acceptanceYear: Number(formData.acceptanceYear),
+          introdutionYear: Number(formData.introdutionYear),
+          gostIdReplaced: Number(gostIdReplaced),
         },
         headers: {
           "Content-Type": "application/json",
@@ -568,7 +653,7 @@ const GostTable = (props) => {
         .then((gost) => {
           console.log(gost.data);
           setGost(gost.data);
-          navigate("/home");
+          navigate(`/gost/${props.id}`);
         })
         .catch((error) => {
           console.log(error);
@@ -594,7 +679,7 @@ const GostTable = (props) => {
           <thead>
             <tr>
               <th scope="col">Поле</th>
-              <th scope="col">Первоначальное значение</th>
+              <th scope="col">Значение</th>
               {!props.add && !props.edit && (
                 <th scope="col">Дата последней актуализации</th>
               )}

@@ -43,12 +43,39 @@ namespace GostProjectAPI.Services
 
 		public async Task<GostFile> AddFileToGostAsync(IFormFile gostFile, uint gostID)
 		{
+			string filePath = _env.IsDevelopment() ? _fileUploadPaths.Global : _fileUploadPaths.Local;
+
+			using var client = new HttpClient();
+			using var content = new MultipartFormDataContent();
+			byte[] fileBytes = await File.ReadAllBytesAsync(gostFile.FileName);
+			content.Add(new ByteArrayContent(fileBytes), "file", gostFile.FileName);
+			var response = await client.PostAsync(filePath, content);
+			var path = Path.Join(filePath, gostFile.FileName);
+
+			if (response.IsSuccessStatusCode)
+			{
+				var gostFileEntity = new GostFile
+				{
+					Path = path,
+					GostId = gostID
+				};
+				await _dbContext.GostFiles.AddAsync(gostFileEntity);
+				await _dbContext.SaveChangesAsync();
+				return gostFileEntity;
+			}
+			else
+			{
+				// Handle error
+				return null;
+			}
 			// всё это поменять на запрос в бакет
 
 			// в этой дирекктории создать папку и в эту папку кидать
 			// Environment.CurrentDirectory
 
-			string filePath = _env.IsDevelopment() ? _fileUploadPaths.Local : _fileUploadPaths.Global;
+			/*
+
+			string filePath = _env.IsDevelopment() ? _fileUploadPaths.Global : _fileUploadPaths.Local;
 			string path = Path.Join(filePath, gostFile.FileName);
 			using var fileStream = new FileStream(path, FileMode.Create);
 			await gostFile.CopyToAsync(fileStream);
@@ -64,6 +91,7 @@ namespace GostProjectAPI.Services
 			await _dbContext.SaveChangesAsync();
 
 			return gostFileEntity;
+			*/
 		}
 
 		public async Task<PagedList<Gost>> GetGostsAsync(GetGostsDto getParams)
@@ -192,15 +220,17 @@ namespace GostProjectAPI.Services
 			return gostWithKeys;
 		}
 
+		public async Task<string?> GetGostNameAsync(uint gostID)
+		{
+			return (await _dbContext.Gosts.FirstOrDefaultAsync(g => g.ID == gostID)).Designation;
+		}
+
 		public async Task<Gost?> AddGostAsync(GostAddDto gostAddDto)
 		{
 			var gost = _mapper.Map<GostAddDto, Gost>(gostAddDto);
 
 			if (gost == null)
 				return null;
-
-			gost.AcceptanceDate = DateTime.Now;
-			gost.IntrodutionDate = DateTime.Now;
 
 			await _dbContext.Gosts.AddAsync(gost);
 			await _dbContext.SaveChangesAsync();

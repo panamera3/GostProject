@@ -16,13 +16,20 @@ const CompanyRegistration = () => {
 
   const fullnameCompanyRegistrationInputRef = useRef();
   const phoneNumberCompanyRegistrationInputRef = useRef();
+  const loginCompanyRegistrationInputRef = useRef();
   const passwordCompanyRegistrationInputRef = useRef();
   const confirmPasswordCompanyRegistrationInputRef = useRef();
 
   const [currentStep, setCurrentStep] = useState(1);
 
-  const handleNextStep = () => {
+  const handleNextStep = (event) => {
+    event.preventDefault();
     setCurrentStep(2);
+  };
+
+  const handlePrevStep = (event) => {
+    event.preventDefault();
+    setCurrentStep(1);
   };
 
   const submitHandler = (event) => {
@@ -36,6 +43,7 @@ const CompanyRegistration = () => {
       const psrn = PSRNCompanyRegistrationInputRef.current.value;
       const name = nameCompanyRegistrationInputRef.current.value;
       const email = emailCompanyRegistrationInputRef.current.value;
+      const login = loginCompanyRegistrationInputRef.current.value;
       const phoneNumber = phoneNumberCompanyRegistrationInputRef.current.value;
       const fullname = fullnameCompanyRegistrationInputRef.current.value;
       const fullnameString = fullname.split(" ");
@@ -45,15 +53,15 @@ const CompanyRegistration = () => {
         responseType: "json",
         url: `/api/Auth/RegisterCompany`,
         data: {
-          login: `${email}`,
+          login: `${login}`,
           password: `${password}`,
+          email: `${email}`,
           lastName: `${fullnameString[0]}`,
           firstName: `${fullnameString[1]}`,
           patronymic: `${fullnameString[2] ? fullnameString[2] : ""}`,
           psrn: `${psrn}`,
           name: `${name}`,
           role: UserRole.Admin,
-          email: `${emailCompanyRegistrationInputRef}`,
         },
       })
         .then((newUser) => {
@@ -64,6 +72,7 @@ const CompanyRegistration = () => {
             localStorage.setItem("token", newUser.data.token);
             localStorage.setItem("id", newUser.data.id);
             localStorage.setItem("workCompanyID", newUser.data.WorkCompanyID);
+            localStorage.setItem("isConfirmed", newUser.data.isConfirmed);
             localStorage.setItem("role", "Admin");
             console.log("LOCAL");
             console.log(localStorage);
@@ -119,20 +128,20 @@ const CompanyRegistration = () => {
               }
             >
               <input
-                name="login"
-                id="login_input"
+                name="psrn"
+                id="psrn_input"
                 ref={PSRNCompanyRegistrationInputRef}
                 placeholder="ОГРН/ОГРНИП"
               />
               <input
-                name="login"
-                id="login_input"
+                name="name"
+                id="name_input"
                 ref={nameCompanyRegistrationInputRef}
                 placeholder="Название организации"
               />
               <input
-                name="login"
-                id="login_input"
+                name="email"
+                id="email_input"
                 ref={emailCompanyRegistrationInputRef}
                 placeholder="Электронная почта"
               />
@@ -160,6 +169,12 @@ const CompanyRegistration = () => {
                 placeholder="Номер телефона"
               />
               <input
+                name="login"
+                id="login_input"
+                ref={loginCompanyRegistrationInputRef}
+                placeholder="Логин"
+              />
+              <input
                 name="password"
                 id="password_input"
                 type="password"
@@ -173,6 +188,9 @@ const CompanyRegistration = () => {
                 ref={confirmPasswordCompanyRegistrationInputRef}
                 placeholder="Подтверждение пароля"
               />
+              <button className="btn_blue" onClick={handlePrevStep}>
+                Назад
+              </button>
               <button className="btn_blue" type="submit">
                 Зарегистрироваться
               </button>

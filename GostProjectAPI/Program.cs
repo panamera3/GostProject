@@ -29,7 +29,8 @@ namespace GostProjectAPI
 			builder.Services.AddSwaggerGen();
 
 			// Add MySql DB
-			var conString = builder.Configuration.GetConnectionString("MySqlConString");
+			var nameConString = builder.Environment.IsDevelopment() ? "MySqlConString" : "MySqlConStringPublic";
+			var conString = builder.Configuration.GetConnectionString(nameConString);
 			builder.Services.AddDbContext<GostDBContext>(option => option.UseMySql(conString, new MySqlServerVersion(new Version(10, 4, 24))));
 
 			// Вписывать новые сервисы
@@ -104,6 +105,7 @@ namespace GostProjectAPI
 				app.UseSwaggerUI();
 			}
 			*/
+
 			app.UseSwagger();
 			app.UseSwaggerUI();
 

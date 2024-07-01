@@ -60,6 +60,7 @@ namespace GostProjectAPI.Controllers
 			var newAdmin = await _companyService.AddCompanyAsync(companyAddDto);
 			try
 			{
+				newAdmin.IsConfirmed = true;
 				var newUser = await _usersService.AddUserAsync(newAdmin);
 				if (newUser != null)
 					return JSON(await _authService.AuthenticateAsync(_mapper.Map<UserAuthDto>(newAdmin)));

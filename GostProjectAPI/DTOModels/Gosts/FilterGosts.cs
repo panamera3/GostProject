@@ -13,9 +13,9 @@ namespace GostProjectAPI.DTOModels.Gosts
 
         public string? OKPDCode { get; set; }
 
-        public DateTime? AcceptanceDate { get; set; }
+        public ushort? AcceptanceYear { get; set; }
 
-        public DateTime? IntrodutionDate { get; set; }
+        public ushort? IntrodutionYear { get; set; }
 
         public uint? DeveloperId { get; set; }
 

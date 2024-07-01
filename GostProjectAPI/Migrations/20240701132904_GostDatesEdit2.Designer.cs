@@ -3,6 +3,7 @@ using System;
 using GostProjectAPI.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace GostProjectAPI.Migrations
 {
     [DbContext(typeof(GostDBContext))]
-    partial class GostDBContextModelSnapshot : ModelSnapshot
+    [Migration("20240701132904_GostDatesEdit2")]
+    partial class GostDatesEdit2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -43,7 +46,7 @@ namespace GostProjectAPI.Migrations
 
                     b.HasKey("ID");
 
-                    b.ToTable("Companies", (string)null);
+                    b.ToTable("Companies");
                 });
 
             modelBuilder.Entity("GostProjectAPI.Data.Entities.FavouriteGost", b =>
@@ -64,7 +67,7 @@ namespace GostProjectAPI.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("FavouritesGosts", (string)null);
+                    b.ToTable("FavouritesGosts");
                 });
 
             modelBuilder.Entity("GostProjectAPI.Data.Entities.Gost", b =>
@@ -73,11 +76,11 @@ namespace GostProjectAPI.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int unsigned");
 
+                    b.Property<DateOnly>("AcceptanceDate")
+                        .HasColumnType("date");
+
                     b.Property<byte>("AcceptanceLevel")
                         .HasColumnType("tinyint unsigned");
-
-                    b.Property<ushort>("AcceptanceYear")
-                        .HasColumnType("smallint unsigned");
 
                     b.Property<byte>("ActionStatus")
                         .HasColumnType("tinyint unsigned");
@@ -106,8 +109,8 @@ namespace GostProjectAPI.Migrations
                     b.Property<uint?>("GostIdReplaced")
                         .HasColumnType("int unsigned");
 
-                    b.Property<ushort>("IntrodutionYear")
-                        .HasColumnType("smallint unsigned");
+                    b.Property<DateOnly>("IntrodutionDate")
+                        .HasColumnType("date");
 
                     b.Property<bool>("IsArchived")
                         .HasColumnType("tinyint(1)");
@@ -133,7 +136,7 @@ namespace GostProjectAPI.Migrations
 
                     b.HasIndex("GostIdReplaced");
 
-                    b.ToTable("Gosts", (string)null);
+                    b.ToTable("Gosts");
                 });
 
             modelBuilder.Entity("GostProjectAPI.Data.Entities.GostFile", b =>
@@ -153,7 +156,7 @@ namespace GostProjectAPI.Migrations
 
                     b.HasIndex("GostId");
 
-                    b.ToTable("GostFiles", (string)null);
+                    b.ToTable("GostFiles");
                 });
 
             modelBuilder.Entity("GostProjectAPI.Data.Entities.Keyphrase", b =>
@@ -173,7 +176,7 @@ namespace GostProjectAPI.Migrations
 
                     b.HasIndex("GostId");
 
-                    b.ToTable("Keyphrases", (string)null);
+                    b.ToTable("Keyphrases");
                 });
 
             modelBuilder.Entity("GostProjectAPI.Data.Entities.Keyword", b =>
@@ -193,7 +196,7 @@ namespace GostProjectAPI.Migrations
 
                     b.HasIndex("GostId");
 
-                    b.ToTable("Keywords", (string)null);
+                    b.ToTable("Keywords");
                 });
 
             modelBuilder.Entity("GostProjectAPI.Data.Entities.NormativeReference", b =>
@@ -214,7 +217,7 @@ namespace GostProjectAPI.Migrations
 
                     b.HasIndex("RootGostId");
 
-                    b.ToTable("NormativeReferences", (string)null);
+                    b.ToTable("NormativeReferences");
                 });
 
             modelBuilder.Entity("GostProjectAPI.Data.Entities.Notification", b =>
@@ -238,7 +241,7 @@ namespace GostProjectAPI.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Notifications", (string)null);
+                    b.ToTable("Notifications");
                 });
 
             modelBuilder.Entity("GostProjectAPI.Data.Entities.NotificationsLastSeen", b =>
@@ -257,7 +260,7 @@ namespace GostProjectAPI.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("NotificationsLastSeen", (string)null);
+                    b.ToTable("NotificationsLastSeen");
                 });
 
             modelBuilder.Entity("GostProjectAPI.Data.Entities.UpdateGostDate", b =>
@@ -280,7 +283,7 @@ namespace GostProjectAPI.Migrations
 
                     b.HasIndex("GostId");
 
-                    b.ToTable("UpdateGostDates", (string)null);
+                    b.ToTable("UpdateGostDates");
                 });
 
             modelBuilder.Entity("GostProjectAPI.Data.Entities.User", b =>
@@ -325,7 +328,7 @@ namespace GostProjectAPI.Migrations
 
                     b.HasIndex("WorkCompanyID");
 
-                    b.ToTable("Users", (string)null);
+                    b.ToTable("Users");
                 });
 
             modelBuilder.Entity("GostProjectAPI.Data.Entities.FavouriteGost", b =>

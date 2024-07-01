@@ -28,11 +28,11 @@ namespace GostProjectAPI.Data.Entities
         [Column(TypeName = "VARCHAR(128)")]
         public string OKPDCode { get; set; }
 
-        [Description("Дата принятия")]
-        public DateTime AcceptanceDate { get; set; }
+        [Description("Год принятия")]
+		public ushort AcceptanceYear { get; set; }
 
-        [Description("Дата введения")]
-        public DateTime IntrodutionDate { get; set; }
+		[Description("Год введения")]
+        public ushort IntrodutionYear { get; set; }
 
         [Description("Разработчик")]
         public User DeveloperUser { get; set; }

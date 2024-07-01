@@ -25,10 +25,16 @@ namespace GostProjectAPI.DTOModels.Gosts
 
         public AcceptanceLevel AcceptanceLevel { get; set; }
 
-		public ActionStatus ActionStatus { get; set; }
+        public ActionStatus ActionStatus { get; set; }
 
-		public string Text { get; set; }
+        public string Text { get; set; }
 
         public List<uint> NormativeReferences { get; set; }
+
+        public ushort AcceptanceYear { get; set; }
+
+        public ushort IntrodutionYear { get; set; }
+
+        public uint GostIdReplaced { get; set; }
 	}
 }

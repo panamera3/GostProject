@@ -37,13 +37,19 @@ namespace GostProjectAPI.Controllers
 			return JSON(await _gostService.GetGostsRangeAsync(getGostsInRangeDto));
 		}
 
-        [HttpGet("{gostID}")]
-        public async Task<JsonResult> GetGost(uint gostID)
-        {
-            return JSON(await _gostService.GetFullGostAsync(gostID));
-        }
+		[HttpGet("{gostID}")]
+		public async Task<JsonResult> GetGost(uint gostID)
+		{
+			return JSON(await _gostService.GetFullGostAsync(gostID));
+		}
 
-        [HttpPost]
+		[HttpGet("{gostID}")]
+		public async Task<JsonResult> GetGostName(uint gostID)
+		{
+			return JSON(await _gostService.GetGostNameAsync(gostID));
+		}
+
+		[HttpPost]
         public async Task<JsonResult> AddGost([FromBody] GostAddDto gostAddDto)
         {
             return JSON(await _gostService.AddGostAsync(gostAddDto));
