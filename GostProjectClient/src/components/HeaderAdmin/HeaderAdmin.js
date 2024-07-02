@@ -1,5 +1,5 @@
 import "./HeaderAdmin.css";
-import user from "../../images/user.svg";
+import userImg from "../../images/user.svg";
 import notification from "../../images/notification.svg";
 import notificationActive from "../../images/notificationActive.svg";
 import { useNavigate } from "react-router-dom";
@@ -81,7 +81,7 @@ const HeaderAdmin = ({user}) => {
               />
             </>
           )}
-          <img alt="User" src={user} onClick={() => openModalCard()} />
+          <img alt="User" src={userImg} onClick={() => openModalCard()} />
         </div>
       </div>
       {isModalNotificationOpen && (

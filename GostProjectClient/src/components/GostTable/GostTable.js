@@ -7,7 +7,7 @@ import { translationGostDict } from "../constants/translationGostDict";
 import { actionStatusOptions } from "../constants/ActionStatusOptions";
 import { acceptanceLevelOptions } from "../constants/AcceptanceLevelOptions";
 
-const GostTable = ({id, view, edit, add}) => {
+const GostTable = ({ id, view, edit, add }) => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({});
   const [gost, setGost] = useState({});
@@ -38,7 +38,7 @@ const GostTable = ({id, view, edit, add}) => {
   const [updateGostDates, setUpdateGostDates] = useState([]);
 
   useEffect(() => {
-    if (gost !== undefined) {
+    if (Object.keys(gost).length !== 0) {
       if (gost.gostIdReplaced != undefined) {
         axios({
           method: "get",
@@ -56,19 +56,19 @@ const GostTable = ({id, view, edit, add}) => {
   }, [gost]);
 
   useEffect(() => {
-    axios({
-      method: "get",
-      url: `/api/Gost/GetUpdateGostDates/${id}`,
-      headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
-    })
-      .then((gosts) => {
-        setUpdateGostDates(gosts.data);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-
     if (view || edit) {
+      axios({
+        method: "get",
+        url: `/api/Gost/GetUpdateGostDates/${id}`,
+        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+      })
+        .then((gosts) => {
+          setUpdateGostDates(gosts.data);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+
       axios({
         method: "get",
         url: `/api/Gost/GetGost/${id}`,
@@ -149,11 +149,11 @@ const GostTable = ({id, view, edit, add}) => {
   };
 
   const replacedVisibilityChange = (event) => {
-    event.preventDefault();
-    setReplacedContainerVisibility(true);
+    const selectedValue = event.target.value;
+    setReplacedContainerVisibility(selectedValue === "2");
   };
 
-  const [gostIdReplaced, setGostIdReplaced] = useState([]);
+  const [gostIdReplaced, setGostIdReplaced] = useState(-1);
 
   const handleReplacedChange = (event) => {
     setGostIdReplaced(event.target.value);
@@ -162,7 +162,7 @@ const GostTable = ({id, view, edit, add}) => {
   const excluded_keys = ["developerUser", "normativeReferences", "developerId"];
 
   const renderGostTable = () => {
-    if (gost) {
+    if (Object.keys(gost).length !== 0) {
       if (edit) {
         const editFields = [
           "designation",
@@ -374,7 +374,7 @@ const GostTable = ({id, view, edit, add}) => {
                 </a>
               </p>
             ) : (
-              <p>-</p>
+              <p>Нет</p>
             ),
         },
       ].map(({ key, label, value, updateDate }) => (
@@ -405,12 +405,32 @@ const GostTable = ({id, view, edit, add}) => {
           "actionStatus",
         ];
 
+        const requiredFields = [
+          "designation",
+          "denomination",
+          "oksCode",
+          "okpdCode",
+          "content",
+          "keywords",
+          "keyphrases",
+          "acceptanceYear",
+          "introdutionYear",
+          "text",
+          "acceptanceLevel",
+          "actionStatus",
+        ];
+
         return (
           <>
             {addFields.map((key, index) => (
               <tr key={index}>
                 <td>
-                  <label htmlFor={key}>{translationGostDict[key]}</label>
+                  <label htmlFor={key}>
+                    {translationGostDict[key]}
+                    <p className="requiredAddField">
+                      {requiredFields.includes(key) && "*"}
+                    </p>
+                  </label>
                 </td>
                 <td>
                   {key === "actionStatus" ? (
@@ -563,7 +583,9 @@ const GostTable = ({id, view, edit, add}) => {
           normativeReferences: normativeReferencesAdd,
           acceptanceYear: Number(formData.acceptanceYear),
           introdutionYear: Number(formData.introdutionYear),
-          gostIdReplaced: Number(gostIdReplaced),
+          ...(gostIdReplaced !== -1 && {
+            gostIdReplaced: Number(gostIdReplaced),
+          }),
         },
         headers: {
           "Content-Type": "application/json",
