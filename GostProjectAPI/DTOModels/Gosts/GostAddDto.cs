@@ -29,12 +29,12 @@ namespace GostProjectAPI.DTOModels.Gosts
 
         public string Text { get; set; }
 
-        public List<uint> NormativeReferences { get; set; }
+        public List<uint>? NormativeReferences { get; set; }
 
         public ushort AcceptanceYear { get; set; }
 
         public ushort IntrodutionYear { get; set; }
 
-        public uint GostIdReplaced { get; set; }
+        public uint? GostIdReplaced { get; set; }
 	}
 }

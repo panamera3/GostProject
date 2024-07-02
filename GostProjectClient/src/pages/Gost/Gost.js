@@ -1,6 +1,4 @@
-// styles
 import "./Gost.css";
-// libraries
 import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import GostTable from "../../components/GostTable/GostTable";
@@ -11,13 +9,13 @@ import { useParams } from "react-router-dom";
 import UserRole from "../../types/user/userRole";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-// components
+
 
 const Gost = (props) => {
   const params = useParams();
   const navigate = useNavigate();
 
-  const [isFavourite, setIsFavourite] = useState();
+  const [isFavourite, setIsFavourite] = useState(false);
 
   useEffect(() => {
     axios({
@@ -26,7 +24,6 @@ const Gost = (props) => {
       headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
     })
       .then((gost) => {
-        console.log("gost.data", gost.data);
       })
       .catch((error) => {
         console.log(error);
@@ -40,7 +37,6 @@ const Gost = (props) => {
       headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
     })
       .then((favourite) => {
-        console.log("IS FAV", favourite.data);
         setIsFavourite(favourite.data);
       })
       .catch((error) => {
@@ -55,7 +51,6 @@ const Gost = (props) => {
       headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
     })
       .then((data) => {
-        console.log(data.status);
         if (data.status === 200) {
           navigate("/home");
         }
@@ -73,7 +68,6 @@ const Gost = (props) => {
         url: `/api/Gost/AddFavouriteGost/?userId=${userId}&gostId=${params.id}`,
       })
         .then((gost) => {
-          console.log("gost.data favourite", gost.data);
           toast.success("Успешно добавлено в избранное!", {
             position: "top-right",
             autoClose: 3000,
@@ -93,7 +87,6 @@ const Gost = (props) => {
         url: `/api/Gost/DeleteFavouriteGost/?userId=${userId}&gostId=${params.id}`,
       })
         .then((gost) => {
-          console.log("gost.data favourite", gost.data);
           toast.success("Успешно удалено из избранного!", {
             position: "top-right",
             autoClose: 3000,
@@ -117,7 +110,6 @@ const Gost = (props) => {
       headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
     })
       .then((gost) => {
-        console.log("gost.data archive", gost.data);
         navigate("/home");
       })
       .catch((error) => {

@@ -59,6 +59,18 @@ img:hover {
   color: #ffffff;
 }
 
+.modalProfile button {
+  margin: 1em;
+  cursor: pointer;
+  color: #ffffff;
+  background-color: transparent;
+  border: none;
+  padding: 0;
+  font-size: 1em;
+  text-align: start;
+  font-family: "Montserrat", sans-serif;
+}
+
 .main_modal_content.notification {
   position: fixed;
   right: 6em;

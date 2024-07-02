@@ -1,8 +1,4 @@
-// styles
 import "./GostTable.css";
-// images
-
-// libraries
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState, useRef } from "react";
 import axios from "axios";
@@ -14,7 +10,7 @@ import { acceptanceLevelOptions } from "../constants/AcceptanceLevelOptions";
 const GostTable = (props) => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({});
-  const [gost, setGost] = useState();
+  const [gost, setGost] = useState({});
   const [normativeReferences, setNormativeReferences] = useState([]);
   const [keywords, setKeywords] = useState([]);
   const [keyphrases, setKeyphrases] = useState([]);
@@ -38,17 +34,12 @@ const GostTable = (props) => {
   const [isModalOpen, setModalOpen] = useState(false);
   const openModalCard = () => {
     setModalOpen(true);
-    console.log(1213);
   };
   const closeModalCard = () => {
     setModalOpen(false);
   };
 
-  const [updateGostDates, setUpdateGostDates] = useState();
-
-  useEffect(() => {
-    console.log("referenceGostNames", referenceGostNames);
-  }, [referenceGostNames]);
+  const [updateGostDates, setUpdateGostDates] = useState([]);
 
   useEffect(() => {
     if (gost !== undefined) {
@@ -59,7 +50,6 @@ const GostTable = (props) => {
           headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
         })
           .then((gostReplacedName) => {
-            console.log("gostReplacedName", gostReplacedName.data);
             setGostReplacedName(gostReplacedName.data);
           })
           .catch((error) => {
@@ -70,16 +60,12 @@ const GostTable = (props) => {
   }, [gost]);
 
   useEffect(() => {
-    console.log("props.id", props.id);
-
     axios({
       method: "get",
       url: `/api/Gost/GetUpdateGostDates/${props.id}`,
       headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
     })
       .then((gosts) => {
-        console.log(gosts);
-        console.log("update dates", gosts.data);
         setUpdateGostDates(gosts.data);
       })
       .catch((error) => {
@@ -93,7 +79,6 @@ const GostTable = (props) => {
         headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
       })
         .then((gost) => {
-          console.log("just gosts", gost.data);
           setGost(gost.data.gost);
 
           setKeywords(gost.data.keywords);
@@ -109,7 +94,6 @@ const GostTable = (props) => {
         headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
       })
         .then((references) => {
-          console.log("references.data", references.data);
           setNormativeReferences(references.data);
         })
         .catch((error) => {
@@ -123,7 +107,6 @@ const GostTable = (props) => {
         headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
       })
         .then((gostsNormativeReferences) => {
-          console.log("GetKeyPhrases", gostsNormativeReferences.data);
           setGostsNormativeReferences(gostsNormativeReferences.data);
         })
         .catch((error) => {
@@ -146,7 +129,6 @@ const GostTable = (props) => {
         .then((response) => {
           const fetchedGosts = response.data;
           const newReferenceGostNames = {};
-          console.log("fetchedGosts", fetchedGosts);
           fetchedGosts.forEach((gost) => {
             newReferenceGostNames[gost.id] = gost.designation;
           });
@@ -179,8 +161,9 @@ const GostTable = (props) => {
 
   const handleReplacedChange = (event) => {
     setGostIdReplaced(event.target.value);
-    console.log("REPLACED", event.target.value)
   };
+
+  const excluded_keys = ["developerUser", "normativeReferences", "developerId"];
 
   const renderGostTable = () => {
     if (gost) {
@@ -194,8 +177,6 @@ const GostTable = (props) => {
           "acceptanceLevel",
           "actionStatus",
         ];
-
-        console.log("formData", formData);
 
         return (
           <>
@@ -273,15 +254,9 @@ const GostTable = (props) => {
           </>
         );
       }
-      console.log("TEST FOR NOW", gost);
       return [
         ...Object.keys(gost)
-          .filter(
-            (key) =>
-              key !== "developerUser" &&
-              key !== "normativeReferences" &&
-              key !== "developerId"
-          )
+          .filter((key) => !excluded_keys.includes(key))
           .map((key) => ({
             key,
             label: translationGostDict[key] || key,
@@ -563,8 +538,6 @@ const GostTable = (props) => {
   const submitHandler = (event) => {
     event.preventDefault();
 
-    console.log(formData);
-    console.log("ok");
     const formAddData = new FormData();
     formAddData.append("gostAddDto", JSON.stringify(formData));
     for (const key in formData) {
@@ -573,12 +546,7 @@ const GostTable = (props) => {
 
     // formData.append("file", selectedFile);
 
-    console.log("formAddData", formAddData);
-    console.log("TEST", formData.id);
-
     const normativeReferencesAdd = selectedItems.map((item) => item.id);
-
-    console.log("gostIdReplaced", Number(gostIdReplaced));
 
     if (props.add) {
       axios({
@@ -603,14 +571,11 @@ const GostTable = (props) => {
         },
         headers: {
           "Content-Type": "application/json",
-          //'Authorization': Bearer ${localStorage.getItem("token")}
         },
       }).then((gost) => {
-        console.log(gost.data);
         setGost(gost.data);
 
         /*
-
       var formData = new FormData();
       formData.append("gostFile", selectedFile2Ref.current.files[0]);
 
@@ -647,11 +612,9 @@ const GostTable = (props) => {
         },
         headers: {
           "Content-Type": "application/json",
-          //'Authorization': Bearer ${localStorage.getItem("token")}
         },
       })
         .then((gost) => {
-          console.log(gost.data);
           setGost(gost.data);
           navigate(`/gost/${props.id}`);
         })

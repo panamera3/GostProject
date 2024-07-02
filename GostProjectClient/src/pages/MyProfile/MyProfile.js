@@ -23,7 +23,6 @@ const MyProfile = () => {
     })
       .then((user) => {
         setUser(user.data);
-        console.log(user.data);
       })
       .catch((error) => {
         console.log(error);
@@ -36,7 +35,6 @@ const MyProfile = () => {
       url: `/api/Company/GetCompany/${user.workCompanyID}`,
     })
       .then((company) => {
-        console.log(company.data);
         setCompany(company.data);
       })
       .catch((error) => {

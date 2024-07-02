@@ -1,10 +1,7 @@
-// styles
 import "./HeaderAdmin.css";
-// images
 import user from "../../images/user.svg";
 import notification from "../../images/notification.svg";
 import notificationActive from "../../images/notificationActive.svg";
-// libraries
 import { useNavigate } from "react-router-dom";
 import { useRef, useState, useEffect } from "react";
 import Modal from "../Modal/Modal";
@@ -26,7 +23,6 @@ const HeaderAdmin = (props) => {
       headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
     })
       .then((notifications) => {
-        console.log(notifications.data.length);
         setnotificationsCount(notifications.data.length);
       })
       .catch((error) => {
@@ -49,7 +45,6 @@ const HeaderAdmin = (props) => {
   };
 
   const exitHandler = () => {
-    console.log(123234);
     localStorage.setItem("token", "");
     localStorage.setItem("id", "");
     localStorage.setItem("workCompanyID", "");
@@ -117,7 +112,7 @@ const HeaderAdmin = (props) => {
               <a href="/myProfile">Мой профиль</a>
             )}
             <a href="/favourites">Избранное</a>
-            <p onClick={exitHandler}>Выход</p>
+            <button onClick={exitHandler}>Выход</button>
           </div>
         </Modal>
       )}

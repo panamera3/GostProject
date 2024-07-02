@@ -17,7 +17,6 @@ const Notifications = () => {
         headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
       })
         .then((notificationLastSeen) => {
-          console.log(notificationLastSeen.data);
           hasRequestedNotifications.current = true;
         })
         .catch((error) => {

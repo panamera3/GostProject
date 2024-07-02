@@ -1,8 +1,5 @@
-// styles
 import "./Search.css";
-// components
 import { searchDict } from "../../components/constants/searchDict";
-// libraries
 import { useNavigate } from "react-router-dom";
 import { useRef, useState, useEffect } from "react";
 import axios from "axios";
@@ -18,8 +15,8 @@ const Search = (props) => {
     offset: 0,
     total: 10,
   });
-  const [filter, setFilter] = useState();
-  const [search, setSearch] = useState();
+  const [filter, setFilter] = useState([]);
+  const [search, setSearch] = useState(false);
   const [textSearch, setTextSearch] = useState(false);
   const [afterTextSearch, setAfterTextSearch] = useState(false);
 
@@ -31,12 +28,10 @@ const Search = (props) => {
         data: { userID: localStorage.getItem("id"), pagination, filter },
         headers: {
           "Content-Type": "application/json",
-          //'Authorization': Bearer ${localStorage.getItem("token")}
         },
       })
         .then((gosts) => {
           if (gosts.data) {
-            console.log("gosts.data", gosts.data.data);
             localStorage.setItem(
               "searchGosts",
               JSON.stringify(gosts.data.data)
@@ -64,7 +59,6 @@ const Search = (props) => {
         values[name] = value.trim();
       }
     }
-    console.log("values", values);
     setFilter(values);
     setSearch(true);
   };
@@ -73,7 +67,6 @@ const Search = (props) => {
     event.preventDefault();
 
     const searchInFilePrompt = event.target.searchText.value;
-    console.log("Введенный текст:", searchInFilePrompt);
 
     axios({
       method: "post",
@@ -85,12 +78,10 @@ const Search = (props) => {
       },
       headers: {
         "Content-Type": "application/json",
-        //'Authorization': Bearer ${localStorage.getItem("token")}
       },
     })
       .then((gosts) => {
         if (gosts.data) {
-          console.log("gosts.data", gosts.data.data);
           localStorage.setItem("searchGosts", JSON.stringify(gosts.data.data));
           setAfterTextSearch(true);
         }

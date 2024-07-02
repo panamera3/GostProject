@@ -1,11 +1,8 @@
-// styles
 import "./CompanyRegistration.css";
-// libraries
 import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { toast } from "react-toastify";
-// types
 import UserRole from "../../../types/user/userRole";
 
 const CompanyRegistration = () => {
@@ -65,20 +62,14 @@ const CompanyRegistration = () => {
         },
       })
         .then((newUser) => {
-          console.log(newUser);
-          console.log(newUser.data);
-
           if (!newUser.data.error) {
             localStorage.setItem("token", newUser.data.token);
             localStorage.setItem("id", newUser.data.id);
             localStorage.setItem("workCompanyID", newUser.data.WorkCompanyID);
             localStorage.setItem("isConfirmed", newUser.data.isConfirmed);
             localStorage.setItem("role", "Admin");
-            console.log("LOCAL");
-            console.log(localStorage);
             try {
               localStorage.setItem("example", 1);
-              console.log("Data saved in localStorage");
             } catch (e) {
               console.error("Error saving data in localStorage:", e);
             }
@@ -96,7 +87,6 @@ const CompanyRegistration = () => {
           }
         })
         .catch((error) => {
-          console.log("THERE'S ERROR");
           console.log(error);
         });
     } else {

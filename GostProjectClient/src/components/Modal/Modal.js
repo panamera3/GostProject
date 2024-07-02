@@ -1,6 +1,4 @@
-// styles
 import "./Modal.css";
-// libraries
 import { useRef, useEffect } from "react";
 
 const Modal = (props) => {

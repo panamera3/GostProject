@@ -1,7 +1,5 @@
-// styles
 import { useEffect } from "react";
 import "./NotConfirmed.css";
-// libraries
 import { useNavigate } from "react-router-dom";
 
 const NotConfirmed = () => {

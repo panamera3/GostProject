@@ -3,7 +3,6 @@ import HeaderAdmin from "../../../components/HeaderAdmin/HeaderAdmin";
 import "./AcceptNotification.css";
 import axios from "axios";
 import { useParams, useNavigate } from "react-router-dom";
-import { translationRolesDict } from "../../../components/constants/translationRolesDict";
 import { toast } from "react-toastify";
 
 const AcceptNotification = () => {
@@ -36,7 +35,6 @@ const AcceptNotification = () => {
       headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
     })
       .then((response) => {
-        console.log(response.data);
         toast.success("Заявка была успешно принята!", {
           position: "top-right",
           autoClose: 3000,

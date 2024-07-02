@@ -1,8 +1,5 @@
-// styles
-// libraries
 import { useState, useEffect, useRef } from "react";
 import { useParams } from "react-router-dom";
-// components
 import HeaderAdmin from "../../../components/HeaderAdmin/HeaderAdmin";
 import GostTable from "../../../components/GostTable/GostTable";
 

@@ -1,14 +1,10 @@
-// styles
 import "./Login.css";
-// components
 import LeftColumnLogReg from "../../components/LeftColumnLogReg/LeftColumnLogReg";
-// libraries
 import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import UserRole from "../../types/user/userRole";
 import { toast } from "react-toastify";
-// images
 import eye from "../../images/eye.svg";
 import eye_closed from "../../images/eye_closed.svg";
 
@@ -39,7 +35,6 @@ const Login = () => {
       },
     })
       .then((user) => {
-        console.log("LOGIN user.data", user.data);
         const userRole = Object.keys(UserRole).find(
           (key) => UserRole[key] === user.data.role
         );

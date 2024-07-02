@@ -1,17 +1,11 @@
-//styles
 import { useEffect } from "react";
 import "./LeftColumnLogReg.css";
-// libraries
 import { useNavigate } from "react-router-dom";
 
 const LeftColumnLogReg = (props) => {
   const navigate = useNavigate();
 
   const redirectHandler = () => {};
-
-  useEffect(() => {
-    console.log(props);
-  });
 
   return (
     <>

@@ -4,7 +4,7 @@ import axios from "axios";
 import externalLink from "../../images/external-link.svg";
 
 const NotificationsTable = () => {
-  const [notifications, setNotifications] = useState();
+  const [notifications, setNotifications] = useState([]);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -15,7 +15,6 @@ const NotificationsTable = () => {
       headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
     })
       .then((notifications) => {
-        console.log(notifications.data);
         setNotifications(notifications.data);
       })
       .catch((error) => {

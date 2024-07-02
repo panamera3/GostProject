@@ -1,31 +1,22 @@
-// styles
 import axios from "axios";
 import HeaderAdmin from "../../../components/HeaderAdmin/HeaderAdmin";
 import "./UserProfiles.css";
-// components
-// libraries
 import { useState, useEffect, useRef } from "react";
 import UserRole from "../../../types/user/userRole";
 import Modal from "../../../components/Modal/Modal";
-// images
 import deleteImg from "../../../images/delete.svg";
 import editImg from "../../../images/edit.svg";
 import { useNavigate } from "react-router-dom";
+import { translationRolesDict } from "../../../components/constants/translationRolesDict";
 
 const UserProfiles = () => {
   const navigate = useNavigate();
 
-  // страница с таблицей всех пользоваетелей организации
-  const [users, setUsers] = useState();
+  const [users, setUsers] = useState([]);
   const [isModalDeleteOpen, setIsModalDeleteOpen] = useState(false);
-  const [deleteUserId, setDeleteUserId] = useState();
+  const [deleteUserId, setDeleteUserId] = useState(0);
   const [fullnameDeleteUserArray, setFullnameDeleteUserArray] = useState([]);
-  const [uniqueDepartments, setUniqueDepartments] = useState();
-
-  const roleTranslations = {
-    Admin: "Администратор",
-    Standart: "Обычный пользователь",
-  };
+  const [uniqueDepartments, setUniqueDepartments] = useState([]);
 
   useEffect(() => {
     updateUsers();
@@ -35,7 +26,6 @@ const UserProfiles = () => {
       headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
     })
       .then((departments) => {
-        console.log("departments", departments.data);
         setUniqueDepartments(departments.data);
       })
       .catch((error) => {
@@ -51,7 +41,6 @@ const UserProfiles = () => {
     })
       .then((users) => {
         setUsers(users.data);
-        console.log("users", users.data);
       })
       .catch((error) => {
         console.log(error);
@@ -59,8 +48,6 @@ const UserProfiles = () => {
   };
 
   const changeDepartment = (selectedDepartment) => {
-    console.log(selectedDepartment);
-
     axios({
       method: "post",
       url: `/api/User/FilterUsers`,
@@ -71,7 +58,6 @@ const UserProfiles = () => {
     })
       .then((filteredUsers) => {
         setUsers(filteredUsers.data);
-        console.log("filteredUsers", filteredUsers.data);
       })
       .catch((error) => {
         console.log(error);
@@ -81,7 +67,6 @@ const UserProfiles = () => {
   const renderOptions = () => {
     if (users) {
       if (uniqueDepartments) {
-        console.log("uniqueDepartments", uniqueDepartments);
         return [
           <option key="reset" value="" />,
           ...uniqueDepartments.map((department) => (
@@ -94,17 +79,12 @@ const UserProfiles = () => {
 
   const openModalDelete = (userId, fullnameArray) => {
     setIsModalDeleteOpen(true);
-    console.log(userId, userId);
     setDeleteUserId(userId);
     setFullnameDeleteUserArray(fullnameArray);
   };
   const closeModalDelete = () => {
     setIsModalDeleteOpen(false);
   };
-
-  useEffect(() => {
-    console.log(isModalDeleteOpen);
-  }, [isModalDeleteOpen]);
 
   const deleteUser = () => {
     axios({
@@ -134,7 +114,7 @@ const UserProfiles = () => {
           <td>
             <p>
               {
-                roleTranslations[
+                translationRolesDict[
                   Object.keys(UserRole).find(
                     (key) => UserRole[key] === user.role
                   )
@@ -185,8 +165,6 @@ const UserProfiles = () => {
         values[name] = value.trim();
       }
     }
-    console.log("form", form, formData);
-    console.log("values", values);
 
     axios({
       method: "post",
@@ -198,7 +176,6 @@ const UserProfiles = () => {
     })
       .then((filteredUsers) => {
         setUsers(filteredUsers.data);
-        console.log("filteredUsers", filteredUsers.data);
       })
       .catch((error) => {
         console.log(error);

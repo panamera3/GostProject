@@ -1,9 +1,6 @@
-// libraries
 import { Routes, Route, Navigate, BrowserRouter } from "react-router-dom";
 import { useEffect, useState } from "react";
-// styles
 import "./App.css";
-// pages
 import Login from "./pages/Login/Login";
 import Registration from "./pages/Registration/Registration";
 import Home from "./pages/Home/Home";

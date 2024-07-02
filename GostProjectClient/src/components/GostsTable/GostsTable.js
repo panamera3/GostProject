@@ -1,10 +1,7 @@
-// styles
 import "./GostsTable.css";
-// images
 import file from "../../images/file-minus.svg";
 import like from "../../images/like.svg";
 import likeActive from "../../images/like_active.svg";
-// libraries
 import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import axios from "axios";
@@ -13,12 +10,8 @@ import { translationGostDict } from "../constants/translationGostDict";
 const GostsTable = (props) => {
   const navigate = useNavigate();
 
-  const [gosts, setGosts] = useState();
-  const [favouritesGosts, setFavouritesGosts] = useState();
-
-  useEffect(() => {
-    console.log(gosts);
-  }, [gosts]);
+  const [gosts, setGosts] = useState([]);
+  const [favouritesGosts, setFavouritesGosts] = useState([]);
 
   const refreshFavouritesGosts = () => {
     const userId = localStorage.getItem("id");
@@ -29,7 +22,6 @@ const GostsTable = (props) => {
     })
       .then((favGosts) => {
         setFavouritesGosts(favGosts.data);
-        console.log("setFavouritesGosts", favGosts.data);
       })
       .catch((error) => {
         console.log(error);
@@ -37,11 +29,7 @@ const GostsTable = (props) => {
   };
 
   useEffect(() => {
-    console.log("localStorage.getItem(token)", localStorage.getItem("token"));
-    console.log("GOSTS TABLE props.searchGosts", props.searchGosts);
     if (props.favourites) {
-      console.log("ПЕРВОЕ");
-      console.log("props.favourites");
       const userId = localStorage.getItem("id");
       axios({
         method: "get",
@@ -52,22 +40,17 @@ const GostsTable = (props) => {
         },
       })
         .then((gosts) => {
-          console.log(gosts.data);
           setGosts(gosts.data);
         })
         .catch((error) => {
           console.log(error);
         });
     } else if (props.searchGosts) {
-      console.log("ВТОРОЕ");
       const searchGostsFromHeader = JSON.parse(
         localStorage.getItem("searchGosts")
       );
       setGosts(searchGostsFromHeader);
-      console.log("searchGostsFromHeader", searchGostsFromHeader);
     } else {
-      console.log("ТРЕТЬЕ");
-      console.log("localStorage.getItem(token)", localStorage.getItem("token"));
       if (localStorage.getItem("token")) {
         axios({
           method: "get",
@@ -78,7 +61,6 @@ const GostsTable = (props) => {
         })
           .then((gosts) => {
             setGosts(gosts.data);
-            console.log("setGosts", gosts.data);
           })
           .catch((error) => {
             console.log(error);
@@ -98,7 +80,6 @@ const GostsTable = (props) => {
         url: `/api/Gost/AddFavouriteGost/?userId=${userId}&gostId=${gostId}`,
       })
         .then((gost) => {
-          console.log("gost.data favourite", gost.data);
           refreshFavouritesGosts();
         })
         .catch((error) => {
@@ -110,7 +91,6 @@ const GostsTable = (props) => {
         url: `/api/Gost/DeleteFavouriteGost/?userId=${userId}&gostId=${gostId}`,
       })
         .then((gost) => {
-          console.log("gost.data favourite", gost.data);
           refreshFavouritesGosts();
         })
         .catch((error) => {
@@ -188,8 +168,6 @@ const GostsTable = (props) => {
   });
 
   const sortGosts = (selectedSort, selectedAsc) => {
-    console.log("selectedSort, selectedAsc", selectedSort, selectedAsc);
-
     axios({
       method: "post",
       url: `/api/Gost/GetGosts`,
@@ -205,7 +183,6 @@ const GostsTable = (props) => {
       },
     })
       .then((gosts) => {
-        console.log("gosts.data", gosts.data.data);
         setGosts(gosts.data.data);
       })
       .catch((error) => {

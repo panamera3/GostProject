@@ -24,7 +24,6 @@ const EditUserProfile = () => {
       headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
     })
       .then((user) => {
-        console.log("user.data", user.data);
         const fullname =
           `${user.data.lastName} ${user.data.firstName} ${user.data.patronymic}`.trim();
         const userWithFullname = { ...user.data, fullname };
@@ -37,7 +36,6 @@ const EditUserProfile = () => {
 
   const openModalCard = () => {
     setModalOpen(true);
-    console.log(1213);
   };
   const closeModalCard = () => {
     setModalOpen(false);
@@ -49,10 +47,6 @@ const EditUserProfile = () => {
 
   const submitHandler = (event) => {
     event.preventDefault();
-    console.log(formData);
-    console.log("ok");
-
-    console.log("TEST", formData.fullname);
 
     axios({
       method: "post",
@@ -66,12 +60,9 @@ const EditUserProfile = () => {
       },
       headers: {
         "Content-Type": "application/json",
-        //'Authorization': Bearer ${localStorage.getItem("token")}
       },
     })
       .then((user) => {
-        console.log(user.data);
-        // navigate("/home");
         toast.success("Пользователь был успешно отредактирован!", {
           position: "top-right",
           autoClose: 3000,
