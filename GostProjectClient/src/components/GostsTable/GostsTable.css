@@ -8,7 +8,7 @@
 }
 
 th {
-  text-align:start;
+  text-align: start;
 }
 
 .sortGosts * {
@@ -21,16 +21,15 @@ th {
 .gostsTable td:nth-last-child(2),
 .gostsTable th:last-child,
 .gostsTable td:last-child {
-    width: 3em;
+  width: 3em;
 }
 
 .gostsTable th:nth-last-child(2),
 .gostsTable td:nth-last-child(2),
 .gostsTable th:last-child,
 .gostsTable td:last-child {
-    text-align: center;
+  text-align: center;
 }
-
 
 .pagination {
   display: flex;
@@ -53,12 +52,29 @@ th {
 }
 
 .pagination li.active a {
-  background-color: #007bff;
+  background-color: #004696;
   color: #fff;
-  border-color: #007bff;
+  border-color: #004696;
 }
 
 .pagination li.disabled a {
   color: #ccc;
   pointer-events: none;
+}
+
+.pageSize {
+  display: flex;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.pageSize p {
+  margin-right: 0.5rem;
+}
+
+.pageSize select {
+  padding: 0.25rem 0.5rem;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
 }

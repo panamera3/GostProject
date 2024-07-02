@@ -13,8 +13,9 @@ const GostsTable = ({ favourites, archiveGosts, searchGosts }) => {
 
   const [gosts, setGosts] = useState([]);
   const [favouritesGosts, setFavouritesGosts] = useState([]);
+  const [pageSize, setPageSize] = useState(10);
   const [pagination, setPagination] = useState({
-    pageSize: 10,
+    pageSize: pageSize,
     offset: 0,
     total: 0,
     currentPage: 1,
@@ -39,6 +40,20 @@ const GostsTable = ({ favourites, archiveGosts, searchGosts }) => {
     fetchGosts();
     refreshFavouritesGosts();
   }, [pagination.offset]);
+
+  useEffect(() => {
+    fetchGosts();
+  }, [pagination.pageSize]);
+
+  const handlePageSizeChange = (size) => {
+    setPageSize(size);
+    setPagination((prevState) => ({
+      ...prevState,
+      pageSize: size,
+      offset: 0,
+      currentPage: 1,
+    }));
+  };
 
   const fetchGosts = () => {
     if (favourites) {
@@ -68,7 +83,7 @@ const GostsTable = ({ favourites, archiveGosts, searchGosts }) => {
       setGosts(searchGostsFromHeader);
       setPagination((prevState) => ({
         ...prevState,
-        total: 10, // searchGostsFromHeader.length,
+        total: searchGostsFromHeader.length,
       }));
     } else {
       if (localStorage.getItem("token")) {
@@ -289,12 +304,25 @@ const GostsTable = ({ favourites, archiveGosts, searchGosts }) => {
       </table>
 
       <Pagination
-  className="pagination-bar"
-  activePage={pagination.currentPage}
-  totalItemsCount={pagination.total}
-  itemsCountPerPage={pagination.pageSize}
-  onChange={handlePageChange}
-/>
+        className="pagination-bar"
+        activePage={pagination.currentPage}
+        totalItemsCount={pagination.total}
+        itemsCountPerPage={pagination.pageSize}
+        onChange={handlePageChange}
+      />
+      <div className="pageSize">
+        <p>Показывать по: </p>
+        <select
+          id="selectPageSize"
+          value={pageSize}
+          onChange={(e) => handlePageSizeChange(parseInt(e.target.value))}
+        >
+          <option value="10">10</option>
+          <option value="25">25</option>
+          <option value="50">50</option>
+          <option value="100">100</option>
+        </select>
+      </div>
     </>
   );
 };
