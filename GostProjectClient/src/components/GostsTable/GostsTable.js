@@ -6,12 +6,19 @@ import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { translationGostDict } from "../constants/translationGostDict";
+import Pagination from "react-js-pagination";
 
-const GostsTable = ({favourites, archiveGosts, searchGosts}) => {
+const GostsTable = ({ favourites, archiveGosts, searchGosts }) => {
   const navigate = useNavigate();
 
   const [gosts, setGosts] = useState([]);
   const [favouritesGosts, setFavouritesGosts] = useState([]);
+  const [pagination, setPagination] = useState({
+    pageSize: 10,
+    offset: 0,
+    total: 0,
+    currentPage: 1,
+  });
 
   const refreshFavouritesGosts = () => {
     const userId = localStorage.getItem("id");
@@ -29,6 +36,11 @@ const GostsTable = ({favourites, archiveGosts, searchGosts}) => {
   };
 
   useEffect(() => {
+    fetchGosts();
+    refreshFavouritesGosts();
+  }, [pagination.offset]);
+
+  const fetchGosts = () => {
     if (favourites) {
       const userId = localStorage.getItem("id");
       axios({
@@ -41,6 +53,10 @@ const GostsTable = ({favourites, archiveGosts, searchGosts}) => {
       })
         .then((gosts) => {
           setGosts(gosts.data);
+          setPagination((prevState) => ({
+            ...prevState,
+            total: gosts.data.pagination.total,
+          }));
         })
         .catch((error) => {
           console.log(error);
@@ -50,26 +66,49 @@ const GostsTable = ({favourites, archiveGosts, searchGosts}) => {
         localStorage.getItem("searchGosts")
       );
       setGosts(searchGostsFromHeader);
+      setPagination((prevState) => ({
+        ...prevState,
+        total: 10, // searchGostsFromHeader.length,
+      }));
     } else {
       if (localStorage.getItem("token")) {
         axios({
-          method: "get",
+          method: "post",
           url: `/api/Gost/GetGosts`,
+          data: {
+            userID: localStorage.getItem("id"),
+            pagination: {
+              pageSize: pagination.pageSize,
+              offset: pagination.offset,
+            },
+          },
           headers: {
-            Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySWQiOiIyMiIsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL25hbWUiOiJ0ZXN0MyIsImh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vd3MvMjAwOC8wNi9pZGVudGl0eS9jbGFpbXMvcm9sZSI6IkFkbWluIiwibmJmIjoxNzE3MDg1MzcxLCJleHAiOjE3MTcxNzE3NzEsImlzcyI6IkF1dGhTZXJ2ZXIiLCJhdWQiOiJBdXRoQ2xpZW50In0.0G3Dlu8snjBnsZX2J5eNOlaWh1czUjjK74o3G43mx6o`,
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            "Content-Type": "application/json",
           },
         })
           .then((gosts) => {
-            setGosts(gosts.data);
+            console.log("gosts", gosts);
+            setGosts(gosts.data.data);
+            setPagination((prevState) => ({
+              ...prevState,
+              total: gosts.data.pagination.total,
+            }));
           })
           .catch((error) => {
             console.log(error);
           });
       }
     }
+  };
 
-    refreshFavouritesGosts();
-  }, []);
+  const handlePageChange = (page) => {
+    setPagination((prevState) => ({
+      ...prevState,
+      offset: (page - 1) * prevState.pageSize,
+      currentPage: page,
+    }));
+  };
 
   const likeHandler = (state, gostId) => {
     const userId = localStorage.getItem("id");
@@ -161,12 +200,6 @@ const GostsTable = ({favourites, archiveGosts, searchGosts}) => {
     }
   };
 
-  const [pagination, setPagination] = useState({
-    pageSize: 100,
-    offset: 0,
-    total: 100,
-  });
-
   const sortGosts = (selectedSort, selectedAsc) => {
     axios({
       method: "post",
@@ -254,6 +287,14 @@ const GostsTable = ({favourites, archiveGosts, searchGosts}) => {
         </thead>
         <tbody>{renderGostsTable()}</tbody>
       </table>
+
+      <Pagination
+  className="pagination-bar"
+  activePage={pagination.currentPage}
+  totalItemsCount={pagination.total}
+  itemsCountPerPage={pagination.pageSize}
+  onChange={handlePageChange}
+/>
     </>
   );
 };
