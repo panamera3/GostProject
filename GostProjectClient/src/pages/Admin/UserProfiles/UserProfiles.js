@@ -8,6 +8,7 @@ import deleteImg from "../../../images/delete.svg";
 import editImg from "../../../images/edit.svg";
 import { useNavigate } from "react-router-dom";
 import { translationRolesDict } from "../../../components/constants/translationRolesDict";
+import { toast } from "react-toastify";
 
 const UserProfiles = () => {
   const navigate = useNavigate();
@@ -40,6 +41,7 @@ const UserProfiles = () => {
       headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
     })
       .then((users) => {
+        console.log(users.data);
         setUsers(users.data);
       })
       .catch((error) => {
@@ -95,6 +97,18 @@ const UserProfiles = () => {
       .then(() => {
         closeModalDelete();
         updateUsers();
+        axios({
+          method: "post",
+          url: `/api/Auth/UpdateCompanyCode/?companyId=${localStorage.getItem(
+            "workCompanyID"
+          )}`,
+        })
+          .then(() => {
+            toast.warning("Внимание! Код приглашения в компанию был обновлён.");
+          })
+          .catch((error) => {
+            console.log(error);
+          });
       })
       .catch((error) => {
         console.log(error);
