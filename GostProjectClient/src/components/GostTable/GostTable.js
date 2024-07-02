@@ -20,16 +20,12 @@ const GostTable = (props) => {
   const [replacedContainerVisibility, setReplacedContainerVisibility] =
     useState(false);
 
-  // fdsfjkl
-
   const [selectedFile, setSelectedFile] = useState("");
   const selectedFile2Ref = useRef("");
 
   const handleFileChange = (event) => {
     setSelectedFile(event.target.files[0]);
   };
-
-  // fsdhjkdsf
 
   const [isModalOpen, setModalOpen] = useState(false);
   const openModalCard = () => {
