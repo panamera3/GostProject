@@ -5,7 +5,9 @@ import { useRef, useState, useEffect } from "react";
 import axios from "axios";
 import HeaderAdmin from "../../components/HeaderAdmin/HeaderAdmin";
 import HeaderUser from "../../components/Header/HeaderUser";
-import GostsTable from "../../components/GostsTable/GostsTable";
+import Home from "../Home/Home";
+import { acceptanceLevelOptions } from "../../components/constants/AcceptanceLevelOptions";
+import { actionStatusOptions } from "../../components/constants/ActionStatusOptions";
 
 const Search = () => {
   const navigate = useNavigate();
@@ -13,12 +15,30 @@ const Search = () => {
   const [pagination, setPagination] = useState({
     pageSize: 10,
     offset: 0,
-    total: 10,
+    total: 0,
+    currentPage: 1,
   });
   const [filter, setFilter] = useState([]);
   const [search, setSearch] = useState(false);
   const [textSearch, setTextSearch] = useState(false);
   const [afterTextSearch, setAfterTextSearch] = useState(false);
+
+  const [requestedInsteadOptions, setRequestedInsteadOptions] = useState([]);
+
+  useEffect(() => {
+    fetchRequestedInsteadOptions();
+  }, []);
+
+  const fetchRequestedInsteadOptions = async () => {
+    try {
+      const response = await axios.get(
+        "/api/Gost/GetDataForNormativeReferences"
+      );
+      setRequestedInsteadOptions(response.data);
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   const searchGosts = () => {
     if (search) {
@@ -46,7 +66,7 @@ const Search = () => {
     }
   };
 
-  useEffect(searchGosts, [filter]);
+  useEffect(searchGosts, [filter, pagination.offset]);
 
   const searchHandler = (event) => {
     event.preventDefault();
@@ -56,9 +76,19 @@ const Search = () => {
 
     for (let [name, value] of formData) {
       if (value.trim() !== "") {
-        values[name] = value.trim();
+        switch (name) {
+          case "acceptanceLevel" || "actionStatus":
+            values[name] = value ? parseInt(value) : null;
+            break;
+          default:
+            values[name] = value.trim();
+            break;
+        }
       }
     }
+
+    console.log(values);
+
     setFilter(values);
     setSearch(true);
   };
@@ -100,6 +130,77 @@ const Search = () => {
     setTextSearch(false);
   };
 
+  const handleInputChange = (event, setFilter) => {
+    const { name, value } = event.target;
+    setFilter((prevFilter) => ({
+      ...prevFilter,
+      [name]: value.trim(),
+    }));
+  };
+
+  const renderSearchField = (key, filter, setFilter) => {
+    switch (key) {
+      case "acceptanceLevel":
+        return (
+          <select
+            id={key}
+            name={key}
+            value={filter[key] || ""}
+            onChange={(e) => handleInputChange(e, setFilter)}
+          >
+            <option value="">Выберите уровень принятия</option>
+            {acceptanceLevelOptions.map((option) => (
+              <option key={option.value} value={option.value}>
+                {option.label}
+              </option>
+            ))}
+          </select>
+        );
+      case "actionStatus":
+        return (
+          <select
+            id={key}
+            name={key}
+            value={filter[key] || ""}
+            onChange={(e) => handleInputChange(e, setFilter)}
+          >
+            <option value="">Выберите статус действия</option>
+            {actionStatusOptions.map((option) => (
+              <option key={option.value} value={option.value}>
+                {option.label}
+              </option>
+            ))}
+          </select>
+        );
+      case "gostIdReplaced":
+        return (
+          <select
+            id={key}
+            name={key}
+            value={filter[key] || ""}
+            onChange={(e) => handleInputChange(e, setFilter)}
+          >
+            <option value="">Выберите ГОСТ</option>
+            {requestedInsteadOptions.map((option) => (
+              <option key={option.id} value={option.id}>
+                {option.designation}
+              </option>
+            ))}
+          </select>
+        );
+
+      default:
+        return (
+          <input
+            id={key}
+            name={key}
+            value={filter[key] || ""}
+            onChange={(e) => handleInputChange(e, setFilter)}
+          />
+        );
+    }
+  };
+
   return (
     <>
       {localStorage.getItem("role") == "Admin" ? (
@@ -120,7 +221,7 @@ const Search = () => {
                     .map((key) => (
                       <div className="search_input_container" key={key}>
                         <label htmlFor={key}>{searchDict[key]}</label>
-                        <input id={key} name={key} />
+                        {renderSearchField(key, filter, setFilter)}
                       </div>
                     ))}
                 </div>
@@ -130,7 +231,7 @@ const Search = () => {
                     .map((key) => (
                       <div className="search_input_container" key={key}>
                         <label htmlFor={key}>{searchDict[key]}</label>
-                        <input id={key} name={key} />
+                        {renderSearchField(key, filter, setFilter)}
                       </div>
                     ))}
                 </div>
@@ -171,7 +272,7 @@ const Search = () => {
             </form>
             {afterTextSearch && (
               <>
-                <GostsTable searchGosts />
+                <Home searchGosts />
               </>
             )}
           </>

@@ -13,11 +13,11 @@ namespace GostProjectAPI.DTOModels.Gosts
 
         public string? OKPDCode { get; set; }
 
-        public ushort? AcceptanceYear { get; set; }
+		public string? Text { get; set; }
+
+		public ushort? AcceptanceYear { get; set; }
 
         public ushort? IntrodutionYear { get; set; }
-
-        public uint? DeveloperId { get; set; }
 
         public string? Content { get; set; }
 
@@ -27,8 +27,8 @@ namespace GostProjectAPI.DTOModels.Gosts
 
         public AcceptanceLevel? AcceptanceLevel { get; set; }
 
-        public string? Text { get; set; }
+        public ActionStatus? ActionStatus { get; set; }
 
-        public string? Amendments { get; set; }
-    }
+		public uint? GostIdReplaced { get; set; }
+	}
 }

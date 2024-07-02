@@ -100,26 +100,44 @@ namespace GostProjectAPI.Services
 
 			var filteredGosts = gosts;
 
-			if (getParams?.Filter?.Designation != null)
-				filteredGosts = filteredGosts.Where(o => o.Designation.Contains(getParams.Filter.Designation)).AsQueryable();
+			switch (getParams?.Filter)
+			{
+				case { Designation: not null }:
+					filteredGosts = filteredGosts.Where(o => o.Designation.Contains(getParams.Filter.Designation)).AsQueryable();
+					break;
+				case { Denomination: not null }:
+					filteredGosts = filteredGosts.Where(o => o.Denomination.Contains(getParams.Filter.Denomination)).AsQueryable();
+					break;
+				case { OKSCode: not null }:
+					filteredGosts = filteredGosts.Where(o => o.OKSCode.Contains(getParams.Filter.OKSCode)).AsQueryable();
+					break;
+				case { OKPDCode: not null }:
+					filteredGosts = filteredGosts.Where(o => o.OKPDCode.Contains(getParams.Filter.OKPDCode)).AsQueryable();
+					break;
+				case { Text: not null }:
+					filteredGosts = filteredGosts.Where(o => o.Text.Contains(getParams.Filter.Text)).AsQueryable();
+					break;
+				case { Content: not null }:
+					filteredGosts = filteredGosts.Where(o => o.Content.Contains(getParams.Filter.Content)).AsQueryable();
+					break;
 
-			if (getParams?.Filter?.Denomination != null)
-				filteredGosts = filteredGosts.Where(o => o.Denomination.Contains(getParams.Filter.Denomination)).AsQueryable();
+				case { AcceptanceLevel: not null }:
+					filteredGosts = filteredGosts.Where(o => o.AcceptanceLevel == getParams.Filter.AcceptanceLevel).AsQueryable();
+					break;
+				case { ActionStatus: not null }:
+					filteredGosts = filteredGosts.Where(o => o.ActionStatus == getParams.Filter.ActionStatus).AsQueryable();
+					break;
+				case { GostIdReplaced: not null }:
+					filteredGosts = filteredGosts.Where(o => o.GostIdReplaced == getParams.Filter.GostIdReplaced).AsQueryable();
+					break;
+				case { AcceptanceYear: not null }:
+					filteredGosts = filteredGosts.Where(o => o.AcceptanceYear == getParams.Filter.AcceptanceYear).AsQueryable();
+					break;
+				case { IntrodutionYear: not null }:
+					filteredGosts = filteredGosts.Where(o => o.IntrodutionYear == getParams.Filter.IntrodutionYear).AsQueryable();
+					break;
+			}
 
-			if (getParams?.Filter?.OKSCode != null)
-				filteredGosts = filteredGosts.Where(o => o.OKSCode.Contains(getParams.Filter.OKSCode)).AsQueryable();
-
-			if (getParams?.Filter?.OKPDCode != null)
-				filteredGosts = filteredGosts.Where(o => o.OKPDCode.Contains(getParams.Filter.OKPDCode)).AsQueryable();
-
-			if (getParams?.Filter?.DeveloperId != null)
-				filteredGosts = filteredGosts.Where(o => o.DeveloperId == getParams.Filter.DeveloperId).AsQueryable();
-
-			if (getParams?.Filter?.AcceptanceLevel != null)
-				filteredGosts = filteredGosts.Where(o => o.AcceptanceLevel == getParams.Filter.AcceptanceLevel).AsQueryable();
-
-			if (getParams?.Filter?.Text != null)
-				filteredGosts = filteredGosts.Where(o => o.Text.Contains(getParams.Filter.Text)).AsQueryable();
 
 			var sortedGosts = filteredGosts.ToList().AsQueryable();
 
