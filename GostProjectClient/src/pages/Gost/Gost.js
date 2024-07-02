@@ -11,7 +11,7 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 
-const Gost = (props) => {
+const Gost = () => {
   const params = useParams();
   const navigate = useNavigate();
 

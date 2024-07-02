@@ -1,6 +1,6 @@
 import Home from "../../Home/Home"
 
-const Activity = (props) => {
+const Activity = () => {
   return (
     <>
       <Home archiveGosts />

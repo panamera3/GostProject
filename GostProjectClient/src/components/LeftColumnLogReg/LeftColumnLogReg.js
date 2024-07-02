@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import "./LeftColumnLogReg.css";
 import { useNavigate } from "react-router-dom";
 
-const LeftColumnLogReg = (props) => {
+const LeftColumnLogReg = ({ login, registration, children }) => {
   const navigate = useNavigate();
 
   const redirectHandler = () => {};
@@ -11,7 +11,7 @@ const LeftColumnLogReg = (props) => {
     <>
       <div id="columns_flex">
         <div id="left_column_log_reg">
-          {props.login && (
+          {login && (
             <>
               <h2>Регистрация</h2>
               <p>
@@ -29,7 +29,7 @@ const LeftColumnLogReg = (props) => {
               </button>
             </>
           )}
-          {props.registration && (
+          {registration && (
             <>
               <h2>Вход</h2>
               <p>Уже есть аккаунт? Вы можете войти в него по кнопке ниже</p>
@@ -45,7 +45,7 @@ const LeftColumnLogReg = (props) => {
             </>
           )}
         </div>
-        {props.children}
+        {children}
       </div>
     </>
   );

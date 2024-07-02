@@ -7,7 +7,7 @@ import { useRef, useState, useEffect } from "react";
 import Modal from "../Modal/Modal";
 import axios from "axios";
 
-const HeaderAdmin = (props) => {
+const HeaderAdmin = ({user}) => {
   const header = useRef();
   const navigate = useNavigate();
 
@@ -60,9 +60,9 @@ const HeaderAdmin = (props) => {
           <a href="/home" className="a_header">
             Все документы
           </a>
-          {!props.user && <a href="/gostAdd">Создать документ</a>}
+          {!user && <a href="/gostAdd">Создать документ</a>}
 
-          {!props.user && (
+          {!user && (
             <>
               <a href="/search">Поиск</a>
               <a href="/archive">Архив</a>
@@ -72,7 +72,7 @@ const HeaderAdmin = (props) => {
           )}
         </div>
         <div id="header-images">
-          {!props.user && (
+          {!user && (
             <>
               <img
                 alt="Notifications"

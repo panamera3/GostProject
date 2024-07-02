@@ -1,12 +1,12 @@
 import "./Modal.css";
 import { useRef, useEffect } from "react";
 
-const Modal = (props) => {
+const Modal = ({onClose, isOpen, overlay, stylePosition, contentClassName, width, height, children}) => {
   const modalRef = useRef();
 
   const handleClickOutside = (event) => {
     if (modalRef.current && !modalRef.current.contains(event.target)) {
-      props.onClose();
+      onClose();
     }
   };
 
@@ -17,23 +17,23 @@ const Modal = (props) => {
     };
   }, []);
 
-  if (!props.isOpen) return null;
+  if (!isOpen) return null;
 
   return (
     <>
-      <div className={props.overlay ? "main_modal_overlay" : ""}>
+      <div className={overlay ? "main_modal_overlay" : ""}>
         <div
-          className={`main_modal ${props.isOpen ? "open" : "closed"}`}
-          style={props.stylePosition}
+          className={`main_modal ${isOpen ? "open" : "closed"}`}
+          style={stylePosition}
           ref={modalRef}
         >
           <div
             className={`main_modal_content ${
-              props.contentClassName ? props.contentClassName : ""
+              contentClassName ? contentClassName : ""
             }`}
-            style={{ width: `${props.width}`, height: `${props.height}` }}
+            style={{ width: `${width}`, height: `${height}` }}
           >
-            {props.children}
+            {children}
           </div>
         </div>
       </div>

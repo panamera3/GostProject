@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import "../../components/GostsTable/GostsTable.css";
 import Home from "../Home/Home";
 
-const SearchGosts = (props) => {
+const SearchGosts = () => {
   return (
     <>
       <Home searchGosts />

@@ -1,7 +1,7 @@
 import "./FavouritesGosts.css";
 import Home from "../Home/Home";
 
-const FavouritesGosts = (props) => {
+const FavouritesGosts = () => {
   return (
     <>
       <Home favourites />

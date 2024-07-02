@@ -4,7 +4,7 @@ import HeaderAdmin from "../../components/HeaderAdmin/HeaderAdmin";
 import HeaderUser from "../../components/Header/HeaderUser";
 import GostsTable from "../../components/GostsTable/GostsTable";
 
-const Home = (props) => {
+const Home = ({searchGosts, favourites, archiveGosts}) => {
   return (
     <>
       {localStorage.getItem("role") == "Admin" ? (
@@ -13,20 +13,20 @@ const Home = (props) => {
         <HeaderUser />
       )}
       <div className="body_container">
-        {props.searchGosts && (
+        {searchGosts && (
           <div className="activities_container">
             <a href="/search">Назад</a>
           </div>
         )}
-        {props.favourites && (
+        {favourites && (
           <div className="activities_container">
             <a href="/home">Назад</a>
           </div>
         )}
         <GostsTable
-          favourites={props.favourites}
-          searchGosts={props.searchGosts}
-          archiveGosts={props.archiveGosts}
+          favourites={favourites}
+          searchGosts={searchGosts}
+          archiveGosts={archiveGosts}
         />
       </div>
     </>

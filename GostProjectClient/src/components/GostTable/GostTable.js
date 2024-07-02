@@ -7,7 +7,7 @@ import { translationGostDict } from "../constants/translationGostDict";
 import { actionStatusOptions } from "../constants/ActionStatusOptions";
 import { acceptanceLevelOptions } from "../constants/AcceptanceLevelOptions";
 
-const GostTable = (props) => {
+const GostTable = ({id, view, edit, add}) => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({});
   const [gost, setGost] = useState({});
@@ -58,7 +58,7 @@ const GostTable = (props) => {
   useEffect(() => {
     axios({
       method: "get",
-      url: `/api/Gost/GetUpdateGostDates/${props.id}`,
+      url: `/api/Gost/GetUpdateGostDates/${id}`,
       headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
     })
       .then((gosts) => {
@@ -68,10 +68,10 @@ const GostTable = (props) => {
         console.log(error);
       });
 
-    if (props.view || props.edit) {
+    if (view || edit) {
       axios({
         method: "get",
-        url: `/api/Gost/GetGost/${props.id}`,
+        url: `/api/Gost/GetGost/${id}`,
         headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
       })
         .then((gost) => {
@@ -86,7 +86,7 @@ const GostTable = (props) => {
 
       axios({
         method: "get",
-        url: `/api/Gost/GetNormativeReferences/${props.id}`,
+        url: `/api/Gost/GetNormativeReferences/${id}`,
         headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
       })
         .then((references) => {
@@ -96,7 +96,7 @@ const GostTable = (props) => {
           console.log(error);
         });
     }
-    if (props.add) {
+    if (add) {
       axios({
         method: "get",
         url: `/api/Gost/GetDataForNormativeReferences`,
@@ -163,7 +163,7 @@ const GostTable = (props) => {
 
   const renderGostTable = () => {
     if (gost) {
-      if (props.edit) {
+      if (edit) {
         const editFields = [
           "designation",
           "denomination",
@@ -182,7 +182,7 @@ const GostTable = (props) => {
               </td>
               <td>
                 <label id="idEdit" htmlFor="id">
-                  {props.id}
+                  {id}
                 </label>
               </td>
             </tr>
@@ -256,7 +256,7 @@ const GostTable = (props) => {
           .map((key) => ({
             key,
             label: translationGostDict[key] || key,
-            value: props.view ? (
+            value: view ? (
               gost[key] ? (
                 gost[key] === true ? (
                   "Да"
@@ -297,7 +297,7 @@ const GostTable = (props) => {
         {
           key: "normativeReferences",
           label: "Нормативные ссылки",
-          value: props.view ? (
+          value: view ? (
             normativeReferences && normativeReferences.length > 0 ? (
               <ul>
                 {normativeReferences.map((reference) => (
@@ -387,7 +387,7 @@ const GostTable = (props) => {
         </tr>
       ));
     } else {
-      if (props.add) {
+      if (add) {
         const addFields = [
           "designation",
           "denomination",
@@ -544,7 +544,7 @@ const GostTable = (props) => {
 
     const normativeReferencesAdd = selectedItems.map((item) => item.id);
 
-    if (props.add) {
+    if (add) {
       axios({
         method: "post",
         url: `/api/Gost/AddGost`,
@@ -591,12 +591,12 @@ const GostTable = (props) => {
         navigate("/home");
       });
     }
-    if (props.edit) {
+    if (edit) {
       axios({
         method: "post",
         url: `/api/Gost/EditGost`,
         data: {
-          id: props.id,
+          id: id,
           designation: formData.designation,
           denomination: formData.denomination,
           oksCode: formData.oksCode,
@@ -612,7 +612,7 @@ const GostTable = (props) => {
       })
         .then((gost) => {
           setGost(gost.data);
-          navigate(`/gost/${props.id}`);
+          navigate(`/gost/${id}`);
         })
         .catch((error) => {
           console.log(error);
@@ -639,14 +639,14 @@ const GostTable = (props) => {
             <tr>
               <th scope="col">Поле</th>
               <th scope="col">Значение</th>
-              {!props.add && !props.edit && (
+              {!add && !edit && (
                 <th scope="col">Дата последней актуализации</th>
               )}
             </tr>
           </thead>
           <tbody>{renderGostTable()}</tbody>
         </table>
-        {!props.view && props.edit && (
+        {!view && edit && (
           <>
             <button className="btn_blue" type="submit">
               Сохранить
@@ -660,7 +660,7 @@ const GostTable = (props) => {
             </button>
           </>
         )}
-        {!props.view && props.add && (
+        {!view && add && (
           <>
             <button className="btn_blue" type="submit">
               Добавить

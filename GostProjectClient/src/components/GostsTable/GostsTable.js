@@ -7,7 +7,7 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import { translationGostDict } from "../constants/translationGostDict";
 
-const GostsTable = (props) => {
+const GostsTable = ({favourites, archiveGosts, searchGosts}) => {
   const navigate = useNavigate();
 
   const [gosts, setGosts] = useState([]);
@@ -29,7 +29,7 @@ const GostsTable = (props) => {
   };
 
   useEffect(() => {
-    if (props.favourites) {
+    if (favourites) {
       const userId = localStorage.getItem("id");
       axios({
         method: "get",
@@ -45,7 +45,7 @@ const GostsTable = (props) => {
         .catch((error) => {
           console.log(error);
         });
-    } else if (props.searchGosts) {
+    } else if (searchGosts) {
       const searchGostsFromHeader = JSON.parse(
         localStorage.getItem("searchGosts")
       );
@@ -102,11 +102,11 @@ const GostsTable = (props) => {
   const renderGostsTable = () => {
     if (gosts) {
       var renderGosts = gosts;
-      if (!props.searchGosts) {
+      if (!searchGosts) {
         renderGosts = renderGosts.filter(
           (gost) =>
-            (props.archiveGosts && gost.isArchived) ||
-            (!props.archiveGosts && !gost.isArchived)
+            (archiveGosts && gost.isArchived) ||
+            (!archiveGosts && !gost.isArchived)
         );
       }
       return renderGosts.map((gost) => (
@@ -192,7 +192,7 @@ const GostsTable = (props) => {
 
   return (
     <>
-      {!(props.favourites || props.archiveGosts || props.searchGosts) && (
+      {!(favourites || archiveGosts || searchGosts) && (
         <div className="sortGosts">
           <p>Сортировать по: </p>
           <select

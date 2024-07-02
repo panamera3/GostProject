@@ -7,7 +7,7 @@ import HeaderAdmin from "../../components/HeaderAdmin/HeaderAdmin";
 import HeaderUser from "../../components/Header/HeaderUser";
 import GostsTable from "../../components/GostsTable/GostsTable";
 
-const Search = (props) => {
+const Search = () => {
   const navigate = useNavigate();
 
   const [pagination, setPagination] = useState({

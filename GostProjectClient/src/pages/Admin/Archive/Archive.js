@@ -1,6 +1,6 @@
 import Home from "../../Home/Home"
 
-const ArchiveGosts = (props) => {
+const ArchiveGosts = () => {
   return (
     <>
       <Home archiveGosts />
