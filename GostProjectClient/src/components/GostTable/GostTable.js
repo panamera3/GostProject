@@ -159,7 +159,135 @@ const GostTable = ({ id, view, edit, add }) => {
     setGostIdReplaced(event.target.value);
   };
 
+  const getOptionLabel = (options, value) => {
+    const selectedOption = options.find((option) => option.value === value);
+    return selectedOption ? selectedOption.label : "";
+  };
+
   const excluded_keys = ["developerUser", "normativeReferences", "developerId"];
+  const getViewValue = (key, value) => {
+    if (value) {
+      if (value === true) {
+        return "Да";
+      } else if (key === "acceptanceLevel") {
+        return getOptionLabel(acceptanceLevelOptions, value);
+      } else if (key === "actionStatus") {
+        return getOptionLabel(actionStatusOptions, value);
+      } else if (value === 0) {
+        return "0";
+      } else {
+        return value;
+      }
+    } else {
+      return "Нет";
+    }
+  };
+
+  const getEditValue = (key, value) => (
+    <input
+      className="gostInput"
+      placeholder={translationGostDict[key] || key}
+      value={value}
+      onChange={(e) => handleInputChange(key, e.target.value)}
+    />
+  );
+
+  const getUpdateDate = (key, updateGostDates) =>
+    updateGostDates &&
+    updateGostDates.some(
+      (item) => item.name.toLowerCase() === key.toLowerCase()
+    )
+      ? updateGostDates
+          .find((item) => item.name.toLowerCase() === key.toLowerCase())
+          .updateDate.split("T")[0]
+      : "";
+
+  const getNormativeReferencesValue = (
+    view,
+    normativeReferences,
+    referenceGostNames
+  ) => {
+    if (view) {
+      if (normativeReferences && normativeReferences.length > 0) {
+        return (
+          <ul>
+            {normativeReferences.map((reference) => (
+              <li key={reference.id}>
+                <a href={`/gost/${reference.referenceGostId}`}>
+                  {referenceGostNames[reference.referenceGostId] || ""}
+                </a>
+              </li>
+            ))}
+          </ul>
+        );
+      } else {
+        return <p>Нет ссылок</p>;
+      }
+    } else {
+      return (
+        <ul>
+          {normativeReferences.map((reference) => (
+            <li key={reference.id}>
+              <input
+                type="text"
+                value={referenceGostNames[reference.referenceGostId] || ""}
+                onChange={(e) =>
+                  handleInputChange("normativeReferences", e.target.value)
+                }
+              />
+            </li>
+          ))}
+        </ul>
+      );
+    }
+  };
+
+  const getKeywordsValue = (keywords) => {
+    if (keywords && keywords.length > 0) {
+      return (
+        <ul>
+          {keywords.map((keyword) => (
+            <li key={keyword.id}>
+              <p>{keyword.name}</p>
+            </li>
+          ))}
+        </ul>
+      );
+    } else {
+      return <p>Нет ключевых слов</p>;
+    }
+  };
+
+  const getKeyphrasesValue = (keyphrases) => {
+    if (keyphrases && keyphrases.length > 0) {
+      return (
+        <ul>
+          {keyphrases.map((keyphrase) => (
+            <li key={keyphrase.id}>
+              <p>{keyphrase.name}</p>
+            </li>
+          ))}
+        </ul>
+      );
+    } else {
+      return <p>Нет ключевых фраз</p>;
+    }
+  };
+
+  const getGostReplacedWithValue = (gostIdReplaced, gostReplacedName) => {
+    if (gostIdReplaced !== null) {
+      return (
+        <p>
+          Взамен{" "}
+          <a href={`/gost/${gostIdReplaced}`} className="gostReplacedName">
+            {gostReplacedName}
+          </a>
+        </p>
+      );
+    } else {
+      return <p>Нет</p>;
+    }
+  };
 
   const renderGostTable = () => {
     if (Object.keys(gost).length !== 0) {
@@ -250,142 +378,54 @@ const GostTable = ({ id, view, edit, add }) => {
           </>
         );
       }
-      return [
-        ...Object.keys(gost)
-          .filter((key) => !excluded_keys.includes(key))
-          .map((key) => ({
-            key,
-            label: translationGostDict[key] || key,
-            value: view ? (
-              gost[key] ? (
-                gost[key] === true ? (
-                  "Да"
-                ) : key === "acceptanceLevel" ? (
-                  acceptanceLevelOptions.find(
-                    (option) => option.value === gost[key]
-                  )?.label
-                ) : key === "actionStatus" ? (
-                  actionStatusOptions.find(
-                    (option) => option.value === gost[key]
-                  )?.label
-                ) : (
-                  gost[key]
-                )
-              ) : (
-                "Нет"
-              )
-            ) : (
-              <input
-                className="gostInput"
-                placeholder={translationGostDict[key] || key}
-                value={gost[key]}
-                onChange={(e) => handleInputChange(key, e.target.value)}
-              />
+      return Object.keys(gost)
+        .filter((key) => !excluded_keys.includes(key))
+        .map((key) => ({
+          key,
+          label: translationGostDict[key] || key,
+          value: view
+            ? getViewValue(key, gost[key])
+            : getEditValue(key, gost[key]),
+          updateDate: getUpdateDate(key, updateGostDates),
+        }))
+        .concat([
+          {
+            key: "normativeReferences",
+            label: "Нормативные ссылки",
+            value: getNormativeReferencesValue(
+              view,
+              normativeReferences,
+              referenceGostNames
             ),
-            updateDate:
-              updateGostDates &&
-              updateGostDates.some(
-                (item) => item.name.toLowerCase() === key.toLowerCase()
-              )
-                ? updateGostDates
-                    .find(
-                      (item) => item.name.toLowerCase() === key.toLowerCase()
-                    )
-                    .updateDate.split("T")[0]
-                : "",
-          })),
-        {
-          key: "normativeReferences",
-          label: "Нормативные ссылки",
-          value: view ? (
-            normativeReferences && normativeReferences.length > 0 ? (
-              <ul>
-                {normativeReferences.map((reference) => (
-                  <li key={reference.id}>
-                    <a href={`/gost/${reference.referenceGostId}`}>
-                      {referenceGostNames[reference.referenceGostId] || ""}
-                    </a>
-                  </li>
-                ))}
-              </ul>
-            ) : (
-              <p>Нет ссылок</p>
-            )
-          ) : (
-            <ul>
-              {normativeReferences.map((reference) => (
-                <li key={reference.id}>
-                  <input
-                    type="text"
-                    value={referenceGostNames[reference.referenceGostId] || ""}
-                    onChange={(e) =>
-                      handleInputChange("normativeReferences", e.target.value)
-                    }
-                  />
-                </li>
-              ))}
-            </ul>
-          ),
-        },
-        {
-          key: "keywords",
-          label: "Ключевые слова",
-          value:
-            keywords && keywords.length > 0 ? (
-              <ul>
-                {keywords.map((keyword) => (
-                  <li>
-                    <p>{keyword.name}</p>
-                  </li>
-                ))}
-              </ul>
-            ) : (
-              <p>Нет ключевых слов</p>
+          },
+          {
+            key: "keywords",
+            label: "Ключевые слова",
+            value: getKeywordsValue(keywords),
+          },
+          {
+            key: "keyphrases",
+            label: "Ключевые фразы",
+            value: getKeyphrasesValue(keyphrases),
+          },
+          {
+            key: "gostReplacedWith",
+            label: "Принят взамен",
+            value: getGostReplacedWithValue(
+              gost.gostIdReplaced,
+              gostReplacedName
             ),
-        },
-        {
-          key: "keyphrases",
-          label: "Ключевые фразы",
-          value:
-            keyphrases && keyphrases.length > 0 ? (
-              <ul>
-                {keyphrases.map((keyphrase) => (
-                  <li>
-                    <p>{keyphrase.name}</p>
-                  </li>
-                ))}
-              </ul>
-            ) : (
-              <p>Нет ключевых фраз</p>
-            ),
-        },
-        {
-          key: "gestReplacedWith",
-          label: "Принят взамен",
-          value:
-            gost.gostIdReplaced != undefined ? (
-              <p>
-                Взамен{" "}
-                <a
-                  href={`/gost/${gost.gostIdReplaced}`}
-                  className="gostReplacedName"
-                >
-                  {gostReplacedName}
-                </a>
-              </p>
-            ) : (
-              <p>Нет</p>
-            ),
-        },
-      ].map(({ key, label, value, updateDate }) => (
-        <tr key={key}>
-          <td>
-            <label htmlFor={key}>{label}</label>
-          </td>
-          <td>{value}</td>
-          <td>{updateDate}</td>
-        </tr>
-      ));
+          },
+        ])
+        .map(({ key, label, value, updateDate }) => (
+          <tr key={key}>
+            <td>
+              <label htmlFor={key}>{label}</label>
+            </td>
+            <td>{value}</td>
+            <td>{updateDate}</td>
+          </tr>
+        ));
     } else {
       if (add) {
         const addFields = [
