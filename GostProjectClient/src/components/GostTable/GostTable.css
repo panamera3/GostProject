@@ -6,6 +6,14 @@
   margin: 0;
 }
 
+.gostInputEdit {
+  margin: 0;
+}
+
+.gostInputAdd {
+  margin: 0;
+}
+
 .main_modal_content.cancel {
   display: flex;
   flex-direction: column;
@@ -19,17 +27,17 @@
   color: #292929;
 }
 
-.modalCancel_buttons{
+.modalCancel_buttons {
   display: flex;
   justify-content: space-between;
 }
 
-#idEdit{
+#idEdit {
   text-align: center;
   display: block;
 }
 
-.file-input-container{
+.file-input-container {
   display: flex;
   justify-content: center;
 }
@@ -38,8 +46,12 @@
   text-decoration: underline;
 }
 
-.requiredAddField{
+.requiredAddField {
   color: red;
   font-size: 1.5em;
   display: inline;
+}
+
+.gost_table select {
+  height: 3em;
 }

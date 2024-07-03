@@ -54,7 +54,10 @@ const AcceptNotification = () => {
     <>
       <HeaderAdmin />
       <div className="body_container">
-        <p>Редактирование заявки</p>
+        <div className="activities_container">
+          <a href="/notifications">Назад</a>
+          <p>Редактирование заявки</p>
+        </div>
         <div className="notification_container">
           {notification && (
             <>

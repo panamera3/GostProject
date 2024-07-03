@@ -30,5 +30,7 @@ namespace GostProjectAPI.DTOModels.Gosts
         public ActionStatus? ActionStatus { get; set; }
 
 		public uint? GostIdReplaced { get; set; }
+
+		public string? DeveloperName { get; set; }
 	}
 }

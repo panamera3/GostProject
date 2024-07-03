@@ -32,7 +32,7 @@
 }
 
 .edit_profile_container select {
-  width: 100%;
+  width: 90%;
   border-radius: 1em;
-  border: 0px solid #ffffff;
+  margin: 1em;
 }

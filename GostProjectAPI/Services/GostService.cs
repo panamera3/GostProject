@@ -9,6 +9,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 using Microsoft.Office.Interop.Word;
 using System.Data;
+using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using UglyToad.PdfPig;
@@ -73,6 +74,9 @@ namespace GostProjectAPI.Services
 					break;
 				case { Content: not null }:
 					filteredGosts = filteredGosts.Where(o => o.Content.Contains(getParams.Filter.Content)).AsQueryable();
+					break;
+				case { DeveloperName: not null }:
+					filteredGosts = filteredGosts.Where(o => o.DeveloperName.Contains(getParams.Filter.DeveloperName)).AsQueryable();
 					break;
 
 				case { AcceptanceLevel: not null }:

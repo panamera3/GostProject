@@ -51,6 +51,7 @@ table {
 .filter_users select {
   width: 40%;
   height: 3em;
+  border-radius: 1em;
 }
 
 .filter_users form {

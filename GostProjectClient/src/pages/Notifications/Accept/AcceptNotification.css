@@ -21,3 +21,7 @@
   width: 80%;
   border-radius: 1em;
 }
+
+.activities_container * {
+  margin: 0;
+}

@@ -19,9 +19,9 @@ namespace GostProjectAPI.DTOModels.Gosts
 
         public string Content { get; set; }
 
-        public List<string> Keywords { get; set; }
+        public List<string>? Keywords { get; set; }
 
-        public List<string> Keyphrases { get; set; }
+        public List<string>? Keyphrases { get; set; }
 
         public AcceptanceLevel AcceptanceLevel { get; set; }
 
@@ -36,5 +36,11 @@ namespace GostProjectAPI.DTOModels.Gosts
         public ushort IntrodutionYear { get; set; }
 
         public uint? GostIdReplaced { get; set; }
+
+		public string? Changes { get; set; }
+
+		public string? Amendments { get; set; }
+
+		public string DeveloperName { get; set; }
 	}
 }

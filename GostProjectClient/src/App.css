@@ -114,3 +114,8 @@ tbody td {
   background-color: #292929;
   color: #ffffff;
 }
+
+select {
+  width: 90%;
+  border-radius: 1em;
+}

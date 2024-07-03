@@ -6,6 +6,7 @@ import Modal from "../Modal/Modal";
 import { translationGostDict } from "../constants/translationGostDict";
 import { actionStatusOptions } from "../constants/ActionStatusOptions";
 import { acceptanceLevelOptions } from "../constants/AcceptanceLevelOptions";
+import { toast } from "react-toastify";
 
 const GostTable = ({ id, view, edit, add }) => {
   const navigate = useNavigate();
@@ -289,6 +290,22 @@ const GostTable = ({ id, view, edit, add }) => {
     }
   };
 
+  const requiredAddFields = [
+    "designation",
+    "denomination",
+    "oksCode",
+    "okpdCode",
+    "content",
+    "keywords",
+    "keyphrases",
+    "acceptanceYear",
+    "introdutionYear",
+    "text",
+    "acceptanceLevel",
+    "actionStatus",
+    "developerName",
+  ];
+
   const renderGostTable = () => {
     if (Object.keys(gost).length !== 0) {
       if (edit) {
@@ -323,7 +340,7 @@ const GostTable = ({ id, view, edit, add }) => {
                 <td>
                   {key === "actionStatus" ? (
                     <select
-                      className="gostInputEdit"
+                      className="gostInput"
                       value={formData.actionStatus || gost.actionStatus}
                       onChange={(e) =>
                         handleInputChange("actionStatus", e.target.value)
@@ -338,7 +355,7 @@ const GostTable = ({ id, view, edit, add }) => {
                     </select>
                   ) : key === "acceptanceLevel" ? (
                     <select
-                      className="gostInputEdit"
+                      className="gostInput"
                       value={formData.acceptanceLevel || gost.acceptanceLevel}
                       onChange={(e) =>
                         handleInputChange("acceptanceLevel", e.target.value)
@@ -353,7 +370,7 @@ const GostTable = ({ id, view, edit, add }) => {
                     </select>
                   ) : (
                     <input
-                      className="gostInputEdit"
+                      className="gostInput"
                       value={
                         formData[key] !== undefined ? formData[key] : gost[key]
                       }
@@ -435,6 +452,7 @@ const GostTable = ({ id, view, edit, add }) => {
           "okpdCode",
           "acceptanceYear",
           "introdutionYear",
+          "developerName",
           "acceptanceLevel",
           "actionStatus",
           "content",
@@ -445,21 +463,6 @@ const GostTable = ({ id, view, edit, add }) => {
           "amendments",
         ];
 
-        const requiredFields = [
-          "designation",
-          "denomination",
-          "oksCode",
-          "okpdCode",
-          "content",
-          "keywords",
-          "keyphrases",
-          "acceptanceYear",
-          "introdutionYear",
-          "text",
-          "acceptanceLevel",
-          "actionStatus",
-        ];
-
         return (
           <>
             {addFields.map((key, index) => (
@@ -468,7 +471,7 @@ const GostTable = ({ id, view, edit, add }) => {
                   <label htmlFor={key}>
                     {translationGostDict[key]}
                     <p className="requiredAddField">
-                      {requiredFields.includes(key) && "*"}
+                      {requiredAddFields.includes(key) && "*"}
                     </p>
                   </label>
                 </td>
@@ -605,6 +608,15 @@ const GostTable = ({ id, view, edit, add }) => {
     const normativeReferencesAdd = selectedItems.map((item) => item.id);
 
     if (add) {
+      const missingFields = requiredAddFields.filter(
+        (field) => !formData[field] || formData[field] === ""
+      );
+      
+      if (missingFields.length > 0) {
+        toast.error("Заполните все обязательные поля (*)");
+        return;
+      }
+      
       axios({
         method: "post",
         url: `/api/Gost/AddGost`,
@@ -622,6 +634,7 @@ const GostTable = ({ id, view, edit, add }) => {
           actionStatus: Number(formData.actionStatus),
           normativeReferences: normativeReferencesAdd,
           acceptanceYear: Number(formData.acceptanceYear),
+          developerName: formData.developerName,
           introdutionYear: Number(formData.introdutionYear),
           ...(gostIdReplaced !== -1 && {
             gostIdReplaced: Number(gostIdReplaced),

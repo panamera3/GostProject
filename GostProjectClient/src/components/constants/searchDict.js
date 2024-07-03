@@ -12,4 +12,5 @@ export const searchDict = {
   acceptanceLevel: "Уровень принятия",
   actionStatus: "Статус",
   gostIdReplaced: "Принят взамен",
+  developerName: "Разработчик",
 };
