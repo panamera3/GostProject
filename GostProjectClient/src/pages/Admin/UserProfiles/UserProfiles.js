@@ -9,6 +9,7 @@ import editImg from "../../../images/edit.svg";
 import { useNavigate } from "react-router-dom";
 import { translationRolesDict } from "../../../components/constants/translationRolesDict";
 import { toast } from "react-toastify";
+import { computeHeadingLevel } from "@testing-library/react";
 
 const UserProfiles = () => {
   const navigate = useNavigate();
@@ -23,7 +24,9 @@ const UserProfiles = () => {
     updateUsers();
     axios({
       method: "get",
-      url: `/api/User/GetUniqueDepartments/${localStorage.getItem("workCompanyID")}`,
+      url: `/api/User/GetUniqueDepartments/${localStorage.getItem(
+        "workCompanyID"
+      )}`,
       headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
     })
       .then((departments) => {
@@ -55,6 +58,7 @@ const UserProfiles = () => {
       url: `/api/User/FilterUsers`,
       data: {
         department: selectedDepartment,
+        companyID: localStorage.getItem("workCompanyID"),
       },
       headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
     })
@@ -70,7 +74,9 @@ const UserProfiles = () => {
     if (users) {
       if (uniqueDepartments) {
         return [
-          <option key="reset" value="" />,
+          <option key="reset" value="">
+            Выберите отдел
+          </option>,
           ...uniqueDepartments.map((department) => (
             <option key={department}>{department}</option>
           )),
@@ -185,6 +191,7 @@ const UserProfiles = () => {
       url: `/api/User/FilterUsers`,
       data: {
         fullname: values.fullname ? values.fullname : "",
+        companyID: localStorage.getItem("workCompanyID"),
       },
       headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
     })

@@ -80,39 +80,33 @@ namespace GostProjectAPI.Services
 
 		public async Task<List<User>?> FilterUsersAsync(FilterUsers filterUsers)
 		{
-			var users = _dbContext.Users.AsQueryable();
+			var users = await GetUsersAsync(filterUsers.CompanyID);
 
-			var result = users;
-
-			if (filterUsers.Fullname != null)
+			if (!string.IsNullOrEmpty(filterUsers.Fullname))
 			{
 				var fullNameParts = filterUsers.Fullname.Split(' ');
-				result = result.Where(u =>
-										(fullNameParts.Length == 1 &&
-											(u.LastName.Contains(fullNameParts[0]) ||
-											u.FirstName.Contains(fullNameParts[0]) ||
-											u.Patronymic.Contains(fullNameParts[0]))
-										) ||
-										(fullNameParts.Length == 2 &&
-											(u.LastName.Contains(fullNameParts[0]) &&
-											u.FirstName.Contains(fullNameParts[1]))
-										) ||
-										(fullNameParts.Length == 3 &&
-											(u.LastName.Contains(fullNameParts[0]) &&
-											u.FirstName.Contains(fullNameParts[1]) &&
-											u.Patronymic.Contains(fullNameParts[2]))
-										)
-									).AsQueryable();
-
+				users = users.Where(u =>
+					(fullNameParts.Length == 1 &&
+					 (u.LastName.Contains(fullNameParts[0]) ||
+					  u.FirstName.Contains(fullNameParts[0]) ||
+					  u.Patronymic.Contains(fullNameParts[0]))) ||
+					(fullNameParts.Length == 2 &&
+					 (u.LastName.Contains(fullNameParts[0]) &&
+					  u.FirstName.Contains(fullNameParts[1]))) ||
+					(fullNameParts.Length == 3 &&
+					 (u.LastName.Contains(fullNameParts[0]) &&
+					  u.FirstName.Contains(fullNameParts[1]) &&
+					  u.Patronymic.Contains(fullNameParts[2])))).ToList();
 			}
 
-			if (filterUsers.Department != null)
+			if (!string.IsNullOrEmpty(filterUsers.Department))
 			{
-				result = result.Where(u => u.Department.Contains(filterUsers.Department)).AsQueryable();
+				users = users.Where(u => u.Department.Contains(filterUsers.Department)).ToList();
 			}
 
-			return await result.ToListAsync();
+			return users;
 		}
+
 
 		public async Task<bool> TryDeleteUserAsync(uint userID)
 		{

@@ -33,6 +33,6 @@
 
 .edit_profile_container select {
   width: 90%;
-  border-radius: 1em;
   margin: 1em;
+  padding: 0;
 }
