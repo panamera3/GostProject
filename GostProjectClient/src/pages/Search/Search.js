@@ -45,7 +45,7 @@ const Search = () => {
       axios({
         method: "post",
         url: `/api/Gost/GetGosts`,
-        data: { userID: localStorage.getItem("id"), pagination, filter },
+        data: { companyID: localStorage.getItem("workCompanyID"), pagination, filter },
         headers: {
           "Content-Type": "application/json",
         },
@@ -102,7 +102,7 @@ const Search = () => {
       method: "post",
       url: `/api/Gost/GetGosts`,
       data: {
-        userID: localStorage.getItem("id"),
+        companyID: localStorage.getItem("workCompanyID"),
         pagination,
         searchInFilePrompt,
       },

@@ -35,10 +35,10 @@ namespace GostProjectAPI.Data.Entities
         public ushort IntrodutionYear { get; set; }
 
         [Description("Разработчик")]
-        public User DeveloperUser { get; set; }
+        public Company DeveloperCompany { get; set; }
 
         [Description("ID разработчика")]
-        [ForeignKey(nameof(DeveloperUser))]
+        [ForeignKey(nameof(DeveloperCompany))]
         public uint DeveloperId { get; set; }
 
         [Description("Содержание")]

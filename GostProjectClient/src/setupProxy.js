@@ -6,6 +6,10 @@ module.exports = function (app) {
     createProxyMiddleware({
       target: "http://localhost:5175/api",
       changeOrigin: true,
+      onProxyReq: (proxyReq, req, res) => {
+        const token = localStorage.getItem("token");
+        proxyReq.setHeader("Authorization", `Bearer ${token}`);
+      },
     })
   );
 };

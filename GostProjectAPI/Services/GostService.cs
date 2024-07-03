@@ -1,9 +1,11 @@
 ﻿using GostProjectAPI.Data;
 using GostProjectAPI.Data.Entities;
+using GostProjectAPI.Data.Enums.Gost;
 using GostProjectAPI.DTOModels;
 using GostProjectAPI.DTOModels.Gosts;
 using GostProjectAPI.Extensions;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 using Microsoft.Office.Interop.Word;
 using System.Data;
@@ -30,9 +32,11 @@ namespace GostProjectAPI.Services
 			_keysService = keysService;
 		}
 
-		public async Task<List<Gost>?> GetGostsAsync()
+		public async Task<List<Gost>?> GetGostsAsync(uint companyID)
 		{
-			return await _dbContext.Gosts.ToListAsync();
+			return await _dbContext.Gosts
+				.Where(g => g.AcceptanceLevel != AcceptanceLevel.Local || g.DeveloperId == companyID)
+				.ToListAsync();
 		}
 
 		public async Task<List<Gost>?> GetGostsRangeAsync(GetGostsInRangeDto getGostsInRangeDto)
@@ -98,7 +102,9 @@ namespace GostProjectAPI.Services
 		{
 			var gosts = _dbContext.Gosts.AsQueryable();
 
-			var filteredGosts = gosts;
+			var filteredByCompanyGosts = gosts.Where(g => g.AcceptanceLevel != AcceptanceLevel.Local || g.DeveloperId == getParams.CompanyID);
+
+			var filteredGosts = filteredByCompanyGosts;
 
 			switch (getParams?.Filter)
 			{

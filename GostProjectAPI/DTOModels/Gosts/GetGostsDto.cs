@@ -6,7 +6,7 @@ namespace GostProjectAPI.DTOModels.Gosts
     public class GetGostsDto
     {
         [Required]
-        public uint UserID { get; set; }
+        public uint CompanyID { get; set; }
 
         [Required]
         public PagingOptions Pagination { get; set; }

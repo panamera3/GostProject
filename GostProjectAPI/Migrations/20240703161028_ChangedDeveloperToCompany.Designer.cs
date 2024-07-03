@@ -3,6 +3,7 @@ using System;
 using GostProjectAPI.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace GostProjectAPI.Migrations
 {
     [DbContext(typeof(GostDBContext))]
-    partial class GostDBContextModelSnapshot : ModelSnapshot
+    [Migration("20240703161028_ChangedDeveloperToCompany")]
+    partial class ChangedDeveloperToCompany
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

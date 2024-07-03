@@ -68,9 +68,9 @@ namespace GostProjectAPI.Services
 			await _dbContext.SaveChangesAsync();
 		}
 
-		public async Task<List<User>?> GetUsersAsync()
+		public async Task<List<User>?> GetUsersAsync(uint companyID)
 		{
-			return await _dbContext.Users.ToListAsync();
+			return await _dbContext.Users.Where(u => u.WorkCompanyID == companyID).ToListAsync();
 		}
 
 		public async Task<User?> GetUserAsync(uint userID)
@@ -157,9 +157,9 @@ namespace GostProjectAPI.Services
 			return oldUser;
 		}
 
-		public async Task<List<string>> GetUniqueDepartmentsAsync()
+		public async Task<List<string>> GetUniqueDepartmentsAsync(uint companyID)
 		{
-			return _dbContext.Users
+			return (await GetUsersAsync(companyID))
 					.Select(u => u.Department)
 					.Distinct()
 					.ToList();

@@ -19,10 +19,10 @@ namespace GostProjectAPI.Controllers
             _gostService = gostService;
         }
 
-        [HttpGet]
-        public async Task<JsonResult> GetGosts()
+        [HttpGet("{companyID}")]
+        public async Task<JsonResult> GetGosts(uint companyID)
         {
-            return JSON(await _gostService.GetGostsAsync());
+            return JSON(await _gostService.GetGostsAsync(companyID));
 		}
 
 		[HttpPost]

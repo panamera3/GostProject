@@ -613,7 +613,7 @@ const GostTable = ({ id, view, edit, add }) => {
           denomination: formData.denomination,
           oksCode: formData.oksCode,
           okpdCode: formData.okpdCode,
-          developerId: localStorage.getItem("id"),
+          developerId: localStorage.getItem("workCompanyID"),
           content: formData.content,
           keywords: formData.keywords.split(","),
           keyphrases: formData.keyphrases.split(","),

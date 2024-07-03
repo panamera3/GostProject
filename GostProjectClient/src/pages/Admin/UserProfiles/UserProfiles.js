@@ -23,7 +23,7 @@ const UserProfiles = () => {
     updateUsers();
     axios({
       method: "get",
-      url: `/api/User/GetUniqueDepartments`,
+      url: `/api/User/GetUniqueDepartments/${localStorage.getItem("workCompanyID")}`,
       headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
     })
       .then((departments) => {
@@ -37,7 +37,7 @@ const UserProfiles = () => {
   const updateUsers = () => {
     axios({
       method: "get",
-      url: `/api/User/GetUsers`,
+      url: `/api/User/GetUsers/${localStorage.getItem("workCompanyID")}`,
       headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
     })
       .then((users) => {
