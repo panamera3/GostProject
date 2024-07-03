@@ -21,9 +21,9 @@ namespace GostProjectAPI.DTOModels.Gosts
 
         public string? Content { get; set; }
 
-        public List<Keyword>? Keywords { get; set; } = new();
+        public List<uint>? KeywordsIds { get; set; } = new();
 
-        public List<Keyphrase>? Keyphrases { get; set; } = new();
+        public List<uint>? KeyphrasesIds { get; set; } = new();
 
         public AcceptanceLevel? AcceptanceLevel { get; set; }
 

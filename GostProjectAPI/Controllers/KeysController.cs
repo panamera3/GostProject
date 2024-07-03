@@ -25,5 +25,17 @@ namespace GostProjectAPI.Controllers
 		{
 			return JSON(await _keysService.GetKeyPhrasesAsync(gostID));
 		}
+
+		[HttpGet("{companyID}")]
+		public async Task<JsonResult> GetUniqueKeywords(uint companyID)
+		{
+			return JSON(await _keysService.GetUniqueKeywordsAsync(companyID));
+		}
+
+		[HttpGet("{companyID}")]
+		public async Task<JsonResult> GetUniqueKeyphrases(uint companyID)
+		{
+			return JSON(await _keysService.GetUniqueKeyphrasesAsync(companyID));
+		}
 	}
 }

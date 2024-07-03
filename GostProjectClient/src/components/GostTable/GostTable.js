@@ -149,6 +149,10 @@ const GostTable = ({ id, view, edit, add }) => {
     }
   };
 
+  const handleRemoveItem = (id) => {
+    setSelectedItems(selectedItems.filter((item) => item.id !== id));
+  };
+
   const replacedVisibilityChange = (event) => {
     const selectedValue = event.target.value;
     setReplacedContainerVisibility(selectedValue === "2");
@@ -523,24 +527,40 @@ const GostTable = ({ id, view, edit, add }) => {
               <td>
                 {selectedItems && selectedItems.length > 0 ? (
                   <ul>
-                    {" "}
                     {selectedItems.map((item) => (
-                      <li key={item.id}>{item.designation}</li>
-                    ))}{" "}
+                      <li key={item.id}>
+                        {item.designation}
+                        <button
+                          className="delete_normative_reference_button btn_blue"
+                          onClick={() => handleRemoveItem(item.id)}
+                        >
+                          Удалить
+                        </button>
+                      </li>
+                    ))}
                   </ul>
                 ) : (
                   <p>Нет ссылок</p>
                 )}
 
                 <select onChange={handleSelectChange}>
-                  {gostsNormativeReferences.map((item) => (
-                    <option key={item.id} value={item.id}>
-                      {item.designation}
-                    </option>
-                  ))}
+                  <option value="">Выберите нормативную ссылку</option>
+                  {gostsNormativeReferences
+                    .filter(
+                      (item) =>
+                        !selectedItems.some(
+                          (selected) => selected.id === item.id
+                        )
+                    )
+                    .map((item) => (
+                      <option key={item.id} value={item.id}>
+                        {item.designation}
+                      </option>
+                    ))}
                 </select>
               </td>
             </tr>
+
             <tr>
               <td>
                 <label>Принят взамен</label>
@@ -611,12 +631,12 @@ const GostTable = ({ id, view, edit, add }) => {
       const missingFields = requiredAddFields.filter(
         (field) => !formData[field] || formData[field] === ""
       );
-      
+
       if (missingFields.length > 0) {
         toast.error("Заполните все обязательные поля (*)");
         return;
       }
-      
+
       axios({
         method: "post",
         url: `/api/Gost/AddGost`,

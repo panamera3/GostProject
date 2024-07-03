@@ -55,3 +55,8 @@
 .gost_table select {
   height: 3em;
 }
+
+.delete_normative_reference_button {
+  font-size: 16px;
+  padding: 0.5em;
+}

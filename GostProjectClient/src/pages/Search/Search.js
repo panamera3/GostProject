@@ -25,9 +25,72 @@ const Search = () => {
 
   const [requestedInsteadOptions, setRequestedInsteadOptions] = useState([]);
 
+  const [uniqueKeywords, setUniqueKeywords] = useState([]);
+  const [uniqueKeyphrases, setUniqueKeyphrases] = useState([]);
+  const [selectedKeywords, setSelectedKeywords] = useState([]);
+  const [selectedKeyphrases, setSelectedKeyphrases] = useState([]);
+
   useEffect(() => {
     fetchRequestedInsteadOptions();
+    fetchUniqueKeywords();
+    fetchUniqueKeyphrases();
   }, []);
+
+  const fetchUniqueKeywords = async () => {
+    try {
+      const response = await axios.get(
+        `/api/Keys/GetUniqueKeywords/${localStorage.getItem("workCompanyID")}`
+      );
+      setUniqueKeywords(response.data);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const fetchUniqueKeyphrases = async () => {
+    try {
+      const response = await axios.get(
+        `/api/Keys/GetUniqueKeyphrases/${localStorage.getItem("workCompanyID")}`
+      );
+      setUniqueKeyphrases(response.data);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const handleSelectKeyword = (event) => {
+    const selectedKeywordId = parseInt(event.target.value);
+    if (selectedKeywordId) {
+      const selectedKeyword = uniqueKeywords.find(
+        (kw) => kw.id === selectedKeywordId
+      );
+      setSelectedKeywords([...selectedKeywords, selectedKeyword]);
+      event.target.value = "";
+    }
+  };
+
+  const handleRemoveKeyword = (id) => {
+    setSelectedKeywords(
+      selectedKeywords.filter((keyword) => keyword.id !== id)
+    );
+  };
+
+  const handleSelectKeyphrase = (event) => {
+    const selectedKeyphraseId = parseInt(event.target.value);
+    if (selectedKeyphraseId) {
+      const selectedKeyphrase = uniqueKeyphrases.find(
+        (kp) => kp.id === selectedKeyphraseId
+      );
+      setSelectedKeyphrases([...selectedKeyphrases, selectedKeyphrase]);
+      event.target.value = "";
+    }
+  };
+
+  const handleRemoveKeyphrase = (id) => {
+    setSelectedKeyphrases(
+      selectedKeyphrases.filter((keyphrase) => keyphrase.id !== id)
+    );
+  };
 
   const fetchRequestedInsteadOptions = async () => {
     try {
@@ -45,7 +108,11 @@ const Search = () => {
       axios({
         method: "post",
         url: `/api/Gost/GetGosts`,
-        data: { companyID: localStorage.getItem("workCompanyID"), pagination, filter },
+        data: {
+          companyID: localStorage.getItem("workCompanyID"),
+          pagination,
+          filter,
+        },
         headers: {
           "Content-Type": "application/json",
         },
@@ -87,7 +154,12 @@ const Search = () => {
       }
     }
 
-    console.log(values);
+    if (selectedKeywords.length > 0) {
+      values["KeywordsIds"] = selectedKeywords.map((kw) => kw.id);
+    }
+    if (selectedKeyphrases.length > 0) {
+      values["KeyphrasesIds"] = selectedKeyphrases.map((kw) => kw.id);
+    }
 
     setFilter(values);
     setSearch(true);
@@ -188,7 +260,6 @@ const Search = () => {
             ))}
           </select>
         );
-
       default:
         return (
           <input
@@ -200,6 +271,15 @@ const Search = () => {
         );
     }
   };
+
+  const filteredSearchDict = Object.keys(searchDict)
+    .filter((key) => key !== "keywords" && key !== "keyphrases")
+    .reduce((obj, key) => {
+      obj[key] = searchDict[key];
+      return obj;
+    }, {});
+
+  const halfLength = Math.ceil(Object.keys(filteredSearchDict).length / 2);
 
   return (
     <>
@@ -215,28 +295,109 @@ const Search = () => {
             <a href="/home">Назад</a>
             <form onSubmit={searchHandler} className="modalSearchForm">
               <div className="form_search_container">
-                <div>
-                  {Object.keys(searchDict)
-                    .slice(0, Object.keys(searchDict).length / 2)
-                    .map((key) => (
-                      <div className="search_input_container" key={key}>
-                        <label htmlFor={key}>{searchDict[key]}</label>
-                        {renderSearchField(key, filter, setFilter)}
-                      </div>
-                    ))}
+                <div className="form_search_container_without_keys">
+                  <div>
+                    {Object.keys(filteredSearchDict)
+                      .slice(0, halfLength)
+                      .map((key) => (
+                        <div className="search_input_container" key={key}>
+                          <label htmlFor={key}>{filteredSearchDict[key]}</label>
+                          {renderSearchField(key, filter, setFilter)}
+                        </div>
+                      ))}
+                  </div>
+                  <div>
+                    {Object.keys(filteredSearchDict)
+                      .slice(halfLength)
+                      .map((key) => (
+                        <div className="search_input_container" key={key}>
+                          <label htmlFor={key}>{filteredSearchDict[key]}</label>
+                          {renderSearchField(key, filter, setFilter)}
+                        </div>
+                      ))}
+                  </div>
                 </div>
-                <div>
-                  {Object.keys(searchDict)
-                    .slice(Object.keys(searchDict).length / 2)
-                    .map((key) => (
-                      <div className="search_input_container" key={key}>
-                        <label htmlFor={key}>{searchDict[key]}</label>
-                        {renderSearchField(key, filter, setFilter)}
-                      </div>
-                    ))}
+
+                <div className="search_input_container_key">
+                  <label htmlFor="keywords">Ключевые слова</label>
+                  <div>
+                    {selectedKeywords && selectedKeywords.length > 0 ? (
+                      <ul>
+                        {selectedKeywords.map((keyword) => (
+                          <li key={keyword.id}>
+                            {keyword.name}
+                            <button
+                              className="delete_keys_button"
+                              onClick={() => handleRemoveKeyword(keyword.id)}
+                            >
+                              Удалить
+                            </button>
+                          </li>
+                        ))}
+                      </ul>
+                    ) : (
+                      <p>Нет ключевых слов</p>
+                    )}
+
+                    <select onChange={handleSelectKeyword}>
+                      <option value="">Выберите ключевое слово</option>
+                      {uniqueKeywords
+                        .filter(
+                          (keyword) =>
+                            !selectedKeywords.some(
+                              (selected) => selected.id === keyword.id
+                            )
+                        )
+                        .map((keyword) => (
+                          <option key={keyword.id} value={keyword.id}>
+                            {keyword.name}
+                          </option>
+                        ))}
+                    </select>
+                  </div>
+                </div>
+
+                <div className="search_input_container_key">
+                  <label htmlFor="keyphrases">Ключевые фразы</label>
+                  <div>
+                    {selectedKeyphrases && selectedKeyphrases.length > 0 ? (
+                      <ul>
+                        {selectedKeyphrases.map((keyphrase) => (
+                          <li key={keyphrase.id}>
+                            {keyphrase.name}
+                            <button
+                              className="delete_keys_button"
+                              onClick={() =>
+                                handleRemoveKeyphrase(keyphrase.id)
+                              }
+                            >
+                              Удалить
+                            </button>
+                          </li>
+                        ))}
+                      </ul>
+                    ) : (
+                      <p>Нет ключевых фраз</p>
+                    )}
+
+                    <select onChange={handleSelectKeyphrase}>
+                      <option value="">Выберите ключевую фразу</option>
+                      {uniqueKeyphrases
+                        .filter(
+                          (keyphrase) =>
+                            !selectedKeyphrases.some(
+                              (selected) => selected.id === keyphrase.id
+                            )
+                        )
+                        .map((keyphrase) => (
+                          <option key={keyphrase.id} value={keyphrase.id}>
+                            {keyphrase.name}
+                          </option>
+                        ))}
+                    </select>
+                  </div>
                 </div>
               </div>
-
               <button className="btn_blue" type="submit">
                 Применить
               </button>
