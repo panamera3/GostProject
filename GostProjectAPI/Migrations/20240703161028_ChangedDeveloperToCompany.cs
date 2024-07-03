@@ -13,7 +13,7 @@ namespace GostProjectAPI.Migrations
             migrationBuilder.DropForeignKey(
                 name: "FK_Gosts_Users_DeveloperId",
                 table: "Gosts");
-
+            
             migrationBuilder.AddForeignKey(
                 name: "FK_Gosts_Companies_DeveloperId",
                 table: "Gosts",

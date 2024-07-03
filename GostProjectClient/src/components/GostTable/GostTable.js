@@ -433,16 +433,16 @@ const GostTable = ({ id, view, edit, add }) => {
           "denomination",
           "oksCode",
           "okpdCode",
+          "acceptanceYear",
+          "introdutionYear",
+          "acceptanceLevel",
+          "actionStatus",
           "content",
           "keywords",
           "keyphrases",
-          "acceptanceYear",
-          "introdutionYear",
           "text",
           "changes",
           "amendments",
-          "acceptanceLevel",
-          "actionStatus",
         ];
 
         const requiredFields = [

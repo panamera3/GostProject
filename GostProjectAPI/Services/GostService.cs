@@ -34,9 +34,9 @@ namespace GostProjectAPI.Services
 
 		public async Task<List<Gost>?> GetGostsAsync(uint companyID)
 		{
-			return await _dbContext.Gosts
-				.Where(g => g.AcceptanceLevel != AcceptanceLevel.Local || g.DeveloperId == companyID)
-				.ToListAsync();
+			//var gosts = await _dbContext.Gosts.Where(g => g.AcceptanceLevel != AcceptanceLevel.Local || g.DeveloperId == companyID).ToListAsync();
+			var gosts = await _dbContext.Gosts.Where(g => g.DeveloperId == companyID).ToListAsync();
+			return gosts;
 		}
 
 		public async Task<List<Gost>?> GetGostsRangeAsync(GetGostsInRangeDto getGostsInRangeDto)
@@ -45,64 +45,12 @@ namespace GostProjectAPI.Services
 			return gosts;
 		}
 
-		public async Task<GostFile> AddFileToGostAsync(IFormFile gostFile, uint gostID)
-		{
-			string filePath = _env.IsDevelopment() ? _fileUploadPaths.Global : _fileUploadPaths.Local;
-
-			using var client = new HttpClient();
-			using var content = new MultipartFormDataContent();
-			byte[] fileBytes = await File.ReadAllBytesAsync(gostFile.FileName);
-			content.Add(new ByteArrayContent(fileBytes), "file", gostFile.FileName);
-			var response = await client.PostAsync(filePath, content);
-			var path = Path.Join(filePath, gostFile.FileName);
-
-			if (response.IsSuccessStatusCode)
-			{
-				var gostFileEntity = new GostFile
-				{
-					Path = path,
-					GostId = gostID
-				};
-				await _dbContext.GostFiles.AddAsync(gostFileEntity);
-				await _dbContext.SaveChangesAsync();
-				return gostFileEntity;
-			}
-			else
-			{
-				// Handle error
-				return null;
-			}
-			// всё это поменять на запрос в бакет
-
-			// в этой дирекктории создать папку и в эту папку кидать
-			// Environment.CurrentDirectory
-
-			/*
-
-			string filePath = _env.IsDevelopment() ? _fileUploadPaths.Global : _fileUploadPaths.Local;
-			string path = Path.Join(filePath, gostFile.FileName);
-			using var fileStream = new FileStream(path, FileMode.Create);
-			await gostFile.CopyToAsync(fileStream);
-
-
-			var gostFileEntity = new GostFile
-			{
-				Path = path,
-				GostId = gostID
-			};
-
-			await _dbContext.GostFiles.AddAsync(gostFileEntity);
-			await _dbContext.SaveChangesAsync();
-
-			return gostFileEntity;
-			*/
-		}
-
 		public async Task<PagedList<Gost>> GetGostsAsync(GetGostsDto getParams)
 		{
 			var gosts = _dbContext.Gosts.AsQueryable();
 
-			var filteredByCompanyGosts = gosts.Where(g => g.AcceptanceLevel != AcceptanceLevel.Local || g.DeveloperId == getParams.CompanyID);
+			// var filteredByCompanyGosts = gosts.Where(g => g.AcceptanceLevel != AcceptanceLevel.Local || g.DeveloperId == getParams.CompanyID);
+			var filteredByCompanyGosts = gosts.Where(g => g.DeveloperId == getParams.CompanyID);
 
 			var filteredGosts = filteredByCompanyGosts;
 
@@ -194,6 +142,59 @@ namespace GostProjectAPI.Services
 			var test = await searchedGosts.ToPagedListAsync(getParams.Pagination);
 
 			return await searchedGosts.ToPagedListAsync(getParams.Pagination);
+		}
+
+		public async Task<GostFile> AddFileToGostAsync(IFormFile gostFile, uint gostID)
+		{
+			string filePath = _env.IsDevelopment() ? _fileUploadPaths.Global : _fileUploadPaths.Local;
+
+			using var client = new HttpClient();
+			using var content = new MultipartFormDataContent();
+			byte[] fileBytes = await File.ReadAllBytesAsync(gostFile.FileName);
+			content.Add(new ByteArrayContent(fileBytes), "file", gostFile.FileName);
+			var response = await client.PostAsync(filePath, content);
+			var path = Path.Join(filePath, gostFile.FileName);
+
+			if (response.IsSuccessStatusCode)
+			{
+				var gostFileEntity = new GostFile
+				{
+					Path = path,
+					GostId = gostID
+				};
+				await _dbContext.GostFiles.AddAsync(gostFileEntity);
+				await _dbContext.SaveChangesAsync();
+				return gostFileEntity;
+			}
+			else
+			{
+				// Handle error
+				return null;
+			}
+			// всё это поменять на запрос в бакет
+
+			// в этой дирекктории создать папку и в эту папку кидать
+			// Environment.CurrentDirectory
+
+			/*
+
+			string filePath = _env.IsDevelopment() ? _fileUploadPaths.Global : _fileUploadPaths.Local;
+			string path = Path.Join(filePath, gostFile.FileName);
+			using var fileStream = new FileStream(path, FileMode.Create);
+			await gostFile.CopyToAsync(fileStream);
+
+
+			var gostFileEntity = new GostFile
+			{
+				Path = path,
+				GostId = gostID
+			};
+
+			await _dbContext.GostFiles.AddAsync(gostFileEntity);
+			await _dbContext.SaveChangesAsync();
+
+			return gostFileEntity;
+			*/
 		}
 
 		private bool SearchInWordFile(string documentLocation, string stringToSearchFor, bool caseSensitive = false)

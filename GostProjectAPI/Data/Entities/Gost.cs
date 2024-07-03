@@ -34,14 +34,17 @@ namespace GostProjectAPI.Data.Entities
 		[Description("Год введения")]
         public ushort IntrodutionYear { get; set; }
 
-        [Description("Разработчик")]
+        [Description("Компания, которая добавила ГОСТ")]
         public Company DeveloperCompany { get; set; }
 
-        [Description("ID разработчика")]
+        [Description("ID компании, которая добавила гост")]
         [ForeignKey(nameof(DeveloperCompany))]
         public uint DeveloperId { get; set; }
 
-        [Description("Содержание")]
+		[Description("Наименование разработчика")]
+		public string DeveloperName { get; set; }
+
+		[Description("Содержание")]
         [Column(TypeName = "VARCHAR(128)")]
         public string Content { get; set; }
 
