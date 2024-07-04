@@ -1,3 +1,5 @@
+using Amazon.Runtime;
+using Amazon.S3;
 using GostProjectAPI.Data;
 using GostProjectAPI.Data.Entities;
 using GostProjectAPI.Services;
@@ -40,9 +42,12 @@ namespace GostProjectAPI
 			builder.Services.Configure<AuthOptions>(builder.Configuration.GetSection("Auth"));
 			var authConfig = builder.Configuration.GetSection("Auth").Get<AuthOptions>();
 
-			// взятие пути для pdf файлов
-			builder.Services.Configure<FileUploadPaths>(builder.Configuration.GetSection("FileUploadPaths"));
-			var fileUploadPaths = builder.Configuration.GetSection("FileUploadPaths").Get<FileUploadPaths>();
+			// ДЛЯ РАБОТЫ С ХРАНИЛИЩЕМ
+			var awsOptions = builder.Configuration.GetAWSOptions();
+			builder.Services.AddDefaultAWSOptions(awsOptions);
+			builder.Services.AddAWSService<IAmazonS3>();
+
+
 
 			builder.Services.AddScoped<GostService>();
 			builder.Services.AddScoped<UserService>();

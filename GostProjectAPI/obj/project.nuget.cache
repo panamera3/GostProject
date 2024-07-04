@@ -1,10 +1,13 @@
 {
   "version": 2,
-  "dgSpecHash": "0sYtnlrpi3r9CjXojUHbYNGjdKABVdg9/wFI3jEP+AkzeFnfNOo2pYOz9jx/X4J9S7XPQYfvcXYBmHOY/Dzr7w==",
+  "dgSpecHash": "Sm3aKzSqTG8IBz0wIcrCQZVUyRUhC65ClcGSYddlSmFPKuLwO40SYBUBbi1v7Iz+rMW5XlF3Xy8Ycl+bbzOKtQ==",
   "success": true,
   "projectFilePath": "C:\\Users\\pjanv\\OneDrive\\Рабочий стол\\Study\\ВУЗ\\5 семестр\\ПП\\GostProject\\GostProjectAPI\\GostProjectAPI.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\pjanv\\.nuget\\packages\\automapper\\13.0.1\\automapper.13.0.1.nupkg.sha512",
+    "C:\\Users\\pjanv\\.nuget\\packages\\awssdk.core\\3.7.304.24\\awssdk.core.3.7.304.24.nupkg.sha512",
+    "C:\\Users\\pjanv\\.nuget\\packages\\awssdk.extensions.netcore.setup\\3.7.301\\awssdk.extensions.netcore.setup.3.7.301.nupkg.sha512",
+    "C:\\Users\\pjanv\\.nuget\\packages\\awssdk.s3\\3.7.310.1\\awssdk.s3.3.7.310.1.nupkg.sha512",
     "C:\\Users\\pjanv\\.nuget\\packages\\humanizer.core\\2.14.1\\humanizer.core.2.14.1.nupkg.sha512",
     "C:\\Users\\pjanv\\.nuget\\packages\\microsoft.aspnetcore.authentication.jwtbearer\\7.0.20\\microsoft.aspnetcore.authentication.jwtbearer.7.0.20.nupkg.sha512",
     "C:\\Users\\pjanv\\.nuget\\packages\\microsoft.aspnetcore.openapi\\7.0.5\\microsoft.aspnetcore.openapi.7.0.5.nupkg.sha512",

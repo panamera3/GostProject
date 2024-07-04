@@ -8,6 +8,8 @@
     ".NETCoreApp,Version=v7.0": {
       "GostProjectAPI/1.0.0": {
         "dependencies": {
+          "AWSSDK.Extensions.NETCore.Setup": "3.7.301",
+          "AWSSDK.S3": "3.7.310.1",
           "AutoMapper": "13.0.1",
           "Microsoft.AspNetCore.Authentication.JwtBearer": "7.0.20",
           "Microsoft.AspNetCore.OpenApi": "7.0.5",
@@ -32,6 +34,39 @@
           "lib/net6.0/AutoMapper.dll": {
             "assemblyVersion": "13.0.0.0",
             "fileVersion": "13.0.1.0"
+          }
+        }
+      },
+      "AWSSDK.Core/3.7.304.24": {
+        "runtime": {
+          "lib/netcoreapp3.1/AWSSDK.Core.dll": {
+            "assemblyVersion": "3.3.0.0",
+            "fileVersion": "3.7.304.24"
+          }
+        }
+      },
+      "AWSSDK.Extensions.NETCore.Setup/3.7.301": {
+        "dependencies": {
+          "AWSSDK.Core": "3.7.304.24",
+          "Microsoft.Extensions.Configuration.Abstractions": "7.0.0",
+          "Microsoft.Extensions.DependencyInjection.Abstractions": "7.0.0",
+          "Microsoft.Extensions.Logging.Abstractions": "7.0.0"
+        },
+        "runtime": {
+          "lib/netcoreapp3.1/AWSSDK.Extensions.NETCore.Setup.dll": {
+            "assemblyVersion": "3.3.0.0",
+            "fileVersion": "3.7.7.0"
+          }
+        }
+      },
+      "AWSSDK.S3/3.7.310.1": {
+        "dependencies": {
+          "AWSSDK.Core": "3.7.304.24"
+        },
+        "runtime": {
+          "lib/netcoreapp3.1/AWSSDK.S3.dll": {
+            "assemblyVersion": "3.3.0.0",
+            "fileVersion": "3.7.310.1"
           }
         }
       },
@@ -453,6 +488,27 @@
       "sha512": "sha512-/Fx1SbJ16qS7dU4i604Sle+U9VLX+WSNVJggk6MupKVkYvvBm4XqYaeFuf67diHefHKHs50uQIS2YEDFhPCakQ==",
       "path": "automapper/13.0.1",
       "hashPath": "automapper.13.0.1.nupkg.sha512"
+    },
+    "AWSSDK.Core/3.7.304.24": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-Rc6NwieEaGsKKjqRjW51Rd6c+5/ZO//7tJ81VsmRY9YoPdujW9mMOJlX6Y0jSm++lQsGzQylZ9TFflI/QKfkbA==",
+      "path": "awssdk.core/3.7.304.24",
+      "hashPath": "awssdk.core.3.7.304.24.nupkg.sha512"
+    },
+    "AWSSDK.Extensions.NETCore.Setup/3.7.301": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-hXejqa+G72kVCSmpKlNVWDEqa8KVWOFL/asgoE2mairQOnmTCv6vMxaXjJ0nQaad5/21zTdKDIfDiki5YTne1Q==",
+      "path": "awssdk.extensions.netcore.setup/3.7.301",
+      "hashPath": "awssdk.extensions.netcore.setup.3.7.301.nupkg.sha512"
+    },
+    "AWSSDK.S3/3.7.310.1": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-+c8WV3rvQeta1mLPP04CmZRSQQr7read/bfNrFkhqVtdQGfaatRirehoorDuY3OpFhVAR7RpqXl1nieVHvPePA==",
+      "path": "awssdk.s3/3.7.310.1",
+      "hashPath": "awssdk.s3.3.7.310.1.nupkg.sha512"
     },
     "Humanizer.Core/2.14.1": {
       "type": "package",

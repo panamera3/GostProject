@@ -61,3 +61,6 @@ C:\Users\pjanv\OneDrive\Рабочий стол\Study\ВУЗ\5 семестр\П
 C:\Users\pjanv\OneDrive\Рабочий стол\Study\ВУЗ\5 семестр\ПП\GostProject\GostProjectAPI\bin\Debug\net7.0\UglyToad.PdfPig.Tokenization.dll
 C:\Users\pjanv\OneDrive\Рабочий стол\Study\ВУЗ\5 семестр\ПП\GostProject\GostProjectAPI\bin\Debug\net7.0\UglyToad.PdfPig.Tokens.dll
 C:\Users\pjanv\OneDrive\Рабочий стол\Study\ВУЗ\5 семестр\ПП\GostProject\GostProjectAPI\bin\Debug\net7.0\UglyToad.PdfPig.dll
+C:\Users\pjanv\OneDrive\Рабочий стол\Study\ВУЗ\5 семестр\ПП\GostProject\GostProjectAPI\bin\Debug\net7.0\AWSSDK.Core.dll
+C:\Users\pjanv\OneDrive\Рабочий стол\Study\ВУЗ\5 семестр\ПП\GostProject\GostProjectAPI\bin\Debug\net7.0\AWSSDK.Extensions.NETCore.Setup.dll
+C:\Users\pjanv\OneDrive\Рабочий стол\Study\ВУЗ\5 семестр\ПП\GostProject\GostProjectAPI\bin\Debug\net7.0\AWSSDK.S3.dll

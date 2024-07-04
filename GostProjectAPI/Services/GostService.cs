@@ -1,4 +1,6 @@
-﻿using GostProjectAPI.Data;
+﻿using Amazon.S3;
+using Amazon.S3.Transfer;
+using GostProjectAPI.Data;
 using GostProjectAPI.Data.Entities;
 using GostProjectAPI.Data.Enums.Gost;
 using GostProjectAPI.DTOModels;
@@ -24,13 +26,17 @@ namespace GostProjectAPI.Services
 		private readonly IWebHostEnvironment _env;
 		private readonly KeysService _keysService;
 
-		public GostService(GostDBContext dbContext, IMapper mapper, IOptions<FileUploadPaths> fileUploadPaths, IWebHostEnvironment env, KeysService keysService)
+		private readonly IAmazonS3 _s3Client;
+
+		public GostService(GostDBContext dbContext, IMapper mapper, IOptions<FileUploadPaths> fileUploadPaths, IWebHostEnvironment env, KeysService keysService, IAmazonS3 s3Client)
 		{
 			_dbContext = dbContext;
 			_mapper = mapper;
 			_fileUploadPaths = fileUploadPaths.Value;
 			_env = env;
 			_keysService = keysService;
+
+			_s3Client = s3Client;
 		}
 
 		public async Task<List<Gost>?> GetGostsAsync(uint companyID)
@@ -166,31 +172,47 @@ namespace GostProjectAPI.Services
 
 		public async Task<GostFile> AddFileToGostAsync(IFormFile gostFile, uint gostID)
 		{
-			string filePath = _env.IsDevelopment() ? _fileUploadPaths.Global : _fileUploadPaths.Local;
-
-			using var client = new HttpClient();
-			using var content = new MultipartFormDataContent();
-			byte[] fileBytes = await File.ReadAllBytesAsync(gostFile.FileName);
-			content.Add(new ByteArrayContent(fileBytes), "file", gostFile.FileName);
-			var response = await client.PostAsync(filePath, content);
-			var path = Path.Join(filePath, gostFile.FileName);
-
-			if (response.IsSuccessStatusCode)
+			var config = new AmazonS3Config
 			{
-				var gostFileEntity = new GostFile
+				ServiceURL = "https://s3.timeweb.cloud",
+				AuthenticationRegion = "ru-1",
+			};
+			var s3Client = new AmazonS3Client("OEROXDNUP3Q8L16FYNMV", "SJwow3RoWBjQ5CAKqF7tfe5FLOs1ucKTs9jdJNsI", config);
+
+
+			string bucketName = "66f0e91a-object-storage";
+			string keyName = $"UrFU/{gostFile.FileName}";
+
+			using (var newMemoryStream = new MemoryStream())
+			{
+				await gostFile.CopyToAsync(newMemoryStream);
+				newMemoryStream.Position = 0;
+
+				var uploadRequest = new TransferUtilityUploadRequest
 				{
-					Path = path,
-					GostId = gostID
+					InputStream = newMemoryStream,
+					Key = keyName,
+					BucketName = bucketName,
+					ContentType = gostFile.ContentType
 				};
-				await _dbContext.GostFiles.AddAsync(gostFileEntity);
-				await _dbContext.SaveChangesAsync();
-				return gostFileEntity;
+
+				var fileTransferUtility = new TransferUtility(s3Client);
+				await fileTransferUtility.UploadAsync(uploadRequest);
 			}
-			else
+
+			var path = $"https://s3.timeweb.cloud/{bucketName}/{keyName}";
+
+			var gostFileEntity = new GostFile
 			{
-				// Handle error
-				return null;
-			}
+				Path = path,
+				GostId = gostID
+			};
+
+			await _dbContext.GostFiles.AddAsync(gostFileEntity);
+			await _dbContext.SaveChangesAsync();
+
+			return gostFileEntity;
+
 			// всё это поменять на запрос в бакет
 
 			// в этой дирекктории создать папку и в эту папку кидать

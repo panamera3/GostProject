@@ -1,28 +1,30 @@
-using GostProjectAPI.Data.Entities;
+using Amazon.S3;
 using GostProjectAPI.DTOModels.Gosts;
-using Microsoft.AspNetCore.Authorization;
 using GostProjectAPI.Services;
 using Microsoft.AspNetCore.Mvc;
-using GostProjectAPI.Migrations;
 
 namespace GostProjectAPI.Controllers
 {
 	// [Authorize]
 	[ApiController]
-    [Route("/api/[controller]/[action]")]
-    public class GostController : CommonControllerBase
-    {
-        private readonly GostService _gostService;
+	[Route("/api/[controller]/[action]")]
+	public class GostController : CommonControllerBase
+	{
+		private readonly GostService _gostService;
+		private readonly IAmazonS3 _s3Client;
 
-        public GostController(GostService gostService)
-        {
-            _gostService = gostService;
-        }
+		public GostController(GostService gostService, IAmazonS3 s3Client)
+		{
+			_gostService = gostService;
 
-        [HttpGet("{companyID}")]
-        public async Task<JsonResult> GetGosts(uint companyID)
-        {
-            return JSON(await _gostService.GetGostsAsync(companyID));
+			_s3Client = s3Client;
+
+		}
+
+		[HttpGet("{companyID}")]
+		public async Task<JsonResult> GetGosts(uint companyID)
+		{
+			return JSON(await _gostService.GetGostsAsync(companyID));
 		}
 
 		[HttpPost]
@@ -50,71 +52,87 @@ namespace GostProjectAPI.Controllers
 		}
 
 		[HttpPost]
-        public async Task<JsonResult> AddGost([FromBody] GostAddDto gostAddDto)
-        {
-            return JSON(await _gostService.AddGostAsync(gostAddDto));
-        }
+		public async Task<JsonResult> AddGost([FromBody] GostAddDto gostAddDto)
+		{
+			return JSON(await _gostService.AddGostAsync(gostAddDto));
+		}
 
-        [HttpPost]
-        public async Task<JsonResult> AddFileToGost(IFormFile gostFile, uint gostID)
-        {
-            return JSON(await _gostService.AddFileToGostAsync(gostFile, gostID));
-        }
+		[HttpPost]
+		public async Task<JsonResult> AddFileToGost(IFormFile gostFile, uint gostID)
+		{
+			return JSON(await _gostService.AddFileToGostAsync(gostFile, gostID));
+		}
 
-        // HttpPut
-        [HttpPost]
-        public async Task<JsonResult> EditGost([FromBody] GostEditDto gostEditDto)
-        {
-            return JSON(await _gostService.EditGostAsync(gostEditDto));
-        }
+		[HttpGet]
+		public async Task<IActionResult> GetAllBuckets()
+		{
+			var config = new AmazonS3Config
+			{
+				ServiceURL = "https://s3.timeweb.cloud",
+				AuthenticationRegion = "ru-1",
+			};
+			var s3Client = new AmazonS3Client("OEROXDNUP3Q8L16FYNMV", "SJwow3RoWBjQ5CAKqF7tfe5FLOs1ucKTs9jdJNsI", config);
 
-        [HttpDelete]
-        [Route("{id}")]
-        public async Task<IActionResult> DeleteGost(uint id)
-        {
-            if (await _gostService.TryDeleteGostAsync(id))
-                return Ok();
+			var data = await s3Client.ListBucketsAsync();
+			var buckets = data.Buckets.Select(b => b.BucketName);
 
-            return BadRequest();
-        }
+			return Ok(buckets);
+		}
 
-        [HttpGet("{userID}")]
-        public async Task<JsonResult> GetFavouritesGosts(uint userID)
-        {
-            return JSON(await _gostService.GetFavouritesGostsAsync(userID));
-        }
+		// HttpPut
+		[HttpPost]
+		public async Task<JsonResult> EditGost([FromBody] GostEditDto gostEditDto)
+		{
+			return JSON(await _gostService.EditGostAsync(gostEditDto));
+		}
 
-        [HttpPost]
-        public async Task<JsonResult> AddFavouriteGost([FromQuery] uint gostID, uint userID)
-        {
-            return JSON(await _gostService.AddFavouriteGostAsync(gostID, userID));
-        }
+		[HttpDelete]
+		[Route("{id}")]
+		public async Task<IActionResult> DeleteGost(uint id)
+		{
+			if (await _gostService.TryDeleteGostAsync(id))
+				return Ok();
 
-        [HttpDelete]
-        public async Task<IActionResult> DeleteFavouriteGost([FromQuery] uint gostID, uint userID)
-        {
-            if (await _gostService.TryDeleteFavouriteGostAsync(gostID, userID))
-                return Ok();
+			return BadRequest();
+		}
 
-            return BadRequest();
-        }
+		[HttpGet("{userID}")]
+		public async Task<JsonResult> GetFavouritesGosts(uint userID)
+		{
+			return JSON(await _gostService.GetFavouritesGostsAsync(userID));
+		}
 
-        [HttpGet("{userID}/{gostID}")]
-        public async Task<JsonResult> CheckFavouriteGosts(uint userID, uint gostID)
-        {
-            return JSON(await _gostService.CheckFavouriteGostsAsync(userID, gostID));
-        }
+		[HttpPost]
+		public async Task<JsonResult> AddFavouriteGost([FromQuery] uint gostID, uint userID)
+		{
+			return JSON(await _gostService.AddFavouriteGostAsync(gostID, userID));
+		}
 
-        [HttpPost]
-        public async Task<JsonResult> AddRequest([FromQuery]uint gostID)
-        {
-            return JSON(await _gostService.AddRequestAsync(gostID));
-        }
+		[HttpDelete]
+		public async Task<IActionResult> DeleteFavouriteGost([FromQuery] uint gostID, uint userID)
+		{
+			if (await _gostService.TryDeleteFavouriteGostAsync(gostID, userID))
+				return Ok();
 
-        [HttpPost]
-        public async Task<JsonResult> ArchiveGost([FromQuery] uint gostID)
-        {
-            return JSON(await _gostService.ArchiveGostAsync(gostID));
+			return BadRequest();
+		}
+
+		[HttpGet("{userID}/{gostID}")]
+		public async Task<JsonResult> CheckFavouriteGosts(uint userID, uint gostID)
+		{
+			return JSON(await _gostService.CheckFavouriteGostsAsync(userID, gostID));
+		}
+
+		[HttpPost]
+		public async Task<JsonResult> AddRequest([FromQuery] uint gostID)
+		{
+			return JSON(await _gostService.AddRequestAsync(gostID));
+		}
+
+		[HttpPost]
+		public async Task<JsonResult> ArchiveGost([FromQuery] uint gostID)
+		{
+			return JSON(await _gostService.ArchiveGostAsync(gostID));
 		}
 
 		[HttpGet("{gostID}")]
