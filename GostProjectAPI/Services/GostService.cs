@@ -165,9 +165,9 @@ namespace GostProjectAPI.Services
 				searchedGosts = foundGosts.AsQueryable();
 			}
 
-			var test = await searchedGosts.ToPagedListAsync(getParams.Pagination);
+			var pagedGosts = await searchedGosts.ToPagedListAsync(getParams.Pagination);
 
-			return await searchedGosts.ToPagedListAsync(getParams.Pagination);
+			return pagedGosts;
 		}
 
 		public async Task<GostFile> AddFileToGostAsync(IFormFile gostFile, uint gostID)
@@ -444,9 +444,24 @@ namespace GostProjectAPI.Services
 		public async Task<List<Gost>?> GetFavouritesGostsAsync(uint userID)
 		{
 			var favouritesGosts = await _dbContext.FavouritesGosts.Where(g => g.UserId == userID).Select(g => g.GostId).ToListAsync();
-			var allGosts = await _dbContext.Gosts.Where(g => favouritesGosts.Contains(g.ID)).ToListAsync();
+			var allGosts = await _dbContext.Gosts.Where(g => favouritesGosts.Contains(g.ID)).ToListAsync(); 
 			return allGosts;
 		}
+
+		public async Task<PagedList<Gost>?> GetFavouritesGostsListAsync(GetFavouriteGostsDto getParams)
+		{
+			var favouritesGostIds = await _dbContext.FavouritesGosts
+				.Where(fg => fg.UserId == getParams.UserId)
+				.Select(fg => fg.GostId)
+				.ToListAsync();
+
+			var allGosts = await _dbContext.Gosts
+				.Where(g => favouritesGostIds.Contains(g.ID))
+				.ToPagedListAsync(getParams.Pagination);
+
+			return allGosts;
+		}
+
 
 		public async Task<FavouriteGost?> AddFavouriteGostAsync(uint gostID, uint userID)
 		{
@@ -529,6 +544,12 @@ namespace GostProjectAPI.Services
 		{
 			var dataForNormativeReference = await _dbContext.Gosts.Select(g => new DataForNormativeReference { ID = g.ID, Designation = g.Designation }).ToListAsync();
 			return dataForNormativeReference;
+		}
+
+		public async Task<GostFile> GetGostFileAsync(uint gostID)
+		{
+			var gostFile = await _dbContext.GostFiles.FirstOrDefaultAsync(gf => gf.GostId == gostID);
+			return gostFile;
 		}
 	}
 }

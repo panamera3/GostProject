@@ -63,16 +63,12 @@ const CompanyRegistration = () => {
       })
         .then((newUser) => {
           if (!newUser.data.error) {
+            console.log(newUser.data);
             localStorage.setItem("token", newUser.data.token);
             localStorage.setItem("id", newUser.data.id);
-            localStorage.setItem("workCompanyID", newUser.data.WorkCompanyID);
+            localStorage.setItem("workCompanyID", newUser.data.workCompanyID);
             localStorage.setItem("isConfirmed", newUser.data.isConfirmed);
             localStorage.setItem("role", "Admin");
-            try {
-              localStorage.setItem("example", 1);
-            } catch (e) {
-              console.error("Error saving data in localStorage:", e);
-            }
 
             navigate("/home");
           } else {

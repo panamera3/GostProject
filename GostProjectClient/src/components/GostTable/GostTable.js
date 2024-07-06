@@ -10,7 +10,9 @@ import { toast } from "react-toastify";
 
 const GostTable = ({ id, view, edit, add }) => {
   const navigate = useNavigate();
-  const [formData, setFormData] = useState({});
+  const [formData, setFormData] = useState(new FormData());
+  const [formFileData, setFormFileData] = useState(new FormData());
+
   const [gost, setGost] = useState({});
   const [normativeReferences, setNormativeReferences] = useState([]);
   const [keywords, setKeywords] = useState([]);
@@ -21,11 +23,20 @@ const GostTable = ({ id, view, edit, add }) => {
   const [replacedContainerVisibility, setReplacedContainerVisibility] =
     useState(false);
 
+  const [addedGostId, setAddedGostId] = useState(0);
+
   const [selectedFile, setSelectedFile] = useState("");
-  const selectedFile2Ref = useRef("");
+
+  const [gostFile, setGostFile] = useState("");
 
   const handleFileChange = (event) => {
-    setSelectedFile(event.target.files[0]);
+    const file = event.target.files[0];
+    setSelectedFile(file);
+
+    const newFormData = new FormData();
+    newFormData.append("gostFile", file);
+
+    setFormFileData(newFormData);
   };
 
   const [isModalOpen, setModalOpen] = useState(false);
@@ -55,6 +66,39 @@ const GostTable = ({ id, view, edit, add }) => {
       }
     }
   }, [gost]);
+
+  useEffect(() => {
+    if (add) {
+      if (addedGostId) {
+        if (selectedFile) {
+          console.log("selectedFile", selectedFile);
+          for (let [key, value] of formFileData.entries()) {
+            console.log(`${key}:`, value);
+          }
+
+          axios({
+            method: "post",
+            url: `/api/Gost/AddFileToGost?gostID=${addedGostId}`,
+            data: formFileData,
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          })
+            .then((file) => {
+              setGostFile(file.data);
+              toast.success("ГОСТ был успешно добавлен");
+              navigate("/home");
+            })
+            .catch((error) => {
+              console.log(error);
+            });
+        } else {
+          toast.success("ГОСТ был успешно добавлен");
+          navigate("/home");
+        }
+      }
+    }
+  }, [addedGostId]);
 
   useEffect(() => {
     if (view || edit) {
@@ -92,6 +136,17 @@ const GostTable = ({ id, view, edit, add }) => {
       })
         .then((references) => {
           setNormativeReferences(references.data);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+
+      axios({
+        method: "get",
+        url: `/api/Gost/GetGostFile/${id}`,
+      })
+        .then((gostFile) => {
+          setGostFile(gostFile.data);
         })
         .catch((error) => {
           console.log(error);
@@ -169,7 +224,12 @@ const GostTable = ({ id, view, edit, add }) => {
     return selectedOption ? selectedOption.label : "";
   };
 
-  const excluded_keys = ["developerUser", "normativeReferences", "developerId"];
+  const excluded_keys = [
+    "developerUser",
+    "normativeReferences",
+    "developerId",
+    "developerCompany",
+  ];
   const getViewValue = (key, value) => {
     if (value) {
       if (value === true) {
@@ -183,6 +243,8 @@ const GostTable = ({ id, view, edit, add }) => {
       } else {
         return value;
       }
+    } else if (key == "requestsNumber" && value == 0) {
+      return "0";
     } else {
       return "Нет";
     }
@@ -290,6 +352,20 @@ const GostTable = ({ id, view, edit, add }) => {
         </p>
       );
     } else {
+      return <p>Принят впервые</p>;
+    }
+  };
+
+  const getGostFilePath = () => {
+    if (gostFile) {
+      const filePath = gostFile.path;
+      const fileName = filePath.split("/").pop();
+      return (
+        <a href={`${filePath}`} className="gostFilePath">
+          {fileName}
+        </a>
+      );
+    } else {
       return <p>Нет</p>;
     }
   };
@@ -386,13 +462,9 @@ const GostTable = ({ id, view, edit, add }) => {
             ))}
 
             <tr>
-              <td colspan="2">
+              <td colSpan="2">
                 <div className="file-input-container">
-                  <input
-                    type="file"
-                    onChange={handleFileChange}
-                    ref={selectedFile2Ref}
-                  />
+                  <input type="file" onChange={handleFileChange} />
                 </div>
               </td>
             </tr>
@@ -436,6 +508,11 @@ const GostTable = ({ id, view, edit, add }) => {
               gost.gostIdReplaced,
               gostReplacedName
             ),
+          },
+          {
+            key: "gostFile",
+            label: "Файл",
+            value: getGostFilePath(),
           },
         ])
         .map(({ key, label, value, updateDate }) => (
@@ -584,13 +661,9 @@ const GostTable = ({ id, view, edit, add }) => {
               </td>
             </tr>
             <tr>
-              <td colspan="2">
+              <td colSpan="2">
                 <div className="file-input-container">
-                  <input
-                    type="file"
-                    onChange={handleFileChange}
-                    ref={selectedFile2Ref}
-                  />
+                  <input type="file" onChange={handleFileChange} />
                 </div>
               </td>
             </tr>
@@ -664,26 +737,7 @@ const GostTable = ({ id, view, edit, add }) => {
           "Content-Type": "application/json",
         },
       }).then((gost) => {
-        setGost(gost.data);
-
-        /*
-      var formData = new FormData();
-      formData.append("gostFile", selectedFile2Ref.current.files[0]);
-
-      axios({
-        method: "post",
-        url: `/api/Gost/AddFileToGost/?gostID=65`,
-        data: formData,
-        headers: { "Content-Type": "multipart/form-data" },
-      })
-        .then((file) => {
-          console.log(file.data);
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-        */
-        navigate("/home");
+        setAddedGostId(gost.data.id);
       });
     }
     if (edit) {

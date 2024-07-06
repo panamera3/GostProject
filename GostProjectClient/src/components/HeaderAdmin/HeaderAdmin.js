@@ -50,6 +50,8 @@ const HeaderAdmin = ({user}) => {
     localStorage.setItem("workCompanyID", "");
     localStorage.setItem("role", "");
     localStorage.setItem("isConfirmed", "");
+    localStorage.setItem("searchGosts", "");
+
     navigate("/login");
   };
 

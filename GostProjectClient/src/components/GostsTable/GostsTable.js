@@ -26,7 +26,6 @@ const GostsTable = ({ favourites, archiveGosts, searchGosts }) => {
     axios({
       method: "get",
       url: `/api/Gost/GetFavouritesGosts/${userId}`,
-      headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
     })
       .then((favGosts) => {
         setFavouritesGosts(favGosts.data);
@@ -59,15 +58,18 @@ const GostsTable = ({ favourites, archiveGosts, searchGosts }) => {
     if (favourites) {
       const userId = localStorage.getItem("id");
       axios({
-        method: "get",
-        url: `/api/Gost/GetFavouritesGosts/${userId}`,
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-          "Content-Type": "application/json",
+        method: "post",
+        url: `/api/Gost/GetFavouritesGosts`,
+        data: {
+          userId: userId,
+          pagination: {
+            pageSize: pagination.pageSize,
+            offset: pagination.offset,
+          },
         },
       })
         .then((gosts) => {
-          setGosts(gosts.data);
+          setGosts(gosts.data.data);
           setPagination((prevState) => ({
             ...prevState,
             total: gosts.data.pagination.total,
@@ -156,6 +158,7 @@ const GostsTable = ({ favourites, archiveGosts, searchGosts }) => {
   const renderGostsTable = () => {
     if (gosts) {
       var renderGosts = gosts;
+      console.log('renderGosts', renderGosts)
       if (!searchGosts) {
         renderGosts = renderGosts.filter(
           (gost) =>

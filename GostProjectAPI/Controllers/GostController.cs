@@ -1,4 +1,5 @@
 using Amazon.S3;
+using GostProjectAPI.Data.Entities;
 using GostProjectAPI.DTOModels.Gosts;
 using GostProjectAPI.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -103,6 +104,12 @@ namespace GostProjectAPI.Controllers
 		}
 
 		[HttpPost]
+		public async Task<JsonResult> GetFavouritesGosts([FromBody] GetFavouriteGostsDto getParams)
+		{
+			return JSON(await _gostService.GetFavouritesGostsListAsync(getParams));
+		}
+
+		[HttpPost]
 		public async Task<JsonResult> AddFavouriteGost([FromQuery] uint gostID, uint userID)
 		{
 			return JSON(await _gostService.AddFavouriteGostAsync(gostID, userID));
@@ -151,6 +158,12 @@ namespace GostProjectAPI.Controllers
 		public async Task<JsonResult> GetDataForNormativeReferences()
 		{
 			return JSON(await _gostService.GetDataForNormativeReferencesAsync());
+		}
+
+		[HttpGet("{gostID}")]
+		public async Task<JsonResult> GetGostFile(uint gostID)
+		{
+			return JSON(await _gostService.GetGostFileAsync(gostID));
 		}
 	}
 }

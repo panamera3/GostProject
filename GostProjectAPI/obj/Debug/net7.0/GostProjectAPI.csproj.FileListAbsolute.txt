@@ -25,7 +25,6 @@ C:\Users\pjanv\OneDrive\Рабочий стол\Study\ВУЗ\5 семестр\П
 C:\Users\pjanv\OneDrive\Рабочий стол\Study\ВУЗ\5 семестр\ПП\GostProject\GostProjectAPI\obj\Debug\net7.0\staticwebassets.build.json
 C:\Users\pjanv\OneDrive\Рабочий стол\Study\ВУЗ\5 семестр\ПП\GostProject\GostProjectAPI\obj\Debug\net7.0\staticwebassets.development.json
 C:\Users\pjanv\OneDrive\Рабочий стол\Study\ВУЗ\5 семестр\ПП\GostProject\GostProjectAPI\obj\Debug\net7.0\scopedcss\bundle\GostProjectAPI.styles.css
-C:\Users\pjanv\OneDrive\Рабочий стол\Study\ВУЗ\5 семестр\ПП\GostProject\GostProjectAPI\obj\Debug\net7.0\GostProjectAPI.csproj.CopyComplete
 C:\Users\pjanv\OneDrive\Рабочий стол\Study\ВУЗ\5 семестр\ПП\GostProject\GostProjectAPI\obj\Debug\net7.0\GostProjectAPI.dll
 C:\Users\pjanv\OneDrive\Рабочий стол\Study\ВУЗ\5 семестр\ПП\GostProject\GostProjectAPI\obj\Debug\net7.0\refint\GostProjectAPI.dll
 C:\Users\pjanv\OneDrive\Рабочий стол\Study\ВУЗ\5 семестр\ПП\GostProject\GostProjectAPI\obj\Debug\net7.0\GostProjectAPI.pdb
@@ -64,3 +63,5 @@ C:\Users\pjanv\OneDrive\Рабочий стол\Study\ВУЗ\5 семестр\П
 C:\Users\pjanv\OneDrive\Рабочий стол\Study\ВУЗ\5 семестр\ПП\GostProject\GostProjectAPI\bin\Debug\net7.0\AWSSDK.Core.dll
 C:\Users\pjanv\OneDrive\Рабочий стол\Study\ВУЗ\5 семестр\ПП\GostProject\GostProjectAPI\bin\Debug\net7.0\AWSSDK.Extensions.NETCore.Setup.dll
 C:\Users\pjanv\OneDrive\Рабочий стол\Study\ВУЗ\5 семестр\ПП\GostProject\GostProjectAPI\bin\Debug\net7.0\AWSSDK.S3.dll
+C:\Users\pjanv\OneDrive\Рабочий стол\Study\ВУЗ\5 семестр\ПП\GostProject\GostProjectAPI\obj\Debug\net7.0\GostProjectAPI.sourcelink.json
+C:\Users\pjanv\OneDrive\Рабочий стол\Study\ВУЗ\5 семестр\ПП\GostProject\GostProjectAPI\obj\Debug\net7.0\GostProj.949D9260.Up2Date
