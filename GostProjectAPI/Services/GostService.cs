@@ -1,4 +1,5 @@
 ﻿using Amazon.S3;
+using Amazon.S3.Model;
 using Amazon.S3.Transfer;
 using GostProjectAPI.Data;
 using GostProjectAPI.Data.Entities;
@@ -179,9 +180,20 @@ namespace GostProjectAPI.Services
 			};
 			var s3Client = new AmazonS3Client("OEROXDNUP3Q8L16FYNMV", "SJwow3RoWBjQ5CAKqF7tfe5FLOs1ucKTs9jdJNsI", config);
 
-
 			string bucketName = "66f0e91a-object-storage";
 			string keyName = $"UrFU/{gostFile.FileName}";
+
+			// Check if the file already exists in the database
+			var existingFile = await _dbContext.GostFiles
+				.Where(f => f.Path.Contains(keyName))
+				.FirstOrDefaultAsync();
+
+			if (existingFile != null)
+			{
+				// If the file exists, append a unique identifier to the file name
+				var uniqueIdentifier = Guid.NewGuid().ToString().Substring(0, 8);
+				keyName += $"_{uniqueIdentifier}";
+			}
 
 			using (var newMemoryStream = new MemoryStream())
 			{
@@ -212,6 +224,7 @@ namespace GostProjectAPI.Services
 			await _dbContext.SaveChangesAsync();
 
 			return gostFileEntity;
+
 
 			// всё это поменять на запрос в бакет
 

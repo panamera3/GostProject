@@ -123,10 +123,10 @@ const UserProfiles = () => {
 
   const renderUsers = () => {
     if (users) {
-      return users.map((user) => (
+      return users.map((user, index) => (
         <tr key={user.id}>
           <td>
-            <p>{user.id}</p>
+            <p>{index + 1}</p>
           </td>
           <td>
             <p>{user.department}</p>

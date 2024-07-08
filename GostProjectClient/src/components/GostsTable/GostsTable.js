@@ -21,6 +21,9 @@ const GostsTable = ({ favourites, archiveGosts, searchGosts }) => {
     currentPage: 1,
   });
 
+  const [sortField, setSortField] = useState(null);
+  const [sortDirection, setSortDirection] = useState(null);
+
   const refreshFavouritesGosts = () => {
     const userId = localStorage.getItem("id");
     axios({
@@ -44,11 +47,25 @@ const GostsTable = ({ favourites, archiveGosts, searchGosts }) => {
     fetchGosts();
   }, [pagination.pageSize]);
 
+  useEffect(() => {
+    fetchGosts();
+  }, [sortField, sortDirection]);
+
   const handlePageSizeChange = (size) => {
     setPageSize(size);
     setPagination((prevState) => ({
       ...prevState,
       pageSize: size,
+      offset: 0,
+      currentPage: 1,
+    }));
+  };
+
+  const handleSort = (field, asc) => {
+    setSortField(field);
+    setSortDirection(asc ? "ASC" : "DESC");
+    setPagination((prevState) => ({
+      ...prevState,
       offset: 0,
       currentPage: 1,
     }));
@@ -66,6 +83,8 @@ const GostsTable = ({ favourites, archiveGosts, searchGosts }) => {
             pageSize: pagination.pageSize,
             offset: pagination.offset,
           },
+          sortField: sortField,
+          sortDirection: sortDirection,
         },
       })
         .then((gosts) => {
@@ -98,6 +117,8 @@ const GostsTable = ({ favourites, archiveGosts, searchGosts }) => {
               pageSize: pagination.pageSize,
               offset: pagination.offset,
             },
+            sortField: sortField,
+            sortDirection: sortDirection,
           },
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -105,7 +126,6 @@ const GostsTable = ({ favourites, archiveGosts, searchGosts }) => {
           },
         })
           .then((gosts) => {
-            console.log("gosts", gosts);
             setGosts(gosts.data.data);
             setPagination((prevState) => ({
               ...prevState,
@@ -158,7 +178,7 @@ const GostsTable = ({ favourites, archiveGosts, searchGosts }) => {
   const renderGostsTable = () => {
     if (gosts) {
       var renderGosts = gosts;
-      console.log('renderGosts', renderGosts)
+      console.log("renderGosts", renderGosts);
       if (!searchGosts) {
         renderGosts = renderGosts.filter(
           (gost) =>
@@ -166,10 +186,10 @@ const GostsTable = ({ favourites, archiveGosts, searchGosts }) => {
             (!archiveGosts && !gost.isArchived)
         );
       }
-      return renderGosts.map((gost) => (
+      return renderGosts.map((gost, index) => (
         <tr key={gost.id}>
           <td>
-            <p>{gost.id}</p>
+            <p>{index + 1 + pagination.offset}</p>
           </td>
           <td>
             <p>{gost.designation}</p>
@@ -249,7 +269,7 @@ const GostsTable = ({ favourites, archiveGosts, searchGosts }) => {
           <select
             id="selectSorting"
             onChange={(e) =>
-              sortGosts(
+              handleSort(
                 e.target.value,
                 JSON.parse(
                   e.target.options[e.target.selectedIndex].getAttribute("asc")

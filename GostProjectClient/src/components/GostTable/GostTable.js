@@ -397,6 +397,8 @@ const GostTable = ({ id, view, edit, add }) => {
           "content",
           "acceptanceLevel",
           "actionStatus",
+          "actionStatus",
+          "gostIdReplaced" // остановка
         ];
 
         return (

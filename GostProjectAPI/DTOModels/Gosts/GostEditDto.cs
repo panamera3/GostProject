@@ -23,5 +23,7 @@ namespace GostProjectAPI.DTOModels.Gosts
         public List<string>? Keyphrases { get; set; }
 
         public AcceptanceLevel? AcceptanceLevel { get; set; }
-    }
+
+		public uint? GostIdReplaced { get; set; }
+	}
 }

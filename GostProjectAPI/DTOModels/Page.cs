@@ -23,7 +23,7 @@
     {
         public int Total { get; set; }
 
-        public int PageSize { get; set; } = 5;
+        public int PageSize { get; set; } = 10;
 
         public int Offset { get; set; } = 0;
     }
