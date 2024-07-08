@@ -229,6 +229,7 @@ const GostTable = ({ id, view, edit, add }) => {
     "normativeReferences",
     "developerId",
     "developerCompany",
+    "id",
   ];
   const getViewValue = (key, value) => {
     if (value) {
@@ -403,15 +404,6 @@ const GostTable = ({ id, view, edit, add }) => {
 
         return (
           <>
-            <tr key="id">
-              <td>
-                <label htmlFor="id">Номер</label>
-              </td>
-              <td>
-                <label>{localStorage.getItem("selectedGostNumber")}</label>
-              </td>
-            </tr>
-
             {editFields.map((key, index) => (
               <tr key={index}>
                 <td>
@@ -471,56 +463,50 @@ const GostTable = ({ id, view, edit, add }) => {
           </>
         );
       }
-      return [
-        {
-          key: "number",
-          label: "Номер",
-          value: localStorage.getItem("selectedGostNumber"),
-        },
-        ...Object.keys(gost)
-          .filter((key) => !excluded_keys.includes(key))
-          .map((key) => ({
-            key,
-            label: translationGostDict[key] || key,
-            value: view
-              ? getViewValue(key, gost[key])
-              : getEditValue(key, gost[key]),
-            updateDate: getUpdateDate(key, updateGostDates),
-          })),
-        {
-          key: "normativeReferences",
-          label: "Нормативные ссылки",
-          value: getNormativeReferencesValue(
-            view,
-            normativeReferences,
-            referenceGostNames
-          ),
-        },
-        {
-          key: "keywords",
-          label: "Ключевые слова",
-          value: getKeywordsValue(keywords),
-        },
-        {
-          key: "keyphrases",
-          label: "Ключевые фразы",
-          value: getKeyphrasesValue(keyphrases),
-        },
-        {
-          key: "gostReplacedWith",
-          label: "Принят взамен",
-          value: getGostReplacedWithValue(
-            gost.gostIdReplaced,
-            gostReplacedName
-          ),
-        },
-        {
-          key: "gostFile",
-          label: "Файл",
-          value: getGostFilePath(),
-        },
-      ]
-        .filter((item) => item.key !== "id")
+      return Object.keys(gost)
+        .filter((key) => !excluded_keys.includes(key))
+        .map((key) => ({
+          key,
+          label: translationGostDict[key] || key,
+          value: view
+            ? getViewValue(key, gost[key])
+            : getEditValue(key, gost[key]),
+          updateDate: getUpdateDate(key, updateGostDates),
+        }))
+        .concat([
+          {
+            key: "normativeReferences",
+            label: "Нормативные ссылки",
+            value: getNormativeReferencesValue(
+              view,
+              normativeReferences,
+              referenceGostNames
+            ),
+          },
+          {
+            key: "keywords",
+            label: "Ключевые слова",
+            value: getKeywordsValue(keywords),
+          },
+          {
+            key: "keyphrases",
+            label: "Ключевые фразы",
+            value: getKeyphrasesValue(keyphrases),
+          },
+          {
+            key: "gostReplacedWith",
+            label: "Принят взамен",
+            value: getGostReplacedWithValue(
+              gost.gostIdReplaced,
+              gostReplacedName
+            ),
+          },
+          {
+            key: "gostFile",
+            label: "Файл",
+            value: getGostFilePath(),
+          },
+        ])
         .map(({ key, label, value, updateDate }) => (
           <tr key={key}>
             <td>
