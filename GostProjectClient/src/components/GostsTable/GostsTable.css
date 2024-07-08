@@ -48,7 +48,7 @@ th {
   text-decoration: none;
   color: #333;
   border: 1px solid #ccc;
-  border-radius: 3px;
+  border-radius: 0.7em;
 }
 
 .pagination li.active a {
