@@ -209,8 +209,6 @@ const GostsTable = ({ favourites, archiveGosts, searchGosts }) => {
               src={file}
               alt="view"
               onClick={() => {
-                const gostNumber = index + 1 + pagination.offset;
-                localStorage.setItem("selectedGostNumber", gostNumber)
                 navigate(`/gost/${gost.id}`);
               }}
             />
