@@ -154,10 +154,10 @@ namespace GostProjectAPI.Controllers
 			return JSON(await _gostService.GetNormativeReferencesAsync(gostID));
 		}
 
-		[HttpGet]
-		public async Task<JsonResult> GetDataForNormativeReferences()
+		[HttpGet("{companyID}")]
+		public async Task<JsonResult> GetDataForNormativeReferences(uint companyID)
 		{
-			return JSON(await _gostService.GetDataForNormativeReferencesAsync());
+			return JSON(await _gostService.GetDataForNormativeReferencesAsync(companyID));
 		}
 
 		[HttpGet("{gostID}")]
