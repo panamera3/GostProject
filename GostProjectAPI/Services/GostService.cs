@@ -553,9 +553,9 @@ namespace GostProjectAPI.Services
 			return updateGostDates;
 		}
 
-		public async Task<List<DataForNormativeReference>> GetDataForNormativeReferencesAsync()
+		public async Task<List<DataForNormativeReference>> GetDataForNormativeReferencesAsync(uint companyID)
 		{
-			var dataForNormativeReference = await _dbContext.Gosts.Select(g => new DataForNormativeReference { ID = g.ID, Designation = g.Designation }).ToListAsync();
+			var dataForNormativeReference = await _dbContext.Gosts.Where(g => g.DeveloperId == companyID).Select(g => new DataForNormativeReference { ID = g.ID, Designation = g.Designation }).ToListAsync();
 			return dataForNormativeReference;
 		}
 

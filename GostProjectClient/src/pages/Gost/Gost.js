@@ -10,7 +10,6 @@ import UserRole from "../../types/user/userRole";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-
 const Gost = () => {
   const params = useParams();
   const navigate = useNavigate();
@@ -23,17 +22,16 @@ const Gost = () => {
       url: `/api/Gost/AddRequest?gostID=${params.id}`,
       headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
     })
-      .then((gost) => {
-      })
+      .then((gost) => {})
       .catch((error) => {
         console.log(error);
       });
 
     axios({
       method: "get",
-      url: `/api/Gost/CheckFavouriteGosts/${localStorage.getItem(
-        "id"
-      )}/${params.id}`,
+      url: `/api/Gost/CheckFavouriteGosts/${localStorage.getItem("id")}/${
+        params.id
+      }`,
       headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
     })
       .then((favourite) => {
@@ -52,6 +50,7 @@ const Gost = () => {
     })
       .then((data) => {
         if (data.status === 200) {
+          toast.success("ГОСТ был успешно удалён");
           navigate("/home");
         }
       })
@@ -110,6 +109,7 @@ const Gost = () => {
       headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
     })
       .then((gost) => {
+        toast.success("ГОСТ был успешно архивирован");
         navigate("/home");
       })
       .catch((error) => {

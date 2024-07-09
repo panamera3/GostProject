@@ -230,6 +230,8 @@ const GostTable = ({ id, view, edit, add }) => {
     "developerId",
     "developerCompany",
     "id",
+    "gostReplaced",
+    "gostIdReplaced",
   ];
   const getViewValue = (key, value) => {
     if (value) {
@@ -395,10 +397,14 @@ const GostTable = ({ id, view, edit, add }) => {
           "denomination",
           "oksCode",
           "okpdCode",
+          "acceptanceYear",
+          "introdutionYear",
+          "developerName",
           "content",
           "acceptanceLevel",
           "actionStatus",
-          "actionStatus",
+          "changes",
+          "amendments",
           "gostIdReplaced", // остановка
         ];
 
@@ -419,11 +425,15 @@ const GostTable = ({ id, view, edit, add }) => {
                       }
                     >
                       <option value="">Выберите статус</option>
-                      {actionStatusOptions.map((option) => (
-                        <option key={option.value} value={option.value}>
-                          {option.label}
-                        </option>
-                      ))}
+                      {actionStatusOptions
+                        .filter(
+                          (option) => option.label.toLowerCase() != "заменён"
+                        )
+                        .map((option) => (
+                          <option key={option.value} value={option.value}>
+                            {option.label}
+                          </option>
+                        ))}
                     </select>
                   ) : key === "acceptanceLevel" ? (
                     <select
@@ -558,11 +568,15 @@ const GostTable = ({ id, view, edit, add }) => {
                       }
                     >
                       <option value="">Выберите статус</option>
-                      {actionStatusOptions.map((option) => (
-                        <option key={option.value} value={option.value}>
-                          {option.label}
-                        </option>
-                      ))}
+                      {actionStatusOptions
+                        .filter(
+                          (option) => option.label.toLowerCase() != "заменён"
+                        )
+                        .map((option) => (
+                          <option key={option.value} value={option.value}>
+                            {option.label}
+                          </option>
+                        ))}
                     </select>
                   ) : key === "acceptanceLevel" ? (
                     <select
@@ -729,6 +743,30 @@ const GostTable = ({ id, view, edit, add }) => {
           "Content-Type": "application/json",
         },
       }).then((gost) => {
+        if (gostIdReplaced !== -1) {
+          const replacedStatus = actionStatusOptions.find(
+            (option) => option.label === "Заменён"
+          );
+
+          axios({
+            method: "post",
+            url: `/api/Gost/EditGost`,
+            data: {
+              id: gostIdReplaced,
+              actionStatus: replacedStatus,
+            },
+            headers: {
+              "Content-Type": "application/json",
+            },
+          })
+            .then((gost) => {
+              console.log(gost.data);
+            })
+            .catch((error) => {
+              console.log(error);
+            });
+        }
+
         setAddedGostId(gost.data.id);
       });
     }
@@ -742,10 +780,17 @@ const GostTable = ({ id, view, edit, add }) => {
           denomination: formData.denomination,
           oksCode: formData.oksCode,
           okpdCode: formData.okpdCode,
+          acceptanceYear: formData.acceptanceYear,
+          introdutionYear: formData.introdutionYear,
+          developerName: formData.developerName,
           content: formData.content,
+          acceptanceLevel: formData.acceptanceLevel,
+          actionStatus: formData.actionStatus,
+          changes: formData.changes,
+          amendments: formData.amendments,
           keywords: formData.keywords?.split(","),
           keyphrases: formData.keyphrases?.split(","),
-          acceptanceLevel: Number(formData.acceptanceLevel),
+          // добавить replacedGostId
         },
         headers: {
           "Content-Type": "application/json",
@@ -753,6 +798,7 @@ const GostTable = ({ id, view, edit, add }) => {
       })
         .then((gost) => {
           setGost(gost.data);
+          toast.success("ГОСТ был успешно отредактирован");
           navigate(`/gost/${id}`);
         })
         .catch((error) => {

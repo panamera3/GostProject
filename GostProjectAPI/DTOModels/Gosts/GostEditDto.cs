@@ -1,4 +1,5 @@
 ﻿using GostProjectAPI.Data.Enums.Gost;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
 namespace GostProjectAPI.DTOModels.Gosts
@@ -18,12 +19,26 @@ namespace GostProjectAPI.DTOModels.Gosts
 
         public string? Content { get; set; }
 
-        public List<string>? Keywords { get; set; }
+		public string? Text { get; set; }
 
-        public List<string>? Keyphrases { get; set; }
+		public AcceptanceLevel? AcceptanceLevel { get; set; }
 
-        public AcceptanceLevel? AcceptanceLevel { get; set; }
+		public ActionStatus? ActionStatus { get; set; }
 
 		public uint? GostIdReplaced { get; set; }
+
+		public string? DeveloperName { get; set; }
+
+		public ushort? AcceptanceYear { get; set; }
+
+		public ushort? IntrodutionYear { get; set; }
+
+		public string? Changes { get; set; }
+
+		public string? Amendments { get; set; }
+
+		public List<string>? Keywords { get; set; }
+
+		public List<string>? Keyphrases { get; set; }
 	}
 }
