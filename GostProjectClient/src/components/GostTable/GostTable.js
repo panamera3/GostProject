@@ -24,6 +24,7 @@ const GostTable = ({ id, view, edit, add }) => {
     useState(false);
 
   const [addedGostId, setAddedGostId] = useState(0);
+  const [editedGostId, setEditedGostId] = useState(0);
 
   const [selectedFile, setSelectedFile] = useState("");
 
@@ -71,11 +72,6 @@ const GostTable = ({ id, view, edit, add }) => {
     if (add) {
       if (addedGostId) {
         if (selectedFile) {
-          console.log("selectedFile", selectedFile);
-          for (let [key, value] of formFileData.entries()) {
-            console.log(`${key}:`, value);
-          }
-
           axios({
             method: "post",
             url: `/api/Gost/AddFileToGost?gostID=${addedGostId}`,
@@ -86,19 +82,43 @@ const GostTable = ({ id, view, edit, add }) => {
           })
             .then((file) => {
               setGostFile(file.data);
-              toast.success("ГОСТ был успешно добавлен");
-              navigate("/home");
+              toast.success("Файл был успешно добавлен к ГОСТу");
             })
             .catch((error) => {
               console.log(error);
             });
-        } else {
-          toast.success("ГОСТ был успешно добавлен");
-          navigate("/home");
         }
+        toast.success("ГОСТ был успешно добавлен");
+        navigate(`/gost/${addedGostId}`);
       }
     }
   }, [addedGostId]);
+
+  useEffect(() => {
+    if (edit) {
+      if (editedGostId) {
+        if (selectedFile) {
+          axios({
+            method: "post",
+            url: `/api/Gost/ChangeFileToGost?gostID=${editedGostId}`,
+            data: formFileData,
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          })
+            .then((file) => {
+              setGostFile(file.data);
+              toast.success("Файл к ГОСТу был успешно заменён");
+            })
+            .catch((error) => {
+              console.log(error);
+            });
+        }
+        toast.success("ГОСТ был успешно отредактирован");
+        navigate(`/gost/${id}`);
+      }
+    }
+  }, [editedGostId]);
 
   useEffect(() => {
     if (view || edit) {
@@ -155,7 +175,9 @@ const GostTable = ({ id, view, edit, add }) => {
     if (add) {
       axios({
         method: "get",
-        url: `/api/Gost/GetDataForNormativeReferences/${localStorage.getItem("workCompanyID")}`,
+        url: `/api/Gost/GetDataForNormativeReferences/${localStorage.getItem(
+          "workCompanyID"
+        )}`,
         headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
       })
         .then((gostsNormativeReferences) => {
@@ -389,6 +411,54 @@ const GostTable = ({ id, view, edit, add }) => {
     "developerName",
   ];
 
+  const renderInputField = (key) => {
+    const value = formData[key] !== undefined ? formData[key] : gost[key];
+
+    if (key === "actionStatus") {
+      return (
+        <select
+          className="gostInput"
+          value={value}
+          onChange={(e) => handleInputChange(key, e.target.value)}
+        >
+          <option value="">Выберите статус</option>
+          {actionStatusOptions
+            .filter((option) => option.label.toLowerCase() !== "заменён")
+            .map((option) => (
+              <option key={option.value} value={option.value}>
+                {option.label}
+              </option>
+            ))}
+        </select>
+      );
+    }
+
+    if (key === "acceptanceLevel") {
+      return (
+        <select
+          className="gostInput"
+          value={value}
+          onChange={(e) => handleInputChange(key, e.target.value)}
+        >
+          <option value="">Выберите уровень принятия</option>
+          {acceptanceLevelOptions.map((option) => (
+            <option key={option.value} value={option.value}>
+              {option.label}
+            </option>
+          ))}
+        </select>
+      );
+    }
+
+    return (
+      <input
+        className="gostInput"
+        value={value}
+        onChange={(e) => handleInputChange(key, e.target.value)}
+      />
+    );
+  };
+
   const renderGostTable = () => {
     if (Object.keys(gost).length !== 0) {
       if (edit) {
@@ -405,71 +475,30 @@ const GostTable = ({ id, view, edit, add }) => {
           "actionStatus",
           "changes",
           "amendments",
-          "gostIdReplaced", // остановка
+          "gostReplaced",
         ];
 
         return (
           <>
-            {editFields.map((key, index) => (
-              <tr key={index}>
-                <td>
-                  <label htmlFor={key}>{translationGostDict[key]}</label>
-                </td>
-                <td>
-                  {key === "actionStatus" ? (
-                    <select
-                      className="gostInput"
-                      value={formData.actionStatus || gost.actionStatus}
-                      onChange={(e) =>
-                        handleInputChange("actionStatus", e.target.value)
-                      }
-                    >
-                      <option value="">Выберите статус</option>
-                      {actionStatusOptions
-                        .filter(
-                          (option) => option.label.toLowerCase() != "заменён"
-                        )
-                        .map((option) => (
-                          <option key={option.value} value={option.value}>
-                            {option.label}
-                          </option>
-                        ))}
-                    </select>
-                  ) : key === "acceptanceLevel" ? (
-                    <select
-                      className="gostInput"
-                      value={formData.acceptanceLevel || gost.acceptanceLevel}
-                      onChange={(e) =>
-                        handleInputChange("acceptanceLevel", e.target.value)
-                      }
-                    >
-                      <option value="">Выберите уровень принятия</option>
-                      {acceptanceLevelOptions.map((option) => (
-                        <option key={option.value} value={option.value}>
-                          {option.label}
-                        </option>
-                      ))}
-                    </select>
-                  ) : (
-                    <input
-                      className="gostInput"
-                      value={
-                        formData[key] !== undefined ? formData[key] : gost[key]
-                      }
-                      onChange={(e) => handleInputChange(key, e.target.value)}
-                    />
-                  )}
+            {edit &&
+              editFields.map((key, index) => (
+                <tr key={index}>
+                  <td>
+                    <label htmlFor={key}>{translationGostDict[key]}</label>
+                  </td>
+                  <td>{renderInputField(key)}</td>
+                </tr>
+              ))}
+
+            {edit && (
+              <tr>
+                <td colSpan="2">
+                  <div className="file-input-container">
+                    <input type="file" onChange={handleFileChange} />
+                  </div>
                 </td>
               </tr>
-            ))}
-
-            <tr>
-              <td colSpan="2">
-                <div className="file-input-container">
-                  <input type="file" onChange={handleFileChange} />
-                </div>
-              </td>
-            </tr>
+            )}
           </>
         );
       }
@@ -702,8 +731,6 @@ const GostTable = ({ id, view, edit, add }) => {
       formAddData.append(key, formData[key]);
     }
 
-    // formData.append("file", selectedFile);
-
     const normativeReferencesAdd = selectedItems.map((item) => item.id);
 
     if (add) {
@@ -717,7 +744,9 @@ const GostTable = ({ id, view, edit, add }) => {
       }
 
       if (isNaN(formData.acceptanceYear) || isNaN(formData.introdutionYear)) {
-        toast.error(`Поля "Год принятия" и "Год введения" должны содержать только числа`);
+        toast.error(
+          `Поля "Год принятия" и "Год введения" должны содержать только числа`
+        );
         return;
       }
 
@@ -764,9 +793,7 @@ const GostTable = ({ id, view, edit, add }) => {
               "Content-Type": "application/json",
             },
           })
-            .then((gost) => {
-              console.log(gost.data);
-            })
+            .then((gost) => {})
             .catch((error) => {
               console.log(error);
             });
@@ -803,8 +830,8 @@ const GostTable = ({ id, view, edit, add }) => {
       })
         .then((gost) => {
           setGost(gost.data);
-          toast.success("ГОСТ был успешно отредактирован");
-          navigate(`/gost/${id}`);
+          console.log(id);
+          setEditedGostId(id);
         })
         .catch((error) => {
           console.log(error);

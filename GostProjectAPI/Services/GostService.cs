@@ -225,13 +225,8 @@ namespace GostProjectAPI.Services
 
 			return gostFileEntity;
 
-
-			// всё это поменять на запрос в бакет
-
-			// в этой дирекктории создать папку и в эту папку кидать
-			// Environment.CurrentDirectory
-
 			/*
+			для добавления не в бакет, а в локальную папку
 
 			string filePath = _env.IsDevelopment() ? _fileUploadPaths.Global : _fileUploadPaths.Local;
 			string path = Path.Join(filePath, gostFile.FileName);
@@ -250,6 +245,52 @@ namespace GostProjectAPI.Services
 
 			return gostFileEntity;
 			*/
+		}
+
+		private async System.Threading.Tasks.Task DeleteFileFromGostAsync(uint gostID)
+		{
+			var config = new AmazonS3Config
+			{
+				ServiceURL = "https://s3.timeweb.cloud",
+				AuthenticationRegion = "ru-1",
+			};
+			var s3Client = new AmazonS3Client("OEROXDNUP3Q8L16FYNMV", "SJwow3RoWBjQ5CAKqF7tfe5FLOs1ucKTs9jdJNsI", config);
+
+			string bucketName = "66f0e91a-object-storage";
+
+			var existingFile = await _dbContext.GostFiles
+				.Where(f => f.GostId == gostID)
+				.FirstOrDefaultAsync();
+
+			if (existingFile != null)
+			{
+				var deleteRequest = new DeleteObjectRequest
+				{
+					BucketName = bucketName,
+					Key = existingFile.Path.Substring(existingFile.Path.LastIndexOf('/') + 1)
+				};
+				await s3Client.DeleteObjectAsync(deleteRequest);
+
+				_dbContext.GostFiles.Remove(existingFile);
+				await _dbContext.SaveChangesAsync();
+			}
+		}
+
+		public async Task<GostFile?> ChangeFileToGostAsync(IFormFile file, uint gostID)
+		{
+			var existingFile = await _dbContext.GostFiles
+				.Where(f => f.GostId == gostID)
+				.FirstOrDefaultAsync();
+
+			if (existingFile == null)
+			{
+				return await AddFileToGostAsync(file, gostID);
+			}
+			else
+			{
+				await DeleteFileFromGostAsync(gostID);
+				return await AddFileToGostAsync(file, gostID);
+			}
 		}
 
 		private bool SearchInWordFile(string documentLocation, string stringToSearchFor, bool caseSensitive = false)

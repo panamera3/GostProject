@@ -17,10 +17,6 @@ const Registration = () => {
     companyCode: true,
   });
 
-  useEffect(() => {
-    console.log(fieldValidity);
-  }, [fieldValidity]);
-
   const refs = {
     usernameRegistrationInputRef: useRef(null),
     passwordRegistrationInputRef: useRef(null),

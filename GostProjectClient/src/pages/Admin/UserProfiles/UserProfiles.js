@@ -44,7 +44,6 @@ const UserProfiles = () => {
       headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
     })
       .then((users) => {
-        console.log(users.data);
         setUsers(users.data);
       })
       .catch((error) => {

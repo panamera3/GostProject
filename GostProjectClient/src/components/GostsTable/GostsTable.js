@@ -178,7 +178,6 @@ const GostsTable = ({ favourites, archiveGosts, searchGosts }) => {
   const renderGostsTable = () => {
     if (gosts) {
       var renderGosts = gosts;
-      console.log("renderGosts", renderGosts);
       if (!searchGosts) {
         renderGosts = renderGosts.filter(
           (gost) =>

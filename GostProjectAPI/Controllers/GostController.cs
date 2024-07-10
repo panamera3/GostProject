@@ -64,6 +64,12 @@ namespace GostProjectAPI.Controllers
 			return JSON(await _gostService.AddFileToGostAsync(gostFile, gostID));
 		}
 
+		[HttpPost]
+		public async Task<JsonResult> ChangeFileToGost(IFormFile gostFile, uint gostID)
+		{
+			return JSON(await _gostService.ChangeFileToGostAsync(gostFile, gostID));
+		}
+
 		[HttpGet]
 		public async Task<IActionResult> GetAllBuckets()
 		{
