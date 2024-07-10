@@ -15,12 +15,24 @@ const Login = () => {
   const usernameLoginInputRef = useRef();
   const passwordLoginInputRef = useRef();
 
-  const [formValid, setFormValid] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const [fieldValidity, setFieldValidity] = useState({
+    username: true,
+    password: true,
+  });
 
   const loginUser = () => {
     const username = usernameLoginInputRef.current.value;
     const password = passwordLoginInputRef.current.value;
+    if (!username) {
+      toast.error("Заполните поле с логином");
+      return;
+    }
+    if (!password) {
+      toast.error("Заполните поле с паролем");
+      return;
+    }
+
     axios({
       method: "post",
       responseType: "json",
@@ -52,41 +64,39 @@ const Login = () => {
 
   const submitHandler = (event) => {
     event.preventDefault();
-    const username = usernameLoginInputRef.current.value;
 
-    axios({
-      method: "get",
-      responseType: "json",
-      url: `/api/Notification/GetNotificationByLogin/${username}`,
-    })
-      .then((notification) => {
-        console.log(notification.data);
-        if (notification.data) {
-          var applicationStatus = notification.data.status;
-          switch (applicationStatus) {
-            case 1:
-              // принята
-              loginUser();
-              break;
-            case 2:
-              // на рассмотрении
-              toast.warn("Ваша заявка находится на рассмотрении");
-              break;
-            case 3:
-              // отклонена
-              toast.error("Ваша заявка в организацию была отклонена");
-              break;
-            default:
-              toast.error("Данный логин не был зарегистрирован");
-          }
-        } else {
-          loginUser();
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-        toast.error("Неверный логин и/или пароль");
-      });
+    const username = usernameLoginInputRef.current.value;
+    const password = passwordLoginInputRef.current.value;
+
+    if (!username) {
+      setFieldValidity((prevState) => ({
+        ...prevState,
+        username: false,
+      }));
+      toast.error("Заполните поле с логином");
+    } else {
+      setFieldValidity((prevState) => ({
+        ...prevState,
+        username: true,
+      }));
+    }
+
+    if (!password) {
+      setFieldValidity((prevState) => ({
+        ...prevState,
+        password: false,
+      }));
+      toast.error("Заполните поле с паролем");
+    } else {
+      setFieldValidity((prevState) => ({
+        ...prevState,
+        password: true,
+      }));
+    }
+
+    if (username && password) {
+      loginUser();
+    }
   };
 
   return (
@@ -105,6 +115,7 @@ const Login = () => {
                   type="login"
                   ref={usernameLoginInputRef}
                   placeholder="Логин"
+                  className={fieldValidity.username ? "" : "invalid-field"}
                 />
                 <div style={{ position: "relative" }}>
                   <input
@@ -113,6 +124,7 @@ const Login = () => {
                     type={showPassword ? "text" : "password"}
                     ref={passwordLoginInputRef}
                     placeholder="Пароль"
+                    className={fieldValidity.password ? "" : "invalid-field"}
                   />
                   <img
                     src={showPassword ? eye : eye_closed}

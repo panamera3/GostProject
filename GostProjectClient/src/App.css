@@ -125,3 +125,8 @@ select {
   width: 90%;
   border-radius: 1em;
 }
+
+.invalid-field {
+  border-color: red;
+  background-color: #ffcdd2;
+}
