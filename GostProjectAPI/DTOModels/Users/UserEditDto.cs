@@ -16,6 +16,6 @@ namespace GostProjectAPI.DTOModels.Users
 
 		public UserRole? Role { get; set; }
 
-		public sring? PhoneNumber { get; set; }
+		public string? PhoneNumber { get; set; }
 	}
 }

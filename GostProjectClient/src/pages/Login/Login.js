@@ -7,6 +7,7 @@ import UserRole from "../../types/user/userRole";
 import { toast } from "react-toastify";
 import eye from "../../images/eye.svg";
 import eye_closed from "../../images/eye_closed.svg";
+import { notificationStatus } from "../../components/constants/NotificationStatus";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -17,11 +18,9 @@ const Login = () => {
   const [formValid, setFormValid] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
 
-  const submitHandler = (event) => {
-    event.preventDefault();
+  const loginUser = () => {
     const username = usernameLoginInputRef.current.value;
     const password = passwordLoginInputRef.current.value;
-
     axios({
       method: "post",
       responseType: "json",
@@ -42,7 +41,7 @@ const Login = () => {
         localStorage.setItem("id", user.data.id);
         localStorage.setItem("workCompanyID", user.data.workCompanyID);
         localStorage.setItem("role", userRole);
-        localStorage.setItem("isConfirmed", user.data.isConfirmed)
+        localStorage.setItem("isConfirmed", user.data.isConfirmed);
         navigate("/home");
       })
       .catch((error) => {
@@ -55,6 +54,45 @@ const Login = () => {
           pauseOnHover: false,
           draggable: false,
         });
+      });
+  };
+
+  const submitHandler = (event) => {
+    event.preventDefault();
+    const username = usernameLoginInputRef.current.value;
+
+    axios({
+      method: "get",
+      responseType: "json",
+      url: `/api/Notification/GetNotificationByLogin/${username}`,
+    })
+      .then((notification) => {
+        console.log(notification.data);
+        if (notification.data) {
+          var applicationStatus = notification.data.status;
+          switch (applicationStatus) {
+            case 1:
+              // принята
+              loginUser();
+              break;
+            case 2:
+              // на рассмотрении
+              toast.warn("Ваша заявка находится на рассмотрении");
+              break;
+            case 3:
+              // отклонена
+              toast.error("Ваша заявка в организацию была отклонена");
+              break;
+            default:
+              toast.error("Данный логин не был зарегистрирован");
+          }
+        } else {
+          loginUser();
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+        toast.error("Неверный логин и/или пароль");
       });
   };
 

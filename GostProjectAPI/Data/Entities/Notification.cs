@@ -1,4 +1,6 @@
-﻿using System.ComponentModel;
+﻿using GostProjectAPI.Data.Enums;
+using GostProjectAPI.DTOModels.Notification;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -17,8 +19,14 @@ namespace GostProjectAPI.Data.Entities
 		public uint CompanyId { get; set; }
 		public Company Company { get; set; }
 
-		[Description("Пользователь, подавший заявку")]
+		public NotificationStatus Status { get; set; }
+
+
+
 		public uint UserId { get; set; }
-		public User User { get; set; }
+		public string UserFullName { get; set; }
+		public string UserLogin { get; set; }
+		public UserRole UserRole { get; set; }
+		public string? UserDepartment { get; set; }
 	}
 }

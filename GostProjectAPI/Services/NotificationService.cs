@@ -1,4 +1,5 @@
-﻿using GostProjectAPI.Data;
+﻿using Amazon.S3.Model.Internal.MarshallTransformations;
+using GostProjectAPI.Data;
 using GostProjectAPI.Data.Entities;
 using GostProjectAPI.Data.Enums;
 using GostProjectAPI.DTOModels.Notification;
@@ -11,11 +12,13 @@ namespace GostProjectAPI.Services
 	{
 		private readonly IMapper _mapper;
 		private readonly GostDBContext _dbContext;
+		private readonly UserService _usersService;
 
-		public NotificationService(GostDBContext dbContext, IMapper mapper)
+		public NotificationService(GostDBContext dbContext, IMapper mapper, UserService usersService)
 		{
 			_dbContext = dbContext;
 			_mapper = mapper;
+			_usersService = usersService;
 		}
 
 		public async Task<List<NotificationDto>> GetNotificationsAsync(uint companyID)
@@ -29,11 +32,11 @@ namespace GostProjectAPI.Services
 					CompanyId = n.CompanyId,
 					User = new NotificationUserDto
 					{
-						ID = n.User.ID,
-						FullName = $"{n.User.LastName} {n.User.FirstName} {n.User.Patronymic}",
-						Login = n.User.Login,
-						Department = n.User.Department,
-						Role = n.User.Role
+						ID = n.UserId,
+						FullName = n.UserFullName,
+						Login = n.UserLogin,
+						Department = n.UserDepartment,
+						Role = n.UserRole
 					}
 				})
 				.ToListAsync();
@@ -52,11 +55,11 @@ namespace GostProjectAPI.Services
 					CompanyId = n.CompanyId,
 					User = new NotificationUserDto
 					{
-						ID = n.User.ID,
-						FullName = $"{n.User.LastName} {n.User.FirstName} {n.User.Patronymic}",
-						Login = n.User.Login,
-						Department = n.User.Department,
-						Role = n.User.Role
+						ID = n.UserId,
+						FullName = n.UserFullName,
+						Login = n.UserLogin,
+						Department = n.UserDepartment,
+						Role = n.UserRole
 					}
 				})
 				.FirstOrDefaultAsync();
@@ -78,7 +81,12 @@ namespace GostProjectAPI.Services
 			{
 				SendingDate = DateTime.Now,
 				CompanyId = user.WorkCompanyID,
-				UserId = user.ID
+				Status = NotificationStatus.UnderConsideration,
+				UserId = user.ID ,
+				UserFullName = $"{user.LastName} {user.FirstName} {user.Patronymic}",
+				UserLogin = user.Login ,
+				UserDepartment = user.Department,
+				UserRole = user.Role
 			};
 
 			await _dbContext.Notifications.AddAsync(notification);
@@ -116,8 +124,32 @@ namespace GostProjectAPI.Services
 			_dbContext.Users.Update(user);
 			await _dbContext.SaveChangesAsync();
 
-			_dbContext.Notifications.Remove(notification);
+			notification.Status = NotificationStatus.Accepted;
+			_dbContext.Notifications.Update(notification);
 			await _dbContext.SaveChangesAsync();
+
+			return true;
+		}
+
+		public async Task<Notification?> GetNotificationByLoginAsync(string login)
+		{
+			var notification = await _dbContext.Notifications.FirstOrDefaultAsync(n => n.UserLogin == login);
+			return notification;
+		}
+
+		public async Task<bool> RejectUserAsync(uint notificationID)
+		{
+			var notification = await _dbContext.Notifications.FirstOrDefaultAsync(n => n.ID == notificationID);
+			if (notification == null)
+				return false;
+
+			notification.Status = NotificationStatus.Rejected;
+			_dbContext.Notifications.Update(notification);
+			await _dbContext.SaveChangesAsync();
+
+			if (!(await _usersService.TryDeleteUserAsync(notification.UserId)))
+				return false;
+
 			return true;
 		}
 	}

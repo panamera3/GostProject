@@ -28,7 +28,7 @@ const AcceptNotification = () => {
 
   const acceptUser = () => {
     const newRole =
-      selectedRole !== null ? selectedRole : notification.user?.role;
+      selectedRole !== null ? selectedRole : notification.userRole;
     axios({
       method: "post",
       url: `/api/Notification/AcceptUser/?notificationID=${params.id}&role=${newRole}`,
@@ -43,6 +43,20 @@ const AcceptNotification = () => {
           pauseOnHover: false,
           draggable: false,
         });
+        navigate("/notifications");
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
+  const rejectUser = () => {
+    axios({
+      method: "post",
+      url: `/api/Notification/RejectUser/?notificationID=${params.id}`,
+    })
+      .then((response) => {
+        toast.success("Заявка была отклонена");
         navigate("/notifications");
       })
       .catch((error) => {
@@ -65,19 +79,19 @@ const AcceptNotification = () => {
                 <p>
                   <b>ФИО пользователя</b>
                 </p>
-                <p>{notification.user?.fullName}</p>
+                <p>{notification.userFullName}</p>
               </div>
               <div>
                 <p>
                   <b>Логин</b>
                 </p>
-                <p>{notification.user?.login}</p>
+                <p>{notification.userLogin}</p>
               </div>
               <div>
                 <p>
                   <b>Отдел</b>
                 </p>
-                <p>{notification.user?.department}</p>
+                <p>{notification.userDepartment}</p>
               </div>
               <div>
                 <p>
@@ -89,7 +103,7 @@ const AcceptNotification = () => {
                   value={
                     selectedRole !== null
                       ? selectedRole
-                      : notification.user?.role
+                      : notification.userRole
                   }
                   onChange={(e) => setSelectedRole(parseInt(e.target.value))}
                 >
@@ -104,7 +118,9 @@ const AcceptNotification = () => {
           <button className="btn_blue" onClick={acceptUser}>
             Принять заявку
           </button>
-          <button className="btn_darkGray">Отклонить</button>
+          <button className="btn_darkGray" onClick={rejectUser}>
+            Отклонить
+          </button>
         </div>
       </div>
     </>

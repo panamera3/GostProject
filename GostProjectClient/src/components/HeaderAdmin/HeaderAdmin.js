@@ -7,7 +7,7 @@ import { useRef, useState, useEffect } from "react";
 import Modal from "../Modal/Modal";
 import axios from "axios";
 
-const HeaderAdmin = ({user}) => {
+const HeaderAdmin = ({ user }) => {
   const header = useRef();
   const navigate = useNavigate();
 
@@ -29,6 +29,16 @@ const HeaderAdmin = ({user}) => {
         console.log(error);
       });
   }, []);
+
+  const getNotificationCountText = (count) => {
+    const cases = [2, 0, 1, 1, 1, 2];
+    const titles = ["новая заявка", "новые заявки", "новых заявок"];
+    return `У вас ${count} ${
+      titles[
+        count % 100 > 4 && count % 100 < 20 ? 2 : cases[Math.min(count % 10, 5)]
+      ]
+    }`;
+  };
 
   const openModalCard = () => {
     setModalOpen(true);
@@ -76,11 +86,21 @@ const HeaderAdmin = ({user}) => {
         <div id="header-images">
           {!user && (
             <>
-              <img
-                alt="Notifications"
-                src={notification}
-                onClick={() => openModalNotification()}
-              />
+              {!(notificationsCount > 0) && (
+                <img
+                  alt="Notifications"
+                  src={notification}
+                  onClick={() => openModalNotification()}
+                />
+              )}
+
+              {notificationsCount > 0 && (
+                <img
+                  alt="Unread notifications"
+                  src={notificationActive}
+                  onClick={() => openModalNotification()}
+                />
+              )}
             </>
           )}
           <img alt="User" src={userImg} onClick={() => openModalCard()} />
@@ -95,7 +115,7 @@ const HeaderAdmin = ({user}) => {
           <div className="modalNotification">
             {notificationsCount > 0 && (
               <a href="/notifications">
-                У вас {notificationsCount} новых заявок
+                {getNotificationCountText(notificationsCount)}
               </a>
             )}
             {!(notificationsCount > 0) && <p>У вас нет новых заявок</p>}

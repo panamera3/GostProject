@@ -3,6 +3,7 @@ using System;
 using GostProjectAPI.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace GostProjectAPI.Migrations
 {
     [DbContext(typeof(GostDBContext))]
-    partial class GostDBContextModelSnapshot : ModelSnapshot
+    [Migration("20240710095852_AddedStatusForNotification")]
+    partial class AddedStatusForNotification
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -236,26 +239,14 @@ namespace GostProjectAPI.Migrations
                     b.Property<int>("Status")
                         .HasColumnType("int");
 
-                    b.Property<string>("UserDepartment")
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("UserFullName")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.Property<uint>("UserID")
+                    b.Property<uint>("UserId")
                         .HasColumnType("int unsigned");
-
-                    b.Property<string>("UserLogin")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.Property<byte>("UserRole")
-                        .HasColumnType("tinyint unsigned");
 
                     b.HasKey("ID");
 
                     b.HasIndex("CompanyId");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("Notifications");
                 });
@@ -446,7 +437,15 @@ namespace GostProjectAPI.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("GostProjectAPI.Data.Entities.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("Company");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("GostProjectAPI.Data.Entities.NotificationsLastSeen", b =>

@@ -24,10 +24,10 @@ const NotificationsTable = () => {
 
   const renderNotificationsTable = () => {
     if (notifications) {
-      return notifications.map((notification) => (
+      return notifications.map((notification, index) => (
         <tr key={notification.id}>
           <td>
-            <p>{notification.id}</p>
+            <p>{index + 1}</p>
           </td>
           <td>
             <p>{notification.user.fullName}</p>
