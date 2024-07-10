@@ -31,8 +31,8 @@ namespace GostProjectAPI
 			builder.Services.AddSwaggerGen();
 
 			// Add MySql DB
-			// var nameConString = "MySqlConStringPublic";
-			var nameConString = builder.Environment.IsProduction() ? "MySqlConStringPublic" : "MySqlConString";
+			var nameConString = "MySqlConStringPublic";
+			//var nameConString = builder.Environment.IsProduction() ? "MySqlConStringPublic" : "MySqlConString";
 			var conString = builder.Configuration.GetConnectionString(nameConString);
 			builder.Services.AddDbContext<GostDBContext>(option => option.UseMySql(conString, new MySqlServerVersion(new Version(10, 4, 24))));
 
