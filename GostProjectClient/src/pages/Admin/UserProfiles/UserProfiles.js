@@ -190,6 +190,7 @@ const UserProfiles = () => {
       method: "post",
       url: `/api/User/FilterUsers`,
       data: {
+        department: values.department ? values.department : "",
         fullname: values.fullname ? values.fullname : "",
         companyID: localStorage.getItem("workCompanyID"),
       },
@@ -210,20 +211,21 @@ const UserProfiles = () => {
         <div className="activities_container">
           <a href="/home">Назад</a>
         </div>
-        <div className="filter_users">
-          <select
-            placeholder="Отдел"
-            onChange={(e) => changeDepartment(e.target.value)}
-          >
-            {renderOptions()}
-          </select>
-          <form onSubmit={filterUsers}>
+        <form onSubmit={filterUsers} className="filter_users_form">
+          <div className="filter_users">
+            <select
+              placeholder="Отдел"
+              name="department"
+              onChange={(e) => changeDepartment(e.target.value)}
+            >
+              {renderOptions()}
+            </select>
             <input placeholder="ФИО пользователя" name="fullname" />
             <button className="btn_blue" type="sumbit">
               Найти
             </button>
-          </form>
-        </div>
+          </div>
+        </form>
         <table className="user_profiles_table">
           <thead>
             <tr>

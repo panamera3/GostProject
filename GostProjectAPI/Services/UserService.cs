@@ -128,6 +128,8 @@ namespace GostProjectAPI.Services
 
 			if (userEditDto.Department != null)
 				oldUser.Department = userEditDto.Department;
+			if(userEditDto.Department == null || userEditDto.Department == "")
+				oldUser.Department = "Нет отдела";
 
 			if (userEditDto.Role != null)
 				oldUser.Role = (Data.Enums.UserRole)userEditDto.Role;

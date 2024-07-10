@@ -54,14 +54,10 @@ table {
   border-radius: 1em;
 }
 
-.filter_users form {
+.filter_users_form {
   display: flex;
   flex-direction: row;
   margin-top: 0;
-}
-
-.filter_users form * {
-  height: 2em;
 }
 
 .filter_users button {

@@ -64,14 +64,8 @@ const EditUserProfile = () => {
       },
     })
       .then((user) => {
-        toast.success("Пользователь был успешно отредактирован!", {
-          position: "top-right",
-          autoClose: 3000,
-          hideProgressBar: true,
-          progress: undefined,
-          pauseOnHover: false,
-          draggable: false,
-        });
+        toast.success("Пользователь был успешно отредактирован!");
+        navigate("/userProfiles")
       })
       .catch((error) => {
         console.log(error);
@@ -136,21 +130,23 @@ const EditUserProfile = () => {
                 }
               />
             </div>
-            <div>
-              <label htmlFor="phoneNumber">Номер телефона</label>
-              <input
-                id="phoneNumber"
-                name="phoneNumber"
-                value={
-                  formData["phoneNumber"] != undefined
-                    ? formData["phoneNumber"]
-                    : user["phoneNumber"]
-                }
-                onChange={(e) =>
-                  handleInputChange("phoneNumber", e.target.value)
-                }
-              />
-            </div>
+            {localStorage.getItem("id") == params.id && (
+              <div>
+                <label htmlFor="phoneNumber">Номер телефона</label>
+                <input
+                  id="phoneNumber"
+                  name="phoneNumber"
+                  value={
+                    formData["phoneNumber"] != undefined
+                      ? formData["phoneNumber"]
+                      : user["phoneNumber"]
+                  }
+                  onChange={(e) =>
+                    handleInputChange("phoneNumber", e.target.value)
+                  }
+                />
+              </div>
+            )}
             {localStorage.getItem("id") !== params.id && (
               <div>
                 <label htmlFor="role">Роль пользователя</label>
