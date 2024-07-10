@@ -7,6 +7,7 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import { translationGostDict } from "../constants/translationGostDict";
 import Pagination from "react-js-pagination";
+import { toast } from "react-toastify";
 
 const GostsTable = ({ favourites, archiveGosts, searchGosts }) => {
   const navigate = useNavigate();
@@ -101,6 +102,9 @@ const GostsTable = ({ favourites, archiveGosts, searchGosts }) => {
       const searchGostsFromHeader = JSON.parse(
         localStorage.getItem("searchGosts")
       );
+      if(!(searchGostsFromHeader.length > 0)){
+        toast.warn("Не было найдено ни одного совпадения")
+      }
       setGosts(searchGostsFromHeader);
       setPagination((prevState) => ({
         ...prevState,
