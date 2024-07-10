@@ -7,6 +7,7 @@ import { translationGostDict } from "../constants/translationGostDict";
 import { actionStatusOptions } from "../constants/ActionStatusOptions";
 import { acceptanceLevelOptions } from "../constants/AcceptanceLevelOptions";
 import { toast } from "react-toastify";
+// import hintImg from "../../images/hint.svg";
 
 const GostTable = ({ id, view, edit, add }) => {
   const navigate = useNavigate();
@@ -25,6 +26,8 @@ const GostTable = ({ id, view, edit, add }) => {
 
   const [addedGostId, setAddedGostId] = useState(0);
   const [editedGostId, setEditedGostId] = useState(0);
+
+  const [changedFileToGost, setChangedFileToGost] = useState(false);
 
   const [selectedFile, setSelectedFile] = useState("");
 
@@ -108,17 +111,26 @@ const GostTable = ({ id, view, edit, add }) => {
           })
             .then((file) => {
               setGostFile(file.data);
-              toast.success("Файл к ГОСТу был успешно заменён");
+              setChangedFileToGost(true);
             })
             .catch((error) => {
               console.log(error);
+              toast.success("Файл к ГОСТу не был заменён");
             });
+        } else {
+          toast.success("ГОСТ был успешно отредактирован");
+          navigate(`/gost/${id}`);
         }
-        toast.success("ГОСТ был успешно отредактирован");
-        navigate(`/gost/${id}`);
       }
     }
   }, [editedGostId]);
+
+  useEffect(() => {
+    if (changedFileToGost) {
+      toast.success("Файл к ГОСТу был успешно заменён");
+      navigate(`/gost/${id}`);
+    }
+  }, [changedFileToGost]);
 
   useEffect(() => {
     if (view || edit) {
@@ -582,9 +594,19 @@ const GostTable = ({ id, view, edit, add }) => {
                 <td>
                   <label htmlFor={key}>
                     {translationGostDict[key]}
-                    <p className="requiredAddField">
-                      {requiredAddFields.includes(key) && "*"}
-                    </p>
+                    {requiredAddFields.includes(key) && (
+                      <p className="requiredAddField">*</p>
+                    )}
+                    {key.toLowerCase().includes("key") && (
+                      <>
+                        <img
+                          alt="?"
+                          // src={hintImg}
+                          className="hintForKeys"
+                          title="Введите значения через запятую"
+                        />
+                      </>
+                    )}
                   </label>
                 </td>
                 <td>

@@ -8,6 +8,7 @@ import HeaderUser from "../../components/Header/HeaderUser";
 import Home from "../Home/Home";
 import { acceptanceLevelOptions } from "../../components/constants/AcceptanceLevelOptions";
 import { actionStatusOptions } from "../../components/constants/ActionStatusOptions";
+import GostsTable from "../../components/GostsTable/GostsTable";
 
 const Search = () => {
   const navigate = useNavigate();
@@ -407,7 +408,7 @@ const Search = () => {
                 onClick={() => changeToTextSearch()}
                 className="btn_darkGray"
               >
-                К поиску по тексту
+                К поиску по тексту в документах
               </button>
             </form>
           </>
@@ -435,7 +436,7 @@ const Search = () => {
             </form>
             {afterTextSearch && (
               <>
-                <Home searchGosts />
+                <GostsTable searchGosts />
               </>
             )}
           </>

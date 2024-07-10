@@ -1,4 +1,5 @@
-﻿using Amazon.S3;
+﻿using Amazon.Runtime.Internal.Endpoints.StandardLibrary;
+using Amazon.S3;
 using Amazon.S3.Model;
 using Amazon.S3.Transfer;
 using GostProjectAPI.Data;
@@ -155,8 +156,8 @@ namespace GostProjectAPI.Services
 
 					isWordInFile = Path.GetExtension(gostFile.Path) switch
 					{
-						".pdf" => SearchInPdfFile(gostFile.Path, searchPrompt),
-						var extension when extension == ".docx" || extension == ".doc" => SearchInWordFile(gostFile.Path, searchPrompt)
+						".pdf" => await SearchInPdfFileAsync(gostFile.Path, searchPrompt),
+						var extension when extension == ".docx" || extension == ".doc" => await SearchInWordFileAsync(gostFile.Path, searchPrompt)
 					};
 
 					if (isWordInFile)
@@ -181,18 +182,20 @@ namespace GostProjectAPI.Services
 			var s3Client = new AmazonS3Client("OEROXDNUP3Q8L16FYNMV", "SJwow3RoWBjQ5CAKqF7tfe5FLOs1ucKTs9jdJNsI", config);
 
 			string bucketName = "66f0e91a-object-storage";
-			string keyName = $"UrFU/{gostFile.FileName}";
+			string fileExtension = Path.GetExtension(gostFile.FileName);
+			string fileName = Path.GetFileNameWithoutExtension(gostFile.FileName);
+			string uniqueIdentifier = Guid.NewGuid().ToString().Substring(0, 8);
+			string keyName = $"UrFU/{fileName}_{uniqueIdentifier}{fileExtension}";
 
-			// Check if the file already exists in the database
 			var existingFile = await _dbContext.GostFiles
 				.Where(f => f.Path.Contains(keyName))
 				.FirstOrDefaultAsync();
 
 			if (existingFile != null)
 			{
-				// If the file exists, append a unique identifier to the file name
-				var uniqueIdentifier = Guid.NewGuid().ToString().Substring(0, 8);
-				keyName += $"_{uniqueIdentifier}";
+				// If the file exists, append a different unique identifier to the file name
+				uniqueIdentifier = Guid.NewGuid().ToString().Substring(0, 8);
+				keyName = $"UrFU/{fileName}_{uniqueIdentifier}{fileExtension}";
 			}
 
 			using (var newMemoryStream = new MemoryStream())
@@ -293,38 +296,75 @@ namespace GostProjectAPI.Services
 			}
 		}
 
-		private bool SearchInWordFile(string documentLocation, string stringToSearchFor, bool caseSensitive = false)
+		private async Task<bool> SearchInWordFileAsync(string documentLocation, string stringToSearchFor, bool caseSensitive = false)
 		{
-			// Create an application object if the passed in object is null
-			var winword = new Application();
+			try
+			{
+				// Создаем объект приложения Word
+				var winword = new Application();
 
-			// Use the application object to open our word document in ReadOnly mode
-			var wordDoc = winword.Documents.Open(documentLocation, ReadOnly: true);
+				// Открываем документ Word в режиме "только для чтения"
+				var wordDoc = winword.Documents.Open(documentLocation, ReadOnly: true);
 
-			// Search for our string in the document
-			bool result;
-			if (caseSensitive)
-				result = wordDoc.Content.Text.IndexOf(stringToSearchFor) >= 0;
-			else
-				result = wordDoc.Content.Text.IndexOf(stringToSearchFor, StringComparison.CurrentCultureIgnoreCase) >= 0;
+				// Выполняем поиск текста в документе
+				bool result;
+				if (caseSensitive)
+					result = wordDoc.Content.Text.IndexOf(stringToSearchFor) >= 0;
+				else
+					result = wordDoc.Content.Text.IndexOf(stringToSearchFor, StringComparison.CurrentCultureIgnoreCase) >= 0;
 
-			// Close the document and the application since we're done searching
-			wordDoc.Close();
-			winword.Quit();
+				// Закрываем документ и приложение Word
+				wordDoc.Close();
+				winword.Quit();
 
-			return result;
+				return result;
+			}
+			catch (Exception ex)
+			{
+				Console.WriteLine($"Error searching in Word file: {ex.Message}");
+				return false;
+			}
 		}
 
-		public static bool SearchInPdfFile(string pdfFilePath, string searchText)
+
+
+		public static async Task<bool> SearchInPdfFileAsync(string url, string searchText)
 		{
-			using var pcontent = PdfDocument.Open(pdfFilePath);
+			// Скачиваем файл с S3
+			string tempFilePath = Path.GetTempFileName();
 
-			string rawText = pcontent.GetPages().Aggregate("", (acc, curr) => acc += curr.Text);
+			using (HttpClient client = new HttpClient())
+			{
+				var response = await client.GetAsync(url);
+				response.EnsureSuccessStatusCode();
 
-			if (rawText.Contains(searchText))
-				return true;
+				using (var fs = new FileStream(tempFilePath, FileMode.Create, FileAccess.Write, FileShare.None))
+				{
+					await response.Content.CopyToAsync(fs);
+				}
+			}
 
-			return false;
+			// Открываем и ищем в PDF-файле
+			try
+			{
+				using var pcontent = PdfDocument.Open(tempFilePath);
+				string rawText = pcontent.GetPages().Aggregate("", (acc, curr) => acc += curr.Text);
+
+				return rawText.Contains(searchText);
+			}
+			catch (Exception ex)
+			{
+				Console.WriteLine($"Error opening PDF file: {ex.Message}");
+				return false;
+			}
+			finally
+			{
+				// Удаляем временный файл
+				if (File.Exists(tempFilePath))
+				{
+					File.Delete(tempFilePath);
+				}
+			}
 		}
 
 		public async Task<Gost?> GetGostAsync(uint gostID)
