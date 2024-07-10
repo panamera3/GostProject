@@ -52,24 +52,6 @@ const UserProfiles = () => {
       });
   };
 
-  const changeDepartment = (selectedDepartment) => {
-    axios({
-      method: "post",
-      url: `/api/User/FilterUsers`,
-      data: {
-        department: selectedDepartment,
-        companyID: localStorage.getItem("workCompanyID"),
-      },
-      headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
-    })
-      .then((filteredUsers) => {
-        setUsers(filteredUsers.data);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  };
-
   const renderOptions = () => {
     if (users) {
       if (uniqueDepartments) {
@@ -216,7 +198,6 @@ const UserProfiles = () => {
             <select
               placeholder="Отдел"
               name="department"
-              onChange={(e) => changeDepartment(e.target.value)}
             >
               {renderOptions()}
             </select>
