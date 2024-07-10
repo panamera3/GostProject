@@ -34,6 +34,18 @@ const EditUserProfile = () => {
       });
   }, []);
 
+  useEffect(() => {
+    const handleBeforeUnload = (event) => {
+      event.preventDefault();
+    };
+
+    window.addEventListener("beforeunload", handleBeforeUnload);
+
+    return () => {
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+    };
+  }, []);
+
   const openModalCard = () => {
     setModalOpen(true);
   };
@@ -65,7 +77,7 @@ const EditUserProfile = () => {
     })
       .then((user) => {
         toast.success("Пользователь был успешно отредактирован!");
-        navigate("/userProfiles")
+        navigate("/userProfiles");
       })
       .catch((error) => {
         console.log(error);

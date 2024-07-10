@@ -202,6 +202,20 @@ const GostTable = ({ id, view, edit, add }) => {
   }, []);
 
   useEffect(() => {
+    if(!view){
+      const handleBeforeUnload = (event) => {
+        event.preventDefault();
+      };
+  
+      window.addEventListener("beforeunload", handleBeforeUnload);
+  
+      return () => {
+        window.removeEventListener("beforeunload", handleBeforeUnload);
+      };
+    }
+  }, []);
+
+  useEffect(() => {
     if (normativeReferences) {
       const referenceGostIds = normativeReferences.map(
         (reference) => reference.referenceGostId

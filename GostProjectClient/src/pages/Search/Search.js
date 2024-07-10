@@ -31,6 +31,12 @@ const Search = () => {
   const [selectedKeywords, setSelectedKeywords] = useState([]);
   const [selectedKeyphrases, setSelectedKeyphrases] = useState([]);
 
+  const [gostsTableSearchGosts, setGostsTableSearchGosts] = useState(1);
+  const switchGostsTableSearchGostsState = () => {
+    if (gostsTableSearchGosts == 1) setGostsTableSearchGosts(2);
+    else setGostsTableSearchGosts(1);
+  };
+
   useEffect(() => {
     fetchRequestedInsteadOptions();
     fetchUniqueKeywords();
@@ -121,14 +127,9 @@ const Search = () => {
         },
       })
         .then((gosts) => {
-          if (gosts.data) {
-            localStorage.setItem(
-              "searchGosts",
-              JSON.stringify(gosts.data.data)
-            );
-            setSearch(false);
-            navigate("/afterSearch");
-          }
+          localStorage.setItem("searchGosts", JSON.stringify(gosts.data.data));
+          setSearch(false);
+          navigate("/afterSearch");
         })
         .catch((error) => {
           console.log(error);
@@ -186,10 +187,9 @@ const Search = () => {
       },
     })
       .then((gosts) => {
-        if (gosts.data) {
-          localStorage.setItem("searchGosts", JSON.stringify(gosts.data.data));
-          setAfterTextSearch(true);
-        }
+        localStorage.setItem("searchGosts", JSON.stringify(gosts.data.data));
+        setAfterTextSearch(true);
+        switchGostsTableSearchGostsState();
       })
       .catch((error) => {
         console.log(error);
@@ -436,7 +436,7 @@ const Search = () => {
             </form>
             {afterTextSearch && (
               <>
-                <GostsTable searchGosts />
+                <GostsTable searchGosts={gostsTableSearchGosts} />
               </>
             )}
           </>

@@ -52,6 +52,10 @@ const GostsTable = ({ favourites, archiveGosts, searchGosts }) => {
     fetchGosts();
   }, [sortField, sortDirection]);
 
+  useEffect(() => {
+    fetchGosts();
+  }, [searchGosts]);
+
   const handlePageSizeChange = (size) => {
     setPageSize(size);
     setPagination((prevState) => ({
@@ -102,8 +106,8 @@ const GostsTable = ({ favourites, archiveGosts, searchGosts }) => {
       const searchGostsFromHeader = JSON.parse(
         localStorage.getItem("searchGosts")
       );
-      if(!(searchGostsFromHeader.length > 0)){
-        toast.warn("Не было найдено ни одного совпадения")
+      if (!(searchGostsFromHeader.length > 0)) {
+        toast.warn("Не было найдено ни одного совпадения");
       }
       setGosts(searchGostsFromHeader);
       setPagination((prevState) => ({
