@@ -34,7 +34,7 @@ table {
   transform: translateX(-50%);
   top: 50%;
   background-color: #ffffff;
-  border-radius: 20px;
+  border-radius: 12px;
   padding: 2em;
   z-index: 5;
 }
@@ -51,7 +51,7 @@ table {
 .filter_users select {
   width: 40%;
   height: 3em;
-  border-radius: 1em;
+  border-radius: 12px;
 }
 
 .filter_users_form {
@@ -64,6 +64,7 @@ table {
   display: flex;
   align-items: center;
   justify-content: center;
+  padding: 0.5em;
 }
 
 .modalDelete_buttons_container {

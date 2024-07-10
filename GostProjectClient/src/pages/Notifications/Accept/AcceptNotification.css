@@ -1,7 +1,7 @@
 .notification_container {
   width: 100%;
   border: 1px solid gray;
-  border-radius: 1em;
+  border-radius: 12px;
 }
 
 .notification_container > div {
@@ -19,7 +19,7 @@
 
 .notification_container select {
   width: 80%;
-  border-radius: 1em;
+  border-radius: 12px;
 }
 
 .activities_container * {

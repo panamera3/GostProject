@@ -50,7 +50,7 @@ input {
 button {
   padding: 1em;
   font-size: 20px;
-  border-radius: 0.5em;
+  border-radius: 12px;
   border: none;
   margin: 1em;
 }
@@ -69,25 +69,26 @@ a:hover {
 
 input {
   padding: 1em;
-  border-radius: 1em;
+  border-radius: 12px;
   width: 90%;
   margin: 1em;
   border: 1px solid #a8a8a8;
 }
 
 table {
-  border-radius: 0.5em;
+  border-collapse: separate;
   border: 1px solid #a8a8a8;
-  padding: 0.2em;
+  border-spacing: 0;
+  overflow: hidden;
+  border-radius: 12px;
   table-layout: fixed;
-  border-collapse: collapse;
 }
 
 thead th,
 tbody th,
 tbody td {
-  border-top: 1px solid #a8a8a8;
-  border-bottom: 1px solid #a8a8a8;
+  border-top: 0.1px solid #a8a8a8;
+  border-bottom: 0.1px solid #a8a8a8;
   padding: 0.5em;
   word-break: break-all;
 }
@@ -123,7 +124,7 @@ tbody td {
 
 select {
   width: 90%;
-  border-radius: 1em;
+  border-radius: 12px;
 }
 
 .invalid-field {

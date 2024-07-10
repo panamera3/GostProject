@@ -28,7 +28,7 @@
 .profile-container div[class*="-container"] {
   margin: 1em 0;
   border: 1px solid gray;
-  border-radius: 10px;
+  border-radius: 12px;
 }
 
 .profile-invite {
