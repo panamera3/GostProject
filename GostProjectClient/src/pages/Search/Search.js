@@ -95,7 +95,9 @@ const Search = () => {
   const fetchRequestedInsteadOptions = async () => {
     try {
       const response = await axios.get(
-        "/api/Gost/GetDataForNormativeReferences"
+        `/api/Gost/GetDataForNormativeReferences/${localStorage.getItem(
+          "workCompanyID"
+        )}`
       );
       setRequestedInsteadOptions(response.data);
     } catch (error) {

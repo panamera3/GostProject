@@ -155,7 +155,7 @@ const GostTable = ({ id, view, edit, add }) => {
     if (add) {
       axios({
         method: "get",
-        url: `/api/Gost/GetDataForNormativeReferences`,
+        url: `/api/Gost/GetDataForNormativeReferences/${localStorage.getItem("workCompanyID")}`,
         headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
       })
         .then((gostsNormativeReferences) => {
