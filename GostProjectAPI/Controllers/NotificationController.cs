@@ -19,7 +19,7 @@ namespace GostProjectAPI.Controllers
 		}
 
 		[HttpGet]
-		public async Task<JsonResult> GetNotifications([FromQuery] uint companyID)
+		public async Task<JsonResult> GetUnreadNotifications([FromQuery] uint companyID)
 		{
 			return JSON(await _notificationService.GetNotificationsAsync(companyID));
 		}

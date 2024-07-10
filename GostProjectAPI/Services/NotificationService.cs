@@ -25,6 +25,7 @@ namespace GostProjectAPI.Services
 		{
 			var notifications = await _dbContext.Notifications
 				.Where(n => n.CompanyId == companyID)
+				.Where(n => n.Status == NotificationStatus.UnderConsideration)
 				.Select(n => new NotificationDto
 				{
 					ID = n.ID,

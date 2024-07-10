@@ -46,14 +46,7 @@ const Login = () => {
       })
       .catch((error) => {
         console.log(error);
-        toast.error("Неверный логин и/или пароль", {
-          position: "top-right",
-          autoClose: 5000,
-          hideProgressBar: true,
-          progress: undefined,
-          pauseOnHover: false,
-          draggable: false,
-        });
+        toast.error("Неверный логин и/или пароль");
       });
   };
 

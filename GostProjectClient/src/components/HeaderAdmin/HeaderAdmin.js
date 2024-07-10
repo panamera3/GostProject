@@ -19,7 +19,7 @@ const HeaderAdmin = ({ user }) => {
     const companyID = localStorage.getItem("workCompanyID");
     axios({
       method: "get",
-      url: `/api/Notification/GetNotifications/?companyID=${companyID}`,
+      url: `/api/Notification/GetUnreadNotifications/?companyID=${companyID}`,
       headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
     })
       .then((notifications) => {

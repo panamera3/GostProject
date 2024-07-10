@@ -28,7 +28,7 @@ const AcceptNotification = () => {
 
   const acceptUser = () => {
     const newRole =
-      selectedRole !== null ? selectedRole : notification.userRole;
+      selectedRole !== null ? selectedRole : notification.user?.role;
     axios({
       method: "post",
       url: `/api/Notification/AcceptUser/?notificationID=${params.id}&role=${newRole}`,
@@ -79,19 +79,19 @@ const AcceptNotification = () => {
                 <p>
                   <b>ФИО пользователя</b>
                 </p>
-                <p>{notification.userFullName}</p>
+                <p>{notification.user?.fullName}</p>
               </div>
               <div>
                 <p>
                   <b>Логин</b>
                 </p>
-                <p>{notification.userLogin}</p>
+                <p>{notification.user?.login}</p>
               </div>
               <div>
                 <p>
                   <b>Отдел</b>
                 </p>
-                <p>{notification.userDepartment}</p>
+                <p>{notification.user?.department}</p>
               </div>
               <div>
                 <p>
@@ -103,7 +103,7 @@ const AcceptNotification = () => {
                   value={
                     selectedRole !== null
                       ? selectedRole
-                      : notification.userRole
+                      : notification.user?.role
                   }
                   onChange={(e) => setSelectedRole(parseInt(e.target.value))}
                 >

@@ -8,73 +8,108 @@ import UserRole from "../../types/user/userRole";
 
 const Registration = () => {
   const navigate = useNavigate();
-  const usernameRegistrationInputRef = useRef();
-  const passwordRegistrationInputRef = useRef();
-  const fullnameRegistrationInputRef = useRef();
-  const companyCodeRegistrationInputRef = useRef();
-  const departmentRegistrationInputRef = useRef();
+
+  const refs = {
+    usernameRegistrationInputRef: useRef(null),
+    passwordRegistrationInputRef: useRef(null),
+    passwordConfirmRegistrationInputRef: useRef(null),
+    fullnameRegistrationInputRef: useRef(null),
+    companyCodeRegistrationInputRef: useRef(null),
+    departmentRegistrationInputRef: useRef(null),
+  };
+
+  const requiredRegistrationFields = [
+    "username",
+    "password",
+    "passwordConfirm",
+    "fullname",
+    "companyCode",
+  ];
 
   const submitHandler = (event) => {
     event.preventDefault();
-    const username = usernameRegistrationInputRef.current.value;
-    const password = passwordRegistrationInputRef.current.value;
-    const companyCode = companyCodeRegistrationInputRef.current.value;
-    const fullname = fullnameRegistrationInputRef.current.value;
-    const department = departmentRegistrationInputRef.current.value;
 
-    const fullnameString = fullname.split(" ");
-
-    if (fullnameString.length < 2 || fullnameString.length > 3) {
-      toast.error("ФИО должно состоять из 2-3 слов", {
-        position: "top-right",
-        autoClose: 5000,
-        hideProgressBar: true,
-        progress: undefined,
-        pauseOnHover: false,
-        draggable: false,
-      });
-      return;
+    for (const field of requiredRegistrationFields) {
+      const inputRef = refs[`${field}RegistrationInputRef`];
+      if (!inputRef.current.value.trim()) {
+        toast.error(`Поле "${field}" обязательно для заполнения`, {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: true,
+          progress: undefined,
+          pauseOnHover: false,
+          draggable: false,
+        });
+        return;
+      }
     }
 
-    axios({
-      method: "post",
-      responseType: "json",
-      url: `/api/Auth/RegisterUser`,
-      data: {
-        login: `${username}`,
-        password: `${password}`,
-        companyCode: `${companyCode}`,
-        lastName: `${fullnameString[0]}`,
-        firstName: `${fullnameString[1]}`,
-        patronymic: `${fullnameString[2] ? fullnameString[2] : ""}`,
-        role: UserRole.Standart,
-        department: `${department}`,
-      },
-    })
-      .then((user) => {
-        if (user.data.role) {
-          const userRole = Object.keys(UserRole).find(
-            (key) => UserRole[key] === user.data.role
-          );
-          localStorage.setItem("token", user.data.token);
-          localStorage.setItem("id", user.data.id);
-          localStorage.setItem("workCompanyID", user.data.WorkCompanyID);
-          localStorage.setItem("role", userRole);
-          navigate("/home");
-        } else {
-          toast.error(user.data.error, {
-            position: "top-right",
-            autoClose: 5000,
-            hideProgressBar: true,
-            progress: undefined,
-            pauseOnHover: false,
-            draggable: false,
-          });
-        }
+    const password = refs.passwordRegistrationInputRef.current.value;
+    const passwordConfirm =
+      refs.passwordConfirmRegistrationInputRef.current.value;
+
+    if (password === passwordConfirm) {
+      const fullname = refs.fullnameRegistrationInputRef.current.value;
+      const fullnameString = fullname.split(" ");
+
+      if (fullnameString.length < 2 || fullnameString.length > 3) {
+        toast.error("ФИО должно состоять из 2-3 слов", {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: true,
+          progress: undefined,
+          pauseOnHover: false,
+          draggable: false,
+        });
+        return;
+      }
+
+      const username = refs.usernameRegistrationInputRef.current.value;
+      const companyCode = refs.companyCodeRegistrationInputRef.current.value;
+      const department = refs.departmentRegistrationInputRef.current.value;
+
+      axios({
+        method: "post",
+        responseType: "json",
+        url: `/api/Auth/RegisterUser`,
+        data: {
+          login: username,
+          password: password,
+          companyCode: companyCode,
+          lastName: fullnameString[0],
+          firstName: fullnameString[1],
+          patronymic: fullnameString[2] || "",
+          role: UserRole.Standart,
+          department: department,
+        },
       })
-      .catch((error) => {
-        console.log(error);
-      });
+        .then((user) => {
+          if (user.data.role) {
+            const userRole = Object.keys(UserRole).find(
+              (key) => UserRole[key] === user.data.role
+            );
+            localStorage.setItem("token", user.data.token);
+            localStorage.setItem("id", user.data.id);
+            localStorage.setItem("workCompanyID", user.data.WorkCompanyID);
+            localStorage.setItem("role", userRole);
+            navigate("/home");
+          } else {
+            toast.error(user.data.error, {
+              position: "top-right",
+              autoClose: 5000,
+              hideProgressBar: true,
+              progress: undefined,
+              pauseOnHover: false,
+              draggable: false,
+            });
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    } else {
+      toast.error("Пароли не совпадают");
+    }
   };
 
   return (
@@ -90,38 +125,39 @@ const Registration = () => {
                 <input
                   name="login"
                   id="login_input"
-                  type="login"
-                  ref={usernameRegistrationInputRef}
+                  type="text"
+                  ref={refs.usernameRegistrationInputRef}
                   placeholder="Логин"
                 />
                 <input
                   name="password"
                   id="password_input"
                   type="password"
-                  ref={passwordRegistrationInputRef}
+                  ref={refs.passwordRegistrationInputRef}
                   placeholder="Пароль"
                 />
                 <input
                   id="password_confirm_input"
                   type="password"
+                  ref={refs.passwordConfirmRegistrationInputRef}
                   placeholder="Подтверждение пароля"
                 />
                 <input
                   name="fullname"
                   id="fullname_input"
-                  ref={fullnameRegistrationInputRef}
+                  ref={refs.fullnameRegistrationInputRef}
                   placeholder="Фамилия Имя Отчество"
                 />
                 <input
                   name="companyCode"
                   id="companyCode_input"
-                  ref={companyCodeRegistrationInputRef}
+                  ref={refs.companyCodeRegistrationInputRef}
                   placeholder="Код подключения к организации"
                 />
                 <input
                   name="department"
                   id="department_input"
-                  ref={departmentRegistrationInputRef}
+                  ref={refs.departmentRegistrationInputRef}
                   placeholder="Департамент"
                 />
               </div>
