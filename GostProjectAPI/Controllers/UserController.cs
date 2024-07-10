@@ -46,7 +46,14 @@ namespace GostProjectAPI.Controllers
         [HttpPost]
         public async Task<JsonResult> EditUser([FromBody] UserEditDto userEdit)
         {
-            return JSON(await _usersService.EditUserAsync(userEdit));
+            try
+			{
+				return JSON(await _usersService.EditUserAsync(userEdit));
+			}
+            catch(Exception ex)
+            {
+                return JSON(new {error = ex.Message});
+            }
         }
 
         [HttpGet("{companyID}")]

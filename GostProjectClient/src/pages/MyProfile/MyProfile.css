@@ -12,13 +12,11 @@
 .user-fields > p {
   display: inline;
   margin: 0 0.5em;
+  width: 100%;
 }
 
 .user-field-value {
-  border: 1px solid gray;
-  border-radius: 10px;
   padding: 0.5em;
-  width: 70%;
   min-height: 1em;
 }
 
@@ -35,12 +33,13 @@
 
 .profile-invite {
   display: flex;
+  flex-wrap: wrap;
   justify-content: space-between;
 }
 
 .profile-invite > div {
   display: flex;
-  width: 45%;
+  align-items: center;
 }
 
 .profile-invite > div * {
@@ -57,6 +56,6 @@
   margin: 1em;
 }
 
-.profile-code-container img{
+.profile-code-container img {
   width: 30px;
 }

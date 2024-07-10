@@ -11,6 +11,7 @@ namespace GostProjectAPI.DTOModels.Company
 		[Required]
 		public string PSRN { get; set; }
 
+		[Required]
 		public string Email { get; set; }
 
 		[Required]
@@ -25,8 +26,10 @@ namespace GostProjectAPI.DTOModels.Company
 		[Required]
 		public string FirstName { get; set; }
 
-		public string Patronymic { get; set; }
+		public string? Patronymic { get; set; }
 
 		public UserRole Role { get; set; } = UserRole.Admin;
+
+		public string? PhoneNumber { get; set; }
 	}
 }

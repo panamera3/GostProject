@@ -24,6 +24,18 @@ const Registration = () => {
 
     const fullnameString = fullname.split(" ");
 
+    if (fullnameString.length < 2 || fullnameString.length > 3) {
+      toast.error("ФИО должно состоять из 2-3 слов", {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: true,
+        progress: undefined,
+        pauseOnHover: false,
+        draggable: false,
+      });
+      return;
+    }
+
     axios({
       method: "post",
       responseType: "json",

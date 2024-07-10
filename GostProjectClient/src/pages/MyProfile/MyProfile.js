@@ -23,6 +23,7 @@ const MyProfile = () => {
     })
       .then((user) => {
         setUser(user.data);
+        console.log(user.data);
       })
       .catch((error) => {
         console.log(error);
@@ -30,16 +31,18 @@ const MyProfile = () => {
   }, []);
 
   useEffect(() => {
-    axios({
-      method: "get",
-      url: `/api/Company/GetCompany/${user.workCompanyID}`,
-    })
-      .then((company) => {
-        setCompany(company.data);
+    if (Object.keys(user).length > 0) {
+      axios({
+        method: "get",
+        url: `/api/Company/GetCompany/${user.workCompanyID}`,
       })
-      .catch((error) => {
-        console.log(error);
-      });
+        .then((company) => {
+          setCompany(company.data);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    }
   }, [user]);
 
   const copyCompanyCode = () => {
@@ -63,6 +66,7 @@ const MyProfile = () => {
       <div className="body_container">
         <div className="activities_container">
           <a href="/home">Назад</a>
+          <a href={`/editUser/${localStorage.getItem("id")}`}>Редактировать мой профиль</a>
         </div>
         <div className="profile-container">
           <div className="profile-fields-container">
@@ -79,12 +83,6 @@ const MyProfile = () => {
                 <b>Номер телефона</b>
               </p>
               <p className="user-field-value">{user["phoneNumber"]}</p>
-            </div>
-            <div className="user-fields">
-              <p className="user-field-name">
-                <b>Электронная почта</b>
-              </p>
-              <p className="user-field-value">{user["email"]}</p>
             </div>
             <div className="user-fields">
               <p className="user-field-name">
@@ -111,6 +109,12 @@ const MyProfile = () => {
                 <b>Название организации</b>
               </p>
               <p className="user-field-value">{company["name"]}</p>
+            </div>
+            <div className="user-fields">
+              <p className="user-field-name">
+                <b>Электронная почта организации</b>
+              </p>
+              <p className="user-field-value">{company["email"]}</p>
             </div>
           </div>
           {localStorage.getItem("role") == "Admin" && (

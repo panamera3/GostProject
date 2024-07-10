@@ -16,8 +16,6 @@ namespace GostProjectAPI.Data.Entities
         [Column(TypeName = "VARCHAR(128)")]
         public string Login { get; set; }
 
-        // что будет логином, почта или номер телефона?
-
         [Description("Зашифрованный пароль")] 
         public string PasswordHash { get; set; }
 
@@ -45,5 +43,8 @@ namespace GostProjectAPI.Data.Entities
 
 		[Description("Подразделение")]
         public string? Department { get; set; }
+
+        [Description("Номер телефона")]
+        public string? PhoneNumber { get; set; }
     }
 }

@@ -116,6 +116,11 @@ tbody td {
   color: #ffffff;
 }
 
+.btn_midGray{
+  background-color: #818181;
+  color: #ffffff;
+}
+
 select {
   width: 90%;
   border-radius: 1em;

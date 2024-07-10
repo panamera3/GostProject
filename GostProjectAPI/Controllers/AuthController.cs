@@ -1,5 +1,4 @@
-﻿using AutoMapper;
-using GostProjectAPI.DTOModels.Company;
+﻿using GostProjectAPI.DTOModels.Company;
 using GostProjectAPI.DTOModels.Users;
 using GostProjectAPI.Services;
 using GostProjectAPI.Services.Auth;
@@ -10,22 +9,22 @@ namespace GostProjectAPI.Controllers
 {
 	[AllowAnonymous]
 	[ApiController]
-    [Route("/api/[controller]/[action]")]
-    public class AuthController : CommonControllerBase
-    {
-        private readonly AuthService _authService;
-        private readonly UserService _usersService;
-        private readonly NotificationService _notificationsService;
-        private readonly CompanyService _companyService;
+	[Route("/api/[controller]/[action]")]
+	public class AuthController : CommonControllerBase
+	{
+		private readonly AuthService _authService;
+		private readonly UserService _usersService;
+		private readonly NotificationService _notificationsService;
+		private readonly CompanyService _companyService;
 		private readonly IMapper _mapper;
 
-        public AuthController(AuthService authService, UserService usersService, NotificationService notificationsService, IMapper mapper, CompanyService companyService)
-        {
-            _authService = authService;
-            _usersService = usersService;
-            _mapper = mapper;
-            _notificationsService = notificationsService;
-            _companyService = companyService;
+		public AuthController(AuthService authService, UserService usersService, NotificationService notificationsService, IMapper mapper, CompanyService companyService)
+		{
+			_authService = authService;
+			_usersService = usersService;
+			_mapper = mapper;
+			_notificationsService = notificationsService;
+			_companyService = companyService;
 		}
 
 		[HttpPost]
@@ -57,15 +56,28 @@ namespace GostProjectAPI.Controllers
 		[HttpPost]
 		public async Task<JsonResult> RegisterCompany([FromBody] CompanyAddDto companyAddDto)
 		{
-			var newAdmin = await _companyService.AddCompanyAsync(companyAddDto);
+			UserAddDto newAdmin = null;
 			try
 			{
-				newAdmin.IsConfirmed = true;
-				var newUser = await _usersService.AddUserAsync(newAdmin);
-				if (newUser != null)
-					return JSON(await _authService.AuthenticateAsync(_mapper.Map<UserAuthDto>(newAdmin)));
+				newAdmin = await _companyService.AddCompanyAsync(companyAddDto);
+			}
+			catch (Exception ex)
+			{
+				return JSON(new { error = ex.Message });
+			}
+			try
+			{
+				if (newAdmin != null)
+				{
+					newAdmin.IsConfirmed = true;
+					var newUser = await _usersService.AddUserAsync(newAdmin);
+					if (newUser != null)
+						return JSON(await _authService.AuthenticateAsync(_mapper.Map<UserAuthDto>(newAdmin)));
+					else
+						return JSON(await _authService.AuthenticateAsync(_mapper.Map<UserAuthDto>(null)));
+				}
 				else
-					return JSON(await _authService.AuthenticateAsync(_mapper.Map<UserAuthDto>(null)));
+					return JSON(new { error = "Не удалось создать пользователя" });
 			}
 			catch (Exception ex)
 			{

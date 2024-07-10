@@ -28,5 +28,7 @@ namespace GostProjectAPI.DTOModels.Users
         public string Department { get; set; }
 
 		public bool? IsConfirmed { get; set; } = false;
+
+        public string? PhoneNumber { get; set; }
 	}
 }

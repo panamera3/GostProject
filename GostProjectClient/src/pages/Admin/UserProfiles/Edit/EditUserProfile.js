@@ -57,6 +57,7 @@ const EditUserProfile = () => {
         login: formData.login,
         department: formData.department,
         role: formData.role == 1 ? UserRole.Admin : UserRole.Standart,
+        phoneNumber: formData.phoneNumber,
       },
       headers: {
         "Content-Type": "application/json",
@@ -136,23 +137,40 @@ const EditUserProfile = () => {
               />
             </div>
             <div>
-              <label htmlFor="role">Роль пользователя</label>
-              <select
-                id="role"
-                name="role"
+              <label htmlFor="phoneNumber">Номер телефона</label>
+              <input
+                id="phoneNumber"
+                name="phoneNumber"
                 value={
-                  formData["role"] !== undefined
-                    ? formData["role"]
-                    : user["role"] === UserRole.Admin
-                    ? 1
-                    : 2
+                  formData["phoneNumber"] != undefined
+                    ? formData["phoneNumber"]
+                    : user["phoneNumber"]
                 }
-                onChange={(e) => handleInputChange("role", e.target.value)}
-              >
-                <option value={1}>Администратор</option>
-                <option value={2}>Обычный пользователь</option>
-              </select>
+                onChange={(e) =>
+                  handleInputChange("phoneNumber", e.target.value)
+                }
+              />
             </div>
+            {localStorage.getItem("id") !== params.id && (
+              <div>
+                <label htmlFor="role">Роль пользователя</label>
+                <select
+                  id="role"
+                  name="role"
+                  value={
+                    formData["role"] !== undefined
+                      ? formData["role"]
+                      : user["role"] === UserRole.Admin
+                      ? 1
+                      : 2
+                  }
+                  onChange={(e) => handleInputChange("role", e.target.value)}
+                >
+                  <option value={1}>Администратор</option>
+                  <option value={2}>Обычный пользователь</option>
+                </select>
+              </div>
+            )}
           </div>
           <div className="buttons">
             <button className="btn_blue" type="submit">

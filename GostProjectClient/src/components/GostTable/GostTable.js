@@ -716,6 +716,11 @@ const GostTable = ({ id, view, edit, add }) => {
         return;
       }
 
+      if (isNaN(formData.acceptanceYear) || isNaN(formData.introdutionYear)) {
+        toast.error(`Поля "Год принятия" и "Год введения" должны содержать только числа`);
+        return;
+      }
+
       axios({
         method: "post",
         url: `/api/Gost/AddGost`,

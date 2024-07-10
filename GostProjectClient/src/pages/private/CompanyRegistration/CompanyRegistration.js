@@ -21,6 +21,33 @@ const CompanyRegistration = () => {
 
   const handleNextStep = (event) => {
     event.preventDefault();
+    const psrn = PSRNCompanyRegistrationInputRef.current.value;
+    if (!/^\d+$/.test(psrn)) {
+      toast.error("ОГРН должен содержать только цифры", {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: true,
+        progress: undefined,
+        pauseOnHover: false,
+        draggable: false,
+      });
+      return;
+    }
+
+    const email = emailCompanyRegistrationInputRef.current.value;
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      toast.error("Некорректный email", {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: true,
+        progress: undefined,
+        pauseOnHover: false,
+        draggable: false,
+      });
+      return;
+    }
+
     setCurrentStep(2);
   };
 
@@ -37,14 +64,39 @@ const CompanyRegistration = () => {
       confirmPasswordCompanyRegistrationInputRef.current.value;
 
     if (password == confirmPassword) {
+      const fullname = fullnameCompanyRegistrationInputRef.current.value;
+      const fullnameString = fullname.split(" ");
+      if (fullnameString.length < 2 || fullnameString.length > 3) {
+        toast.error("ФИО должно состоять из 2-3 слов", {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: true,
+          progress: undefined,
+          pauseOnHover: false,
+          draggable: false,
+        });
+        return;
+      }
+
+      const phoneNumber = phoneNumberCompanyRegistrationInputRef.current.value;
+      const phoneNumberRegex =
+        /^\+?\d{1,3}?[-\s]?\(?\d{1,3}\)?[-\s]?\d{1,4}[-\s]?\d{1,4}$/;
+      if (!phoneNumberRegex.test(phoneNumber)) {
+        toast.error("Некорректный номер телефона", {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: true,
+          progress: undefined,
+          pauseOnHover: false,
+          draggable: false,
+        });
+        return;
+      }
+
       const psrn = PSRNCompanyRegistrationInputRef.current.value;
       const name = nameCompanyRegistrationInputRef.current.value;
       const email = emailCompanyRegistrationInputRef.current.value;
       const login = loginCompanyRegistrationInputRef.current.value;
-      const phoneNumber = phoneNumberCompanyRegistrationInputRef.current.value;
-      const fullname = fullnameCompanyRegistrationInputRef.current.value;
-      const fullnameString = fullname.split(" ");
-
       axios({
         method: "post",
         responseType: "json",
@@ -59,6 +111,7 @@ const CompanyRegistration = () => {
           psrn: `${psrn}`,
           name: `${name}`,
           role: UserRole.Admin,
+          phoneNumber: `${phoneNumber}`
         },
       })
         .then((newUser) => {
@@ -83,7 +136,7 @@ const CompanyRegistration = () => {
           }
         })
         .catch((error) => {
-          console.log(error);
+          toast.error(error)
         });
     } else {
       toast.error("Пароли не совпадают", {
@@ -174,10 +227,10 @@ const CompanyRegistration = () => {
                 ref={confirmPasswordCompanyRegistrationInputRef}
                 placeholder="Подтверждение пароля"
               />
-              <button className="btn_blue" onClick={handlePrevStep}>
+              <button className="btn btn_midGray" onClick={handlePrevStep}>
                 Назад
               </button>
-              <button className="btn_blue" type="submit">
+              <button className="btn btn_blue" type="submit">
                 Зарегистрироваться
               </button>
             </div>

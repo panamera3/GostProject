@@ -34,11 +34,14 @@ namespace GostProjectAPI.Services
 
 		public async Task<UserAddDto> AddCompanyAsync(CompanyAddDto companyAddDto)
 		{
-			// сначала создать компанию
-			var isCompanyExist = await _dbContext.Companies.AnyAsync(c => c.PSRN == companyAddDto.PSRN);
-			if (isCompanyExist)
+			var isCompanyExistByPSRN = await _dbContext.Companies.AnyAsync(c => c.PSRN == companyAddDto.PSRN);
+			if (isCompanyExistByPSRN)
 				throw new Exception("Компания с таким ОГРН уже зарегистрирована");
-			
+
+			var isCompanyExistByEmail = await _dbContext.Companies.AnyAsync(c => c.Email == companyAddDto.Email);
+			if (isCompanyExistByEmail)
+				throw new Exception("Компания с таким Email уже существует");
+
 			var company = _mapper.Map<CompanyAddDto, Company>(companyAddDto,
 				opt => opt.AfterMap((src, dest) =>
 				{

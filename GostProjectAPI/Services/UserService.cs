@@ -24,10 +24,17 @@ namespace GostProjectAPI.Services
 
 		public async Task<User?> AddUserAsync(UserAddDto userDTO)
 		{
+			var isPhoneNumberExist = await _dbContext.Users.AnyAsync(u => u.Login == userDTO.PhoneNumber);
+			if (isPhoneNumberExist)
+				throw new Exception("Такой номер телефона уже зарегистрирован");
+
 			var isLoginExist = await _dbContext.Users.AnyAsync(u => u.Login == userDTO.Login);
+			if (isLoginExist)
+				throw new Exception("Такой логин уже зарегистрирован");
+
 			var isCodeExist = !(await _dbContext.Companies.AnyAsync(c => c.Code == userDTO.CompanyCode));
-			if (isLoginExist || isCodeExist)
-				throw new Exception(isLoginExist ? "Такой логин уже существует" : "Неверный код организации");
+			if (isCodeExist)
+				throw new Exception("Неверный код организации");
 
 
 			var company = await _dbContext.Companies.FirstOrDefaultAsync(c => c.Code == userDTO.CompanyCode);
@@ -35,6 +42,7 @@ namespace GostProjectAPI.Services
 
 			user.PasswordHash = _passwordHasher.Encode(userDTO.Password);
 			user.WorkCompanyID = company.ID;
+			user.Department = user.Department != null ? user.Department : "Нет отдела";
 
 			await _dbContext.Users.AddAsync(user);
 			await _dbContext.SaveChangesAsync();
@@ -128,7 +136,20 @@ namespace GostProjectAPI.Services
 				return null;
 
 			if (userEditDto.Login != null)
+			{
+				var isPhoneNumberExist = await _dbContext.Users.AnyAsync(u => u.Login == userEditDto.PhoneNumber);
+				if (isPhoneNumberExist)
+					throw new Exception("Такой номер телефона уже существует");
 				oldUser.Login = userEditDto.Login;
+			}
+
+			if (userEditDto.PhoneNumber != null)
+			{
+				var isPhoneNumberExist = await _dbContext.Users.AnyAsync(u => u.Login == userEditDto.PhoneNumber);
+				if (isPhoneNumberExist)
+					throw new Exception("Такой номер телефона уже существует");
+				oldUser.PhoneNumber = userEditDto.PhoneNumber;
+			}
 
 			if (userEditDto.Department != null)
 				oldUser.Department = userEditDto.Department;
