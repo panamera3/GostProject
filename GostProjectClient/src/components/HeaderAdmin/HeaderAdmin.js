@@ -55,12 +55,7 @@ const HeaderAdmin = ({ user }) => {
   };
 
   const exitHandler = () => {
-    localStorage.setItem("token", "");
-    localStorage.setItem("id", "");
-    localStorage.setItem("workCompanyID", "");
-    localStorage.setItem("role", "");
-    localStorage.setItem("isConfirmed", "");
-    localStorage.setItem("searchGosts", "");
+    localStorage.clear();
 
     navigate("/login");
   };

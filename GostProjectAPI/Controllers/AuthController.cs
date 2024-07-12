@@ -1,4 +1,5 @@
-﻿using GostProjectAPI.DTOModels.Company;
+﻿using GostProjectAPI.DTOModels.Auth;
+using GostProjectAPI.DTOModels.Company;
 using GostProjectAPI.DTOModels.Users;
 using GostProjectAPI.Services;
 using GostProjectAPI.Services.Auth;
@@ -91,5 +92,24 @@ namespace GostProjectAPI.Controllers
 			return JSON(await _companyService.ResetCompanyCode(companyId));
 		}
 
+		[HttpPost]
+		public async Task<IActionResult> CheckUserAndCompany([FromBody] ExistingUserDto existingUserDto)
+		{
+			try
+			{
+				var (userExists, companyExists) = await _authService.CheckUserAndCompanyAsync(existingUserDto);
+
+				if (!userExists || !companyExists)
+				{
+					return NotFound("Пользователь или компания не найдены");
+				}
+
+				return Ok();
+			}
+			catch (Exception)
+			{
+				return StatusCode(500, "Произошла ошибка на сервере. Пожалуйста, попробуйте позже.");
+			}
+		}
 	}
 }

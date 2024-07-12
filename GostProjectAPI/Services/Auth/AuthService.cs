@@ -6,6 +6,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using Microsoft.EntityFrameworkCore;
+using GostProjectAPI.DTOModels.Auth;
 
 namespace GostProjectAPI.Services.Auth
 {
@@ -75,5 +76,13 @@ namespace GostProjectAPI.Services.Auth
 
             return new JwtSecurityTokenHandler().WriteToken(jwt);
         }
-    }
+
+		public async Task<(bool userExists, bool companyExists)> CheckUserAndCompanyAsync(ExistingUserDto existingUserDto)
+		{
+			var user = await _dbContext.Users.FindAsync(existingUserDto.UserId);
+			var company = await _dbContext.Companies.FindAsync(existingUserDto.CompanyId);
+
+			return (user != null, company != null);
+		}
+	}
 }

@@ -22,7 +22,9 @@ const MyProfile = () => {
       headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
     })
       .then((user) => {
-        setUser(user.data);
+        if (user.data) {
+          setUser(user.data);
+        }
       })
       .catch((error) => {
         console.log(error);
@@ -30,6 +32,7 @@ const MyProfile = () => {
   }, []);
 
   useEffect(() => {
+    console.log("user", user)
     if (Object.keys(user).length > 0) {
       axios({
         method: "get",
@@ -173,46 +176,46 @@ const MyProfile = () => {
                 <b>ФИО пользователя</b>
               </p>
               <p className="user-field-value">
-                {`${user["lastName"]} ${user["firstName"]} ${user["patronymic"]}`}
+                {user && `${user["lastName"]} ${user["firstName"]} ${user["patronymic"]}`}
               </p>
             </div>
             <div className="user-fields">
               <p className="user-field-name">
                 <b>Номер телефона</b>
               </p>
-              <p className="user-field-value">{user["phoneNumber"]}</p>
+              <p className="user-field-value">{user && user["phoneNumber"]}</p>
             </div>
             <div className="user-fields">
               <p className="user-field-name">
                 <b>Логин</b>
               </p>
-              <p className="user-field-value">{user["login"]}</p>
+              <p className="user-field-value">{user && user["login"]}</p>
             </div>
             <div className="user-fields">
               <p className="user-field-name">
                 <b>Роль пользователя</b>
               </p>
               <p className="user-field-value">
-                {translationRolesDict[user["role"]]}
+                {user && translationRolesDict[user["role"]]}
               </p>
             </div>
             <div className="user-fields">
               <p className="user-field-name">
                 <b>ОГРН/ОГРНИП</b>
               </p>
-              <p className="user-field-value">{company["psrn"]}</p>
+              <p className="user-field-value">{company && company["psrn"]}</p>
             </div>
             <div className="user-fields">
               <p className="user-field-name">
                 <b>Название организации</b>
               </p>
-              <p className="user-field-value">{company["name"]}</p>
+              <p className="user-field-value">{company && company["name"]}</p>
             </div>
             <div className="user-fields">
               <p className="user-field-name">
                 <b>Электронная почта организации</b>
               </p>
-              <p className="user-field-value">{company["email"]}</p>
+              <p className="user-field-value">{company && company["email"]}</p>
             </div>
           </div>
           {localStorage.getItem("role") == "Admin" && (
@@ -221,9 +224,9 @@ const MyProfile = () => {
                 <p>
                   <b>Код-приглашение</b>
                 </p>
-                <p>{company["code"]}</p>
+                <p>{company && company["code"]}</p>
                 <CopyToClipboard
-                  text={company["code"]}
+                  text={company && company["code"]}
                   onCopy={copyCompanyCode}
                 >
                   <img src={copy} alt="copy" />

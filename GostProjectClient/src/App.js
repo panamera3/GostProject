@@ -10,7 +10,7 @@ import GostEdit from "./pages/Gost/edit/GostEdit";
 import Gost from "./pages/Gost/Gost";
 import FavouritesGosts from "./pages/FavouritesGosts/FavouritesGosts";
 import SearchGosts from "./pages/SearchGosts/SearchGosts";
-import { ToastContainer } from "react-toastify";
+import { toast, ToastContainer } from "react-toastify";
 import MyProfile from "./pages/MyProfile/MyProfile";
 import ArchiveGosts from "./pages/Admin/Archive/Archive";
 import Activity from "./pages/Admin/Activity/Activity";
@@ -21,8 +21,47 @@ import AcceptNotification from "./pages/Notifications/Accept/AcceptNotification"
 import Search from "./pages/Search/Search";
 import NotConfirmed from "./pages/NotConfirmed/NotConfirmed";
 import PrivateRoute from "./components/PrivateRoute/PrivateRoute";
+import axios from "axios";
 
 function App() {
+  useEffect(() => {
+    if (localStorage.getItem("id") && localStorage.getItem("workCompanyID")) {
+      const reloadAfterError = () => {
+        setTimeout(() => {
+          window.location.reload();
+        }, 5000);
+      }
+      const fetchData = async () => {
+        axios({
+          method: "post",
+          url: '/api/Auth/CheckUserAndCompany',
+          data: {
+            userId: localStorage.getItem("id"),
+            companyId: localStorage.getItem("workCompanyID")
+          },
+        })
+          .catch((error) => {
+            if (error.response.status === 404) {
+              localStorage.clear();
+              toast.error("Пользователь или компания не найдены. Будет произведён выход из аккаунта.");
+              reloadAfterError();
+            }
+            if (error.response.status === 500) {
+              toast.error("Произошла ошибка на сервере. Пожалуйста, попробуйте позже.");
+              reloadAfterError();
+            }
+            if (error.response.status === 400) {
+              localStorage.clear();
+              toast.error("Что-то пошло не так. Будет произведён выход из аккаунта.");
+              reloadAfterError();
+            }
+          });
+      };
+
+      fetchData();
+    }
+  }, []);
+
   return (
     <>
       <div className="body">
