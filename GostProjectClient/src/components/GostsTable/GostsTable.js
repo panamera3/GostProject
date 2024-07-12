@@ -285,34 +285,34 @@ const GostsTable = ({ favourites, archiveGosts, searchGosts }) => {
             }
           >
             <option value={`ID`} asc="true">
-              Порядковому номеру - возрастание
+              порядковому номеру - возрастание
             </option>
             <option value={`ID`} asc="false">
-              Порядковому номеру - убывание
+              порядковому номеру - убывание
             </option>
             <option value={`OKScode`} asc="true">
-              Коду ОКС - возрастание
+              коду ОКС - возрастание
             </option>
             <option value={`OKScode`} asc="false">
-              Коду ОКС - убывание
+              коду ОКС - убывание
             </option>
             <option value={`Designation`} asc="true">
-              Обозначению - возрастание
+              обозначению - от А до Я
             </option>
             <option value={`Designation`} asc="false">
-              Обозначению - убывание
+              обозначению - от Я до А
             </option>
             <option value={`Denomination`} asc="true">
-              Наименованию - возрастание
+              наименованию - от А до Я
             </option>
             <option value={`Denomination`} asc="false">
-              Наименованию - убывание
+              наименованию - от Я до А
             </option>
             <option value={`RequestsNumber`} asc="true">
-              Количеству обращений - возрастание
+              количеству обращений - возрастание
             </option>
             <option value={`RequestsNumber`} asc="false">
-              Количеству обращений - убывание
+              количеству обращений - убывание
             </option>
           </select>
         </div>

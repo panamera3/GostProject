@@ -18,7 +18,8 @@ namespace GostProjectAPI.Data.Entities
 		[Column(TypeName = "VARCHAR(128)")]
 		public string Name { get; set; }
 
-		public uint GostId { get; set; }
 		public Gost Gost { get; set; }
+		[ForeignKey(nameof(Gost))]
+		public uint GostId { get; set; }
 	}
 }

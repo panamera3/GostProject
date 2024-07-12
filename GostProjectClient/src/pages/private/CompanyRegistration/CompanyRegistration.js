@@ -56,6 +56,10 @@ const CompanyRegistration = () => {
     setCurrentStep(1);
   };
 
+  const capitalizeFirstLetter = (str) => {
+    return `${str[0].toUpperCase()}${str.slice(1).toLowerCase()}`;
+  };
+
   const submitHandler = (event) => {
     event.preventDefault();
 
@@ -65,7 +69,7 @@ const CompanyRegistration = () => {
 
     if (password == confirmPassword) {
       const fullname = fullnameCompanyRegistrationInputRef.current.value;
-      const fullnameString = fullname.split(" ");
+      var fullnameString = fullname.split(" ");
       if (fullnameString.length < 2 || fullnameString.length > 3) {
         toast.error("ФИО должно состоять из 2-3 слов", {
           position: "top-right",
@@ -77,6 +81,7 @@ const CompanyRegistration = () => {
         });
         return;
       }
+      fullnameString = fullnameString.map(capitalizeFirstLetter);
 
       const phoneNumber = phoneNumberCompanyRegistrationInputRef.current.value;
       const phoneNumberRegex =
@@ -111,7 +116,7 @@ const CompanyRegistration = () => {
           psrn: `${psrn}`,
           name: `${name}`,
           role: UserRole.Admin,
-          phoneNumber: `${phoneNumber}`
+          phoneNumber: `${phoneNumber}`,
         },
       })
         .then((newUser) => {
@@ -122,20 +127,13 @@ const CompanyRegistration = () => {
             localStorage.setItem("isConfirmed", newUser.data.isConfirmed);
             localStorage.setItem("role", "Admin");
 
-            navigate("/home");
+            navigate("/myProfile");
           } else {
-            toast.error(newUser.data.error, {
-              position: "top-right",
-              autoClose: 5000,
-              hideProgressBar: true,
-              progress: undefined,
-              pauseOnHover: false,
-              draggable: false,
-            });
+            console.log(newUser.data.error);
           }
         })
         .catch((error) => {
-          toast.error(error)
+          toast.error(error);
         });
     } else {
       toast.error("Пароли не совпадают", {

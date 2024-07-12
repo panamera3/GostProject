@@ -36,7 +36,7 @@ const Registration = () => {
 
   const submitHandler = (event) => {
     event.preventDefault();
-    let isFormValid = false;
+    let isFormValid = true;
 
     for (const field of requiredRegistrationFields) {
       const inputRef = refs[`${field}RegistrationInputRef`];

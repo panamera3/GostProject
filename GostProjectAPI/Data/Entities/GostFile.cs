@@ -7,15 +7,12 @@ namespace GostProjectAPI.Data.Entities
 {
 	public class GostFile
 	{
-		[Description("ID")]
-		[Key]
-		public uint ID { get; set; }
-
 		[Description("Путь на сервере")]
 		[Column(TypeName = "VARCHAR(128)")]
 		public string Path { get; set; }
 
-		public uint GostId { get; set; }
 		public Gost Gost { get; set; }
+		[ForeignKey(nameof(Gost))]
+		public uint GostId { get; set; }
 	}
 }

@@ -42,7 +42,7 @@
   align-items: center;
 }
 
-.profile-invite > div * {
+.profile-invite > div > * {
   padding: 0.5em;
 }
 
@@ -58,4 +58,12 @@
 
 .profile-code-container img {
   width: 30px;
+}
+
+.profile-frequency-container select {
+  margin: 0.5em;
+}
+
+#editMyProfile{
+  font-weight: 600;
 }

@@ -1,5 +1,4 @@
 ﻿using GostProjectAPI.Data.Enums.Gost;
-using GostProjectAPI.Migrations;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -13,11 +12,9 @@ namespace GostProjectAPI.Data.Entities
         public uint ID { get; set; }
 
         [Description("Обозначение стандарта")]
-        [Column(TypeName = "VARCHAR(128)")]
         public string Designation { get; set; }
 
         [Description("Наименование стандарта")]
-        [Column(TypeName = "VARCHAR(128)")]
         public string Denomination { get; set; }
 
         [Description("Код ОК(С)")]
@@ -45,7 +42,6 @@ namespace GostProjectAPI.Data.Entities
 		public string DeveloperName { get; set; }
 
 		[Description("Содержание")]
-        [Column(TypeName = "VARCHAR(128)")]
         public string Content { get; set; }
 
         [Description("Принят взамен")]
@@ -62,7 +58,6 @@ namespace GostProjectAPI.Data.Entities
         public ActionStatus ActionStatus { get; set; }
 
         [Description("Текст стандарта")]
-        [Column(TypeName = "VARCHAR(128)")]
         public string Text { get; set; }
 
         [Description("Изменения")]
@@ -74,7 +69,7 @@ namespace GostProjectAPI.Data.Entities
         [Description("Количество обращений")]
         public ulong RequestsNumber { get; set; }
 
-        [Description("Заархивироваг ли гост")]
+        [Description("Заархивирован ли гост")]
         public bool IsArchived { get; set; }
 }
 }

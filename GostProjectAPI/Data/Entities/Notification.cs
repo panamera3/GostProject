@@ -16,8 +16,9 @@ namespace GostProjectAPI.Data.Entities
 		public DateTime SendingDate { get; set; }
 
 		[Description("Компания, в которую была отправлена заявка")]
-		public uint CompanyId { get; set; }
 		public Company Company { get; set; }
+		[ForeignKey(nameof(Company))]
+		public uint CompanyId { get; set; }
 
 		public NotificationStatus Status { get; set; }
 

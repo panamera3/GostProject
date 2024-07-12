@@ -159,10 +159,10 @@ const Search = () => {
     }
 
     if (selectedKeywords.length > 0) {
-      values["KeywordsIds"] = selectedKeywords.map((kw) => kw.id);
+      values["Keywords"] = selectedKeywords.map((kw) => kw.name);
     }
     if (selectedKeyphrases.length > 0) {
-      values["KeyphrasesIds"] = selectedKeyphrases.map((kw) => kw.id);
+      values["Keyphrases"] = selectedKeyphrases.map((kw) => kw.name);
     }
 
     setFilter(values);

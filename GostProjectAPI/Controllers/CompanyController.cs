@@ -1,18 +1,17 @@
 ﻿using GostProjectAPI.Services;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GostProjectAPI.Controllers
 {
 	// [Authorize]
 	[ApiController]
-    [Route("/api/[controller]/[action]")]
-    public class CompanyController : CommonControllerBase
-    {
-        private readonly CompanyService _companyService;
+	[Route("/api/[controller]/[action]")]
+	public class CompanyController : CommonControllerBase
+	{
+		private readonly CompanyService _companyService;
 
-        public CompanyController(CompanyService companyService)
-        {
+		public CompanyController(CompanyService companyService)
+		{
 			_companyService = companyService;
 		}
 
@@ -30,9 +29,15 @@ namespace GostProjectAPI.Controllers
 		}
 
 		[HttpGet("{companyID}")]
-        public async Task<JsonResult> GetCompanyCode(uint companyID)
-        {
-            return JSON(await _companyService.GetCompanyCodeAsync(companyID));
-        }
-    }
+		public async Task<JsonResult> GetCompanyCode(uint companyID)
+		{
+			return JSON(await _companyService.GetCompanyCodeAsync(companyID));
+		}
+
+		[HttpPost]
+		public async Task<JsonResult> ChangeCodeUpdateFrequency([FromQuery] uint companyId, byte months)
+		{
+			return JSON(await _companyService.ChangeCodeUpdateFrequencyAsync(companyId, months));
+		}
+	}
 }

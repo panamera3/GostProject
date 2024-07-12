@@ -4,6 +4,7 @@ using GostProjectAPI.DTOModels.Company;
 using GostProjectAPI.DTOModels.Users;
 using GostProjectAPI.Services.Auth;
 using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.Design;
 using System.Net;
 
 namespace GostProjectAPI.Services
@@ -84,6 +85,24 @@ namespace GostProjectAPI.Services
 				return null;
 
 			return company.Code;
+		}
+
+		public async Task<Company> ChangeCodeUpdateFrequencyAsync(uint companyId, byte months)
+		{
+			var oldCompany = await _dbContext.Companies.FindAsync(companyId);
+
+			if (oldCompany == null)
+				return null;
+
+			oldCompany.CodeUpdateFrequencyInMonths = months;
+			oldCompany.UpdateDateCode = DateTime.Now.AddMonths(months);
+
+			await ResetCompanyCode(companyId);
+
+			_dbContext.Companies.Update(oldCompany);
+			await _dbContext.SaveChangesAsync();
+
+			return oldCompany;
 		}
 	}
 }

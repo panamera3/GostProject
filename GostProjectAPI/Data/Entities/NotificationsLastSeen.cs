@@ -7,15 +7,12 @@ namespace GostProjectAPI.Data.Entities
 {
 	public class NotificationsLastSeen
 	{
-		[Description("ID")]
-		[Key]
-		public uint ID { get; set; }
-
 		[Description("Дата просмотра уведомлений пользователем")]
 		public DateTime LastSeenDate { get; set; }
 
 		[Description("Пользователь(администратор), просматривавший уведомления")]
-		public uint UserId { get; set; }
 		public User User { get; set; }
+		[ForeignKey(nameof(User))]
+		public uint UserId { get; set; }
 	}
 }

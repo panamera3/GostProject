@@ -54,6 +54,103 @@ const MyProfile = () => {
       draggable: false,
     });
   };
+  const getMonthsText = (months) => {
+    const monthsText = ["месяц", "месяца", "месяцев"];
+    const monthsIndex =
+      months % 100 > 4 && months % 100 < 20
+        ? 2
+        : [2, 0, 1, 1, 1, 2][months % 10 < 5 ? months % 10 : 5];
+    return monthsText[monthsIndex];
+  };
+
+  const getYearsText = (years) => {
+    const yearsText = ["год", "года", "лет"];
+    const yearsIndex =
+      years % 100 > 4 && years % 100 < 20
+        ? 2
+        : [2, 0, 1, 1, 1, 2][years % 10 < 5 ? years % 10 : 5];
+    return `${years} ${yearsText[yearsIndex]}`;
+  };
+  const frequencyOptions = [1, 3, 6, 12];
+
+  const renderFrequencyOptions = () => {
+    return (
+      <>
+        {frequencyOptions.map((option) => {
+          const months = option;
+          let frequencyText;
+
+          if (months < 12) {
+            const monthsText = getMonthsText(months);
+            frequencyText = `Раз в ${months} ${monthsText}`;
+          } else {
+            const years = Math.floor(months / 12);
+            const remainingMonths = months % 12;
+            const yearsText = getYearsText(years);
+            let monthsText = "";
+
+            if (remainingMonths > 0) {
+              monthsText = getMonthsText(remainingMonths);
+              frequencyText = `Раз в ${yearsText} и ${remainingMonths} ${monthsText}`;
+            } else {
+              frequencyText = `Раз в ${yearsText}`;
+            }
+          }
+
+          return (
+            <option key={option} value={option}>
+              {frequencyText}
+            </option>
+          );
+        })}
+      </>
+    );
+  };
+
+  const handleFrequencyChange = (event) => {
+    const selectedFrequency = event.target.value;
+
+    axios({
+      method: "post",
+      url: `/api/Company/ChangeCodeUpdateFrequency/?companyId=${user.workCompanyID}&months=${selectedFrequency}`,
+    })
+      .then((company) => {
+        setCompany(company.data);
+        const dateTimeString = company.data.updateDateCode;
+        const dateTime = new Date(dateTimeString);
+        const dateOnly = new Date(
+          dateTime.getFullYear(),
+          dateTime.getMonth(),
+          dateTime.getDate()
+        );
+        const formattedDate = dateOnly
+          .toLocaleDateString("ru-RU", {
+            day: "2-digit",
+            month: "2-digit",
+            year: "numeric",
+          })
+          .replace(/\//g, ".");
+
+        toast.success(
+          `Частота обновления кода подключения к организации обновлена и будет производиться раз в ${company.data.codeUpdateFrequencyInMonths} месяцев`,
+          {
+            autoClose: 10000,
+          }
+        );
+        toast.success(`Код подключения к организации был обновлён`, {
+          autoClose: 10000,
+        });
+        toast.success(
+          `Дата обновления кода подключения к организации была обновлена и назначена на ${formattedDate}`,
+          {
+            autoClose: 10000,
+          }
+        );
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
 
   return (
     <>
@@ -65,7 +162,9 @@ const MyProfile = () => {
       <div className="body_container">
         <div className="activities_container">
           <a href="/home">Назад</a>
-          <a href={`/editUser/${localStorage.getItem("id")}`}>Редактировать мой профиль</a>
+          <a href={`/editUser/${localStorage.getItem("id")}`} id="editMyProfile">
+            Редактировать мой профиль
+          </a>
         </div>
         <div className="profile-container">
           <div className="profile-fields-container">
@@ -133,15 +232,19 @@ const MyProfile = () => {
               <div className="profile-frequency-container">
                 <p>
                   <b>Частота обновления</b>
+                  <img
+                    alt="!"
+                    // src={warnImg}
+                    className="warnForFrequency"
+                    title="При выборе частоты обновления текущий код подключения будет обновлён"
+                  />
                 </p>
-                <p>text</p>
+                <select onChange={handleFrequencyChange}>
+                  {renderFrequencyOptions()}
+                </select>
               </div>
             </div>
           )}
-          <div className="buttons">
-            <button className="btn_blue">Сохранить</button>
-            <button className="btn_gray">Отменить</button>
-          </div>
         </div>
       </div>
     </>

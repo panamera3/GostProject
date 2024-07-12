@@ -4,6 +4,7 @@ using GostProjectAPI.Data;
 using GostProjectAPI.Data.Entities;
 using GostProjectAPI.Services;
 using GostProjectAPI.Services.Auth;
+using GostProjectAPI.Services.Background;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -31,12 +32,13 @@ namespace GostProjectAPI
 			builder.Services.AddSwaggerGen();
 
 			// Add MySql DB
-			// var nameConString = "MySqlConStringPublic";
-			var nameConString = builder.Environment.IsProduction() ? "MySqlConStringPublic" : "MySqlConString";
+			var nameConString = "MySqlConStringPublic";
+			// var nameConString = builder.Environment.IsProduction() ? "MySqlConStringPublic" : "MySqlConString";
 			var conString = builder.Configuration.GetConnectionString(nameConString);
 			builder.Services.AddDbContext<GostDBContext>(option => option.UseMySql(conString, new MySqlServerVersion(new Version(10, 4, 24))));
 
 			// Вписывать новые сервисы
+			builder.Services.AddSingleton<ICompanyCodeHasherService, SHA256CompanyCodeHasherService>();
 			builder.Services.AddSingleton<ICompanyCodeHasherService, SHA256CompanyCodeHasherService>();
 			builder.Services.AddSingleton<IPasswordHasherService, SHA256PasswordHasherService>();
 			builder.Services.Configure<AuthOptions>(builder.Configuration.GetSection("Auth"));
@@ -48,13 +50,14 @@ namespace GostProjectAPI
 			builder.Services.AddAWSService<IAmazonS3>();
 
 
-
 			builder.Services.AddScoped<GostService>();
 			builder.Services.AddScoped<UserService>();
 			builder.Services.AddScoped<AuthService>();
 			builder.Services.AddScoped<NotificationService>();
 			builder.Services.AddScoped<CompanyService>();
 			builder.Services.AddScoped<KeysService>();
+
+			builder.Services.AddHostedService<UpdateCompanyCodeService>();
 
 			builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 				.AddJwtBearer(options =>

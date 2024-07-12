@@ -2,6 +2,7 @@
 using System.ComponentModel;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using System.ComponentModel.DataAnnotations.Schema;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace GostProjectAPI.Data.Entities
 {
@@ -12,7 +13,6 @@ namespace GostProjectAPI.Data.Entities
         public uint ID { get; set; }
 
         [Description("Название")]
-        [Column(TypeName = "VARCHAR(128)")]
         public string Name { get; set; }
 
         [Description("Код подключения")]
@@ -23,5 +23,11 @@ namespace GostProjectAPI.Data.Entities
 
         [Description("Электронная почта")]
         public string Email { get; set; }
+
+        [Description("Дата обновления кода подключения")]
+        public DateTime UpdateDateCode { get; set; } = DateTime.Now.AddMonths(6);
+
+		[Description("Частота обновления кода подключения, в месяцах, по умолчанию-6 месяцев")]
+        public byte CodeUpdateFrequencyInMonths { get; set; } = 6;
 	}
 }

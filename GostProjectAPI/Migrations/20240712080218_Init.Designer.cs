@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace GostProjectAPI.Migrations
 {
     [DbContext(typeof(GostDBContext))]
-    [Migration("20240530065116_NormativeReferencesTableAdded")]
-    partial class NormativeReferencesTableAdded
+    [Migration("20240712080218_Init")]
+    partial class Init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -32,17 +32,23 @@ namespace GostProjectAPI.Migrations
                         .IsRequired()
                         .HasColumnType("longtext");
 
+                    b.Property<byte>("CodeUpdateFrequencyInMonths")
+                        .HasColumnType("tinyint unsigned");
+
                     b.Property<string>("Email")
                         .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("VARCHAR(128)");
+                        .HasColumnType("longtext");
 
                     b.Property<string>("PSRN")
                         .IsRequired()
                         .HasColumnType("longtext");
+
+                    b.Property<DateTime>("UpdateDateCode")
+                        .HasColumnType("datetime(6)");
 
                     b.HasKey("ID");
 
@@ -51,21 +57,17 @@ namespace GostProjectAPI.Migrations
 
             modelBuilder.Entity("GostProjectAPI.Data.Entities.FavouriteGost", b =>
                 {
-                    b.Property<uint>("ID")
-                        .ValueGeneratedOnAdd()
+                    b.Property<uint>("UserId")
                         .HasColumnType("int unsigned");
 
                     b.Property<uint>("GostId")
                         .HasColumnType("int unsigned");
 
-                    b.Property<uint>("UserId")
-                        .HasColumnType("int unsigned");
-
-                    b.HasKey("ID");
+                    b.HasKey("UserId", "GostId");
 
                     b.HasIndex("GostId");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("UserId", "GostId");
 
                     b.ToTable("FavouritesGosts");
                 });
@@ -76,11 +78,11 @@ namespace GostProjectAPI.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int unsigned");
 
-                    b.Property<DateTime>("AcceptanceDate")
-                        .HasColumnType("datetime(6)");
-
                     b.Property<byte>("AcceptanceLevel")
                         .HasColumnType("tinyint unsigned");
+
+                    b.Property<ushort>("AcceptanceYear")
+                        .HasColumnType("smallint unsigned");
 
                     b.Property<byte>("ActionStatus")
                         .HasColumnType("tinyint unsigned");
@@ -93,31 +95,31 @@ namespace GostProjectAPI.Migrations
 
                     b.Property<string>("Content")
                         .IsRequired()
-                        .HasColumnType("VARCHAR(128)");
+                        .HasColumnType("longtext");
 
                     b.Property<string>("Denomination")
                         .IsRequired()
-                        .HasColumnType("VARCHAR(128)");
+                        .HasColumnType("longtext");
 
                     b.Property<string>("Designation")
                         .IsRequired()
-                        .HasColumnType("VARCHAR(128)");
+                        .HasColumnType("longtext");
 
                     b.Property<uint>("DeveloperId")
                         .HasColumnType("int unsigned");
 
+                    b.Property<string>("DeveloperName")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
                     b.Property<uint?>("GostIdReplaced")
                         .HasColumnType("int unsigned");
 
-                    b.Property<DateTime>("IntrodutionDate")
-                        .HasColumnType("datetime(6)");
+                    b.Property<ushort>("IntrodutionYear")
+                        .HasColumnType("smallint unsigned");
 
                     b.Property<bool>("IsArchived")
                         .HasColumnType("tinyint(1)");
-
-                    b.Property<string>("NormativeReferences")
-                        .IsRequired()
-                        .HasColumnType("longtext");
 
                     b.Property<string>("OKPDCode")
                         .IsRequired()
@@ -132,7 +134,7 @@ namespace GostProjectAPI.Migrations
 
                     b.Property<string>("Text")
                         .IsRequired()
-                        .HasColumnType("VARCHAR(128)");
+                        .HasColumnType("longtext");
 
                     b.HasKey("ID");
 
@@ -145,83 +147,70 @@ namespace GostProjectAPI.Migrations
 
             modelBuilder.Entity("GostProjectAPI.Data.Entities.GostFile", b =>
                 {
-                    b.Property<uint>("ID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int unsigned");
+                    b.Property<string>("Path")
+                        .HasColumnType("VARCHAR(128)");
 
                     b.Property<uint>("GostId")
                         .HasColumnType("int unsigned");
 
-                    b.Property<string>("Path")
-                        .IsRequired()
-                        .HasColumnType("VARCHAR(128)");
-
-                    b.HasKey("ID");
+                    b.HasKey("Path", "GostId");
 
                     b.HasIndex("GostId");
+
+                    b.HasIndex("Path", "GostId");
 
                     b.ToTable("GostFiles");
                 });
 
             modelBuilder.Entity("GostProjectAPI.Data.Entities.Keyphrase", b =>
                 {
-                    b.Property<uint>("ID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int unsigned");
+                    b.Property<string>("Name")
+                        .HasColumnType("varchar(255)");
 
                     b.Property<uint>("GostId")
                         .HasColumnType("int unsigned");
 
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("VARCHAR(128)");
-
-                    b.HasKey("ID");
+                    b.HasKey("Name", "GostId");
 
                     b.HasIndex("GostId");
+
+                    b.HasIndex("Name", "GostId");
 
                     b.ToTable("Keyphrases");
                 });
 
             modelBuilder.Entity("GostProjectAPI.Data.Entities.Keyword", b =>
                 {
-                    b.Property<uint>("ID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int unsigned");
+                    b.Property<string>("Name")
+                        .HasColumnType("VARCHAR(128)");
 
                     b.Property<uint>("GostId")
                         .HasColumnType("int unsigned");
 
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("VARCHAR(128)");
-
-                    b.HasKey("ID");
+                    b.HasKey("Name", "GostId");
 
                     b.HasIndex("GostId");
+
+                    b.HasIndex("Name", "GostId");
 
                     b.ToTable("Keywords");
                 });
 
-            modelBuilder.Entity("GostProjectAPI.Data.Entities.NormativeReferences", b =>
+            modelBuilder.Entity("GostProjectAPI.Data.Entities.NormativeReference", b =>
                 {
-                    b.Property<uint>("ID")
-                        .ValueGeneratedOnAdd()
+                    b.Property<uint>("RootGostId")
                         .HasColumnType("int unsigned");
 
                     b.Property<uint>("ReferenceGostId")
                         .HasColumnType("int unsigned");
 
-                    b.Property<uint>("RootGostId")
-                        .HasColumnType("int unsigned");
-
-                    b.HasKey("ID");
+                    b.HasKey("RootGostId", "ReferenceGostId");
 
                     b.HasIndex("ReferenceGostId");
 
-                    b.HasIndex("RootGostId");
+                    b.HasIndex("RootGostId", "ReferenceGostId");
 
-                    b.ToTable("NormativeReferencess");
+                    b.ToTable("NormativeReferences");
                 });
 
             modelBuilder.Entity("GostProjectAPI.Data.Entities.Notification", b =>
@@ -236,33 +225,46 @@ namespace GostProjectAPI.Migrations
                     b.Property<DateTime>("SendingDate")
                         .HasColumnType("datetime(6)");
 
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UserDepartment")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("UserFullName")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
                     b.Property<uint>("UserId")
                         .HasColumnType("int unsigned");
+
+                    b.Property<string>("UserLogin")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<byte>("UserRole")
+                        .HasColumnType("tinyint unsigned");
 
                     b.HasKey("ID");
 
                     b.HasIndex("CompanyId");
-
-                    b.HasIndex("UserId");
 
                     b.ToTable("Notifications");
                 });
 
             modelBuilder.Entity("GostProjectAPI.Data.Entities.NotificationsLastSeen", b =>
                 {
-                    b.Property<uint>("ID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int unsigned");
-
                     b.Property<DateTime>("LastSeenDate")
                         .HasColumnType("datetime(6)");
 
                     b.Property<uint>("UserId")
                         .HasColumnType("int unsigned");
 
-                    b.HasKey("ID");
+                    b.HasKey("LastSeenDate", "UserId");
 
                     b.HasIndex("UserId");
+
+                    b.HasIndex("LastSeenDate", "UserId");
 
                     b.ToTable("NotificationsLastSeen");
                 });
@@ -322,6 +324,9 @@ namespace GostProjectAPI.Migrations
                         .IsRequired()
                         .HasColumnType("longtext");
 
+                    b.Property<string>("PhoneNumber")
+                        .HasColumnType("longtext");
+
                     b.Property<byte>("Role")
                         .HasColumnType("tinyint unsigned");
 
@@ -356,7 +361,7 @@ namespace GostProjectAPI.Migrations
 
             modelBuilder.Entity("GostProjectAPI.Data.Entities.Gost", b =>
                 {
-                    b.HasOne("GostProjectAPI.Data.Entities.User", "DeveloperUser")
+                    b.HasOne("GostProjectAPI.Data.Entities.Company", "DeveloperCompany")
                         .WithMany()
                         .HasForeignKey("DeveloperId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -366,7 +371,7 @@ namespace GostProjectAPI.Migrations
                         .WithMany()
                         .HasForeignKey("GostIdReplaced");
 
-                    b.Navigation("DeveloperUser");
+                    b.Navigation("DeveloperCompany");
 
                     b.Navigation("GostReplaced");
                 });
@@ -404,7 +409,7 @@ namespace GostProjectAPI.Migrations
                     b.Navigation("Gost");
                 });
 
-            modelBuilder.Entity("GostProjectAPI.Data.Entities.NormativeReferences", b =>
+            modelBuilder.Entity("GostProjectAPI.Data.Entities.NormativeReference", b =>
                 {
                     b.HasOne("GostProjectAPI.Data.Entities.Gost", "ReferenceGost")
                         .WithMany()
@@ -431,15 +436,7 @@ namespace GostProjectAPI.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("GostProjectAPI.Data.Entities.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.Navigation("Company");
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("GostProjectAPI.Data.Entities.NotificationsLastSeen", b =>

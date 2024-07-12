@@ -24,18 +24,14 @@ namespace GostProjectAPI.Services
 	{
 		private readonly IMapper _mapper;
 		private readonly GostDBContext _dbContext;
-		private readonly FileUploadPaths _fileUploadPaths;
-		private readonly IWebHostEnvironment _env;
 		private readonly KeysService _keysService;
 
 		private readonly IAmazonS3 _s3Client;
 
-		public GostService(GostDBContext dbContext, IMapper mapper, IOptions<FileUploadPaths> fileUploadPaths, IWebHostEnvironment env, KeysService keysService, IAmazonS3 s3Client)
+		public GostService(GostDBContext dbContext, IMapper mapper, KeysService keysService, IAmazonS3 s3Client)
 		{
 			_dbContext = dbContext;
 			_mapper = mapper;
-			_fileUploadPaths = fileUploadPaths.Value;
-			_env = env;
 			_keysService = keysService;
 
 			_s3Client = s3Client;
@@ -111,13 +107,13 @@ namespace GostProjectAPI.Services
 			{
 				filteredGosts = filteredGosts.Where(o => o.IntrodutionYear == getParams.Filter.IntrodutionYear).AsQueryable();
 			}
-			if (getParams?.Filter?.KeywordsIds?.Any() == true)
+			if (getParams?.Filter?.Keywords?.Any() == true)
 			{
-				filteredGosts = filteredGosts.Where(g => _dbContext.Keywords.Any(kw => kw.GostId == g.ID && getParams.Filter.KeywordsIds.Contains(kw.ID))).AsQueryable();
+				filteredGosts = filteredGosts.Where(g => _dbContext.Keywords.Any(kw => kw.GostId == g.ID && getParams.Filter.Keywords.Contains(kw.Name))).AsQueryable();
 			}
-			if (getParams?.Filter?.KeyphrasesIds?.Any() == true)
+			if (getParams?.Filter?.Keyphrases?.Any() == true)
 			{
-				filteredGosts = filteredGosts.Where(g => _dbContext.Keyphrases.Any(kw => kw.GostId == g.ID && getParams.Filter.KeyphrasesIds.Contains(kw.ID))).AsQueryable();
+				filteredGosts = filteredGosts.Where(g => _dbContext.Keyphrases.Any(kw => kw.GostId == g.ID && getParams.Filter.Keyphrases.Contains(kw.Name))).AsQueryable();
 			}
 
 
@@ -325,8 +321,6 @@ namespace GostProjectAPI.Services
 				return false;
 			}
 		}
-
-
 
 		public static async Task<bool> SearchInPdfFileAsync(string url, string searchText)
 		{
