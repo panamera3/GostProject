@@ -8,6 +8,10 @@ input {
   font-family: "Montserrat", sans-serif;
 }
 
+pre {
+  font-family: "Montserrat", sans-serif;
+}
+
 .App {
   text-align: center;
 }
@@ -92,7 +96,7 @@ tbody td {
   word-break: break-all;
 }
 
-tbody tr:last-child td{
+tbody tr:last-child td {
   border-bottom: 0;
 }
 
@@ -111,7 +115,7 @@ tbody tr:last-child td{
 }
 
 .btn_gray {
-  background-color: #A8A8A8;
+  background-color: #a8a8a8;
   color: #ffffff;
 }
 
@@ -120,7 +124,7 @@ tbody tr:last-child td{
   color: #ffffff;
 }
 
-.btn_midGray{
+.btn_midGray {
   background-color: #818181;
   color: #ffffff;
 }

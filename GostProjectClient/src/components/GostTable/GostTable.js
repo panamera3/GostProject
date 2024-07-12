@@ -202,13 +202,13 @@ const GostTable = ({ id, view, edit, add }) => {
   }, []);
 
   useEffect(() => {
-    if(!view){
+    if (!view) {
       const handleBeforeUnload = (event) => {
         event.preventDefault();
       };
-  
+
       window.addEventListener("beforeunload", handleBeforeUnload);
-  
+
       return () => {
         window.removeEventListener("beforeunload", handleBeforeUnload);
       };
@@ -281,6 +281,26 @@ const GostTable = ({ id, view, edit, add }) => {
     "gostReplaced",
     "gostIdReplaced",
   ];
+
+  const isUrl = (value) => {
+    try {
+      new URL(value);
+      return true;
+    } catch (error) {
+      return false;
+    }
+  }
+
+  const formatValue = (value) => {
+    if (isUrl(value)) {
+      return (<a href={value}>{value}</a>)
+    } else if (typeof value === 'string') {
+      return (<pre>{value}</pre>)
+    } else {
+      return value;
+    }
+  };
+
   const getViewValue = (key, value) => {
     if (value) {
       if (value === true) {
@@ -294,8 +314,8 @@ const GostTable = ({ id, view, edit, add }) => {
       } else {
         return value;
       }
-    } else if (key == "requestsNumber" && value == 0) {
-      return "0";
+    } else if (key == "requestsNumber") {
+      return value + 1;
     } else {
       return "Нет";
     }
@@ -312,12 +332,12 @@ const GostTable = ({ id, view, edit, add }) => {
 
   const getUpdateDate = (key, updateGostDates) =>
     updateGostDates &&
-    updateGostDates.some(
-      (item) => item.name.toLowerCase() === key.toLowerCase()
-    )
+      updateGostDates.some(
+        (item) => item.name.toLowerCase() === key.toLowerCase()
+      )
       ? updateGostDates
-          .find((item) => item.name.toLowerCase() === key.toLowerCase())
-          .updateDate.split("T")[0]
+        .find((item) => item.name.toLowerCase() === key.toLowerCase())
+        .updateDate.split("T")[0]
       : "";
 
   const getNormativeReferencesValue = (
@@ -533,9 +553,7 @@ const GostTable = ({ id, view, edit, add }) => {
         .map((key) => ({
           key,
           label: translationGostDict[key] || key,
-          value: view
-            ? getViewValue(key, gost[key])
-            : getEditValue(key, gost[key]),
+          value: getViewValue(key, gost[key]),
           updateDate: getUpdateDate(key, updateGostDates),
         }))
         .concat([
@@ -577,8 +595,10 @@ const GostTable = ({ id, view, edit, add }) => {
             <td>
               <label htmlFor={key}>{label}</label>
             </td>
-            <td>{value}</td>
-            <td>{updateDate}</td>
+            <td>{formatValue(value)}</td>
+            <td>
+              {updateDate}
+            </td>
           </tr>
         ));
     } else {
@@ -624,47 +644,64 @@ const GostTable = ({ id, view, edit, add }) => {
                   </label>
                 </td>
                 <td>
-                  {key === "actionStatus" ? (
-                    <select
-                      className="gostInputAdd"
-                      value={formData.actionStatus}
-                      onChange={(e) =>
-                        handleInputChange("actionStatus", e.target.value)
-                      }
-                    >
-                      <option value="">Выберите статус</option>
-                      {actionStatusOptions
-                        .filter(
-                          (option) => option.label.toLowerCase() != "заменён"
-                        )
-                        .map((option) => (
-                          <option key={option.value} value={option.value}>
-                            {option.label}
-                          </option>
-                        ))}
-                    </select>
-                  ) : key === "acceptanceLevel" ? (
-                    <select
-                      className="gostInputAdd"
-                      value={formData.acceptanceLevel}
-                      onChange={(e) =>
-                        handleInputChange("acceptanceLevel", e.target.value)
-                      }
-                    >
-                      <option value="">Выберите уровень принятия</option>
-                      {acceptanceLevelOptions.map((option) => (
-                        <option key={option.value} value={option.value}>
-                          {option.label}
-                        </option>
-                      ))}
-                    </select>
-                  ) : (
-                    <input
-                      className="gostInputAdd"
-                      value={formData[key]}
-                      onChange={(e) => handleInputChange(key, e.target.value)}
-                    />
-                  )}
+                  {(() => {
+                    switch (key) {
+                      case "actionStatus":
+                        return (
+                          <select
+                            className="gostInputAdd"
+                            value={formData.actionStatus}
+                            onChange={(e) =>
+                              handleInputChange("actionStatus", e.target.value)
+                            }
+                          >
+                            <option value="">Выберите статус</option>
+                            {actionStatusOptions
+                              .filter(
+                                (option) => option.label.toLowerCase() != "заменён"
+                              )
+                              .map((option) => (
+                                <option key={option.value} value={option.value}>
+                                  {option.label}
+                                </option>
+                              ))}
+                          </select>
+                        );
+                      case "acceptanceLevel":
+                        return (
+                          <select
+                            className="gostInputAdd"
+                            value={formData.acceptanceLevel}
+                            onChange={(e) =>
+                              handleInputChange("acceptanceLevel", e.target.value)
+                            }
+                          >
+                            <option value="">Выберите уровень принятия</option>
+                            {acceptanceLevelOptions.map((option) => (
+                              <option key={option.value} value={option.value}>
+                                {option.label}
+                              </option>
+                            ))}
+                          </select>
+                        );
+                      case "content":
+                        return (
+                          <textarea
+                            className="gostInputAdd"
+                            value={formData[key]}
+                            onChange={(e) => handleInputChange(key, e.target.value)}
+                          />
+                        );
+                      default:
+                        return (
+                          <input
+                            className="gostInputAdd"
+                            value={formData[key]}
+                            onChange={(e) => handleInputChange(key, e.target.value)}
+                          />
+                        );
+                    }
+                  })()}
                 </td>
               </tr>
             ))}
@@ -829,7 +866,7 @@ const GostTable = ({ id, view, edit, add }) => {
               "Content-Type": "application/json",
             },
           })
-            .then((gost) => {})
+            .then((gost) => { })
             .catch((error) => {
               console.log(error);
             });

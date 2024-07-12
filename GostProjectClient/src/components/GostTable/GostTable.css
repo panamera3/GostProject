@@ -14,6 +14,15 @@
   margin: 0;
 }
 
+textarea.gostInputAdd {
+  min-height: 10em;
+}
+
+textarea.gostInputAdd,
+select.gostInputAdd {
+  width: 95%;
+}
+
 .main_modal_content.cancel {
   display: flex;
   flex-direction: column;
