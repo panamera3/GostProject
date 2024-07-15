@@ -53,6 +53,8 @@ const GostTable = ({ id, view, edit, add }) => {
 
   const [updateGostDates, setUpdateGostDates] = useState([]);
 
+  const [gostNotFound, setGostNotFound] = useState(false);
+
   useEffect(() => {
     if (Object.keys(gost).length !== 0) {
       if (gost.gostIdReplaced != undefined) {
@@ -67,6 +69,12 @@ const GostTable = ({ id, view, edit, add }) => {
           .catch((error) => {
             console.log(error);
           });
+      }
+      setNormativeReferences(gost.normativeReferences || []);
+    }
+    if (gost) {
+      if (add || edit) {
+        getDataForNormativeReferences();
       }
     }
   }, [gost]);
@@ -152,10 +160,21 @@ const GostTable = ({ id, view, edit, add }) => {
         headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
       })
         .then((gost) => {
-          setGost(gost.data.gost);
+          if (!gost.data.gost) {
+            toast.error("ГОСТ не найден");
+            setGostNotFound(true);
+            setTimeout(() => {
+              navigate("/home");
+            }, 5000);
+            return;
+          }
 
+          setGost(gost.data.gost);
           setKeywords(gost.data.keywords);
           setKeyphrases(gost.data.keyphrases);
+          setReplacedContainerVisibility(
+            gost.data.normativeReferences ? true : false
+          );
         })
         .catch((error) => {
           console.log(error);
@@ -184,22 +203,23 @@ const GostTable = ({ id, view, edit, add }) => {
           console.log(error);
         });
     }
-    if (add) {
-      axios({
-        method: "get",
-        url: `/api/Gost/GetDataForNormativeReferences/${localStorage.getItem(
-          "workCompanyID"
-        )}`,
-        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
-      })
-        .then((gostsNormativeReferences) => {
-          setGostsNormativeReferences(gostsNormativeReferences.data);
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-    }
   }, []);
+
+  const getDataForNormativeReferences = () => {
+    axios({
+      method: "get",
+      url: `/api/Gost/GetDataForNormativeReferences/?companyID=${localStorage.getItem(
+        "workCompanyID"
+      )}${edit && `&gostID=${gost.id}`}`,
+      headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+    })
+      .then((gostsNormativeReferences) => {
+        setGostsNormativeReferences(gostsNormativeReferences.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
 
   useEffect(() => {
     if (!view) {
@@ -289,13 +309,13 @@ const GostTable = ({ id, view, edit, add }) => {
     } catch (error) {
       return false;
     }
-  }
+  };
 
   const formatValue = (value) => {
     if (isUrl(value)) {
-      return (<a href={value}>{value}</a>)
-    } else if (typeof value === 'string') {
-      return (<pre>{value}</pre>)
+      return <a href={value}>{value}</a>;
+    } else if (typeof value === "string") {
+      return <pre>{value}</pre>;
     } else {
       return value;
     }
@@ -332,12 +352,12 @@ const GostTable = ({ id, view, edit, add }) => {
 
   const getUpdateDate = (key, updateGostDates) =>
     updateGostDates &&
-      updateGostDates.some(
-        (item) => item.name.toLowerCase() === key.toLowerCase()
-      )
+    updateGostDates.some(
+      (item) => item.name.toLowerCase() === key.toLowerCase()
+    )
       ? updateGostDates
-        .find((item) => item.name.toLowerCase() === key.toLowerCase())
-        .updateDate.split("T")[0]
+          .find((item) => item.name.toLowerCase() === key.toLowerCase())
+          .updateDate.split("T")[0]
       : "";
 
   const getNormativeReferencesValue = (
@@ -457,6 +477,13 @@ const GostTable = ({ id, view, edit, add }) => {
     "developerName",
   ];
 
+  const changeNormativeReferencesForEdit = () => {
+    setGost((prevData) => ({
+      ...prevData,
+      [normativeReferences]: gost.normativeReferences ? 2 : undefined,
+    }));
+  };
+
   const renderInputField = (key) => {
     const value = formData[key] !== undefined ? formData[key] : gost[key];
 
@@ -493,6 +520,36 @@ const GostTable = ({ id, view, edit, add }) => {
             </option>
           ))}
         </select>
+      );
+    }
+
+    if (key === "gostReplaced") {
+      return (
+        <>
+          <select
+            onChange={() => {
+              replacedVisibilityChange();
+              changeNormativeReferencesForEdit();
+            }}
+            value={normativeReferences}
+          >
+            <option value={1}>Принят впервые</option>
+            <option value={2}>Принят взамен</option>
+          </select>
+          {replacedContainerVisibility && (
+            <select
+              className="gostInput"
+              value={value}
+              onChange={(e) => handleInputChange(key, e.target.value)}
+            >
+              {gostsNormativeReferences.map((item) => (
+                <option key={item.id} value={item.id}>
+                  {item.designation}
+                </option>
+              ))}
+            </select>
+          )}
+        </>
       );
     }
 
@@ -596,9 +653,7 @@ const GostTable = ({ id, view, edit, add }) => {
               <label htmlFor={key}>{label}</label>
             </td>
             <td>{formatValue(value)}</td>
-            <td>
-              {updateDate}
-            </td>
+            <td>{updateDate}</td>
           </tr>
         ));
     } else {
@@ -658,7 +713,8 @@ const GostTable = ({ id, view, edit, add }) => {
                             <option value="">Выберите статус</option>
                             {actionStatusOptions
                               .filter(
-                                (option) => option.label.toLowerCase() != "заменён"
+                                (option) =>
+                                  option.label.toLowerCase() != "заменён"
                               )
                               .map((option) => (
                                 <option key={option.value} value={option.value}>
@@ -673,7 +729,10 @@ const GostTable = ({ id, view, edit, add }) => {
                             className="gostInputAdd"
                             value={formData.acceptanceLevel}
                             onChange={(e) =>
-                              handleInputChange("acceptanceLevel", e.target.value)
+                              handleInputChange(
+                                "acceptanceLevel",
+                                e.target.value
+                              )
                             }
                           >
                             <option value="">Выберите уровень принятия</option>
@@ -689,7 +748,9 @@ const GostTable = ({ id, view, edit, add }) => {
                           <textarea
                             className="gostInputAdd"
                             value={formData[key]}
-                            onChange={(e) => handleInputChange(key, e.target.value)}
+                            onChange={(e) =>
+                              handleInputChange(key, e.target.value)
+                            }
                           />
                         );
                       default:
@@ -697,7 +758,9 @@ const GostTable = ({ id, view, edit, add }) => {
                           <input
                             className="gostInputAdd"
                             value={formData[key]}
-                            onChange={(e) => handleInputChange(key, e.target.value)}
+                            onChange={(e) =>
+                              handleInputChange(key, e.target.value)
+                            }
                           />
                         );
                     }
@@ -866,7 +929,7 @@ const GostTable = ({ id, view, edit, add }) => {
               "Content-Type": "application/json",
             },
           })
-            .then((gost) => { })
+            .then((gost) => {})
             .catch((error) => {
               console.log(error);
             });
@@ -895,7 +958,7 @@ const GostTable = ({ id, view, edit, add }) => {
           amendments: formData.amendments,
           keywords: formData.keywords?.split(","),
           keyphrases: formData.keyphrases?.split(","),
-          // добавить replacedGostId
+          gostIdReplaced: formData.gostReplaced,
         },
         headers: {
           "Content-Type": "application/json",
@@ -925,48 +988,55 @@ const GostTable = ({ id, view, edit, add }) => {
 
   return (
     <>
-      <form onSubmit={submitHandler}>
-        <table className="gost_table">
-          <thead>
-            <tr>
-              <th scope="col">Поле</th>
-              <th scope="col">Значение</th>
-              {!add && !edit && (
-                <th scope="col">Дата последней актуализации</th>
-              )}
-            </tr>
-          </thead>
-          <tbody>{renderGostTable()}</tbody>
-        </table>
-        {!view && edit && (
-          <>
-            <button className="btn_blue" type="submit">
-              Сохранить
-            </button>
-            <button
-              className="btn_darkGray"
-              type="button"
-              onClick={openModalCard}
-            >
-              Отменить
-            </button>
-          </>
-        )}
-        {!view && add && (
-          <>
-            <button className="btn_blue" type="submit">
-              Добавить
-            </button>
-            <button
-              className="btn_darkGray"
-              type="button"
-              onClick={openModalCard}
-            >
-              Отменить
-            </button>
-          </>
-        )}
-      </form>
+      {gostNotFound && (
+        <div className="no_gost_container">
+          <p>Нет данных</p>
+        </div>
+      )}
+      {!gostNotFound && (
+        <form onSubmit={submitHandler}>
+          <table className="gost_table">
+            <thead>
+              <tr>
+                <th scope="col">Поле</th>
+                <th scope="col">Значение</th>
+                {!add && !edit && (
+                  <th scope="col">Дата последней актуализации</th>
+                )}
+              </tr>
+            </thead>
+            <tbody>{renderGostTable()}</tbody>
+          </table>
+          {!view && edit && (
+            <>
+              <button className="btn_blue" type="submit">
+                Сохранить
+              </button>
+              <button
+                className="btn_darkGray"
+                type="button"
+                onClick={openModalCard}
+              >
+                Отменить
+              </button>
+            </>
+          )}
+          {!view && add && (
+            <>
+              <button className="btn_blue" type="submit">
+                Добавить
+              </button>
+              <button
+                className="btn_darkGray"
+                type="button"
+                onClick={openModalCard}
+              >
+                Отменить
+              </button>
+            </>
+          )}
+        </form>
+      )}
       {isModalOpen && (
         <Modal
           isOpen={isModalOpen}

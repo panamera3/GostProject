@@ -46,14 +46,16 @@ function App() {
               toast.error("Пользователь или компания не найдены. Будет произведён выход из аккаунта.");
               reloadAfterError();
             }
-            if (error.response.status === 500) {
-              toast.error("Произошла ошибка на сервере. Пожалуйста, попробуйте позже.");
-              reloadAfterError();
-            }
             if (error.response.status === 400) {
               localStorage.clear();
               toast.error("Что-то пошло не так. Будет произведён выход из аккаунта.");
               reloadAfterError();
+            }
+            if (error.response.status.toString().startsWith("5")) {
+              toast.error("Произошла ошибка на сервере. Пожалуйста, попробуйте позже.");
+            }
+            if (error.response.status.toString().startsWith("4")) {
+              toast.error("Произошла ошибка на клиенте. Пожалуйста, попробуйте позже.");
             }
           });
       };

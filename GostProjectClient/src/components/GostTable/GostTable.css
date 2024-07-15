@@ -1,3 +1,9 @@
+.no_gost_container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 .gost_table td:nth-child(2) {
   width: 70%;
 }

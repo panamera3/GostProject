@@ -3,6 +3,7 @@ using GostProjectAPI.Data.Entities;
 using GostProjectAPI.DTOModels.Gosts;
 using GostProjectAPI.Services;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace GostProjectAPI.Controllers
 {
@@ -115,25 +116,26 @@ namespace GostProjectAPI.Controllers
 			return JSON(await _gostService.GetFavouritesGostsListAsync(getParams));
 		}
 
-		[HttpPost]
-		public async Task<JsonResult> AddFavouriteGost([FromQuery] uint gostID, uint userID)
+		[HttpPut]
+		public async Task<IActionResult> ChangeFavouriteGost([FromQuery] uint gostID, uint userID, bool isFavourite)
 		{
-			return JSON(await _gostService.AddFavouriteGostAsync(gostID, userID));
-		}
-
-		[HttpDelete]
-		public async Task<IActionResult> DeleteFavouriteGost([FromQuery] uint gostID, uint userID)
-		{
-			if (await _gostService.TryDeleteFavouriteGostAsync(gostID, userID))
-				return Ok();
-
-			return BadRequest();
+			if (isFavourite)
+			{
+				var favouriteGost = await _gostService.AddFavouriteGostAsync(gostID, userID);
+				return Ok(favouriteGost);
+			}
+			else
+			{
+				if (await _gostService.TryDeleteFavouriteGostAsync(gostID, userID))
+					return Ok();
+				return BadRequest();
+			}
 		}
 
 		[HttpGet("{userID}/{gostID}")]
-		public async Task<JsonResult> CheckFavouriteGosts(uint userID, uint gostID)
+		public async Task<JsonResult> CheckFavouriteAndArchiveGost(uint userID, uint gostID)
 		{
-			return JSON(await _gostService.CheckFavouriteGostsAsync(userID, gostID));
+			return JSON(await _gostService.CheckFavouriteAndArchiveGostAsync(userID, gostID));
 		}
 
 		[HttpPost]
@@ -142,10 +144,13 @@ namespace GostProjectAPI.Controllers
 			return JSON(await _gostService.AddRequestAsync(gostID));
 		}
 
-		[HttpPost]
-		public async Task<JsonResult> ArchiveGost([FromQuery] uint gostID)
+		[HttpPut]
+		public async Task<IActionResult> ChangeArchiveGost([FromQuery] uint gostID, bool isArchived)
 		{
-			return JSON(await _gostService.ArchiveGostAsync(gostID));
+			var gost = await _gostService.ArchiveGostAsync(gostID, isArchived);
+			if (gost == null)
+				return NotFound();
+			return Ok(gost);
 		}
 
 		[HttpGet("{gostID}")]
@@ -160,10 +165,10 @@ namespace GostProjectAPI.Controllers
 			return JSON(await _gostService.GetNormativeReferencesAsync(gostID));
 		}
 
-		[HttpGet("{companyID}")]
-		public async Task<JsonResult> GetDataForNormativeReferences(uint companyID)
+		[HttpGet]
+		public async Task<JsonResult> GetDataForNormativeReferences([FromQuery]uint companyID, uint? gostID)
 		{
-			return JSON(await _gostService.GetDataForNormativeReferencesAsync(companyID));
+			return JSON(await _gostService.GetDataForNormativeReferencesAsync(companyID, gostID));
 		}
 
 		[HttpGet("{gostID}")]

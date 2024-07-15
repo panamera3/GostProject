@@ -127,6 +127,7 @@ const GostsTable = ({ favourites, archiveGosts, searchGosts }) => {
             },
             sortField: sortField,
             sortDirection: sortDirection,
+            archived: archiveGosts,
           },
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -185,15 +186,7 @@ const GostsTable = ({ favourites, archiveGosts, searchGosts }) => {
 
   const renderGostsTable = () => {
     if (gosts) {
-      var renderGosts = gosts;
-      if (!searchGosts) {
-        renderGosts = renderGosts.filter(
-          (gost) =>
-            (archiveGosts && gost.isArchived) ||
-            (!archiveGosts && !gost.isArchived)
-        );
-      }
-      return renderGosts.map((gost, index) => (
+      return gosts.map((gost, index) => (
         <tr key={gost.id}>
           <td>
             <p>{index + 1 + pagination.offset}</p>
@@ -268,91 +261,110 @@ const GostsTable = ({ favourites, archiveGosts, searchGosts }) => {
       });
   };
 
+  console.log(gosts);
+  console.log(gosts.length);
+
   return (
     <>
-      {!(favourites || archiveGosts || searchGosts) && (
-        <div className="sortGosts">
-          <p>Сортировать по: </p>
-          <select
-            id="selectSorting"
-            onChange={(e) =>
-              handleSort(
-                e.target.value,
-                JSON.parse(
-                  e.target.options[e.target.selectedIndex].getAttribute("asc")
-                )
-              )
-            }
-          >
-            <option value={`ID`} asc="true">
-              порядковому номеру - возрастание
-            </option>
-            <option value={`ID`} asc="false">
-              порядковому номеру - убывание
-            </option>
-            <option value={`OKScode`} asc="true">
-              коду ОКС - возрастание
-            </option>
-            <option value={`OKScode`} asc="false">
-              коду ОКС - убывание
-            </option>
-            <option value={`Designation`} asc="true">
-              обозначению - от А до Я
-            </option>
-            <option value={`Designation`} asc="false">
-              обозначению - от Я до А
-            </option>
-            <option value={`Denomination`} asc="true">
-              наименованию - от А до Я
-            </option>
-            <option value={`Denomination`} asc="false">
-              наименованию - от Я до А
-            </option>
-            <option value={`RequestsNumber`} asc="true">
-              количеству обращений - возрастание
-            </option>
-            <option value={`RequestsNumber`} asc="false">
-              количеству обращений - убывание
-            </option>
-          </select>
+      {!favourites && !searchGosts && !archiveGosts && gosts.length == 0 && (
+        <div className="no_gosts_container">
+          <p>У Вашей организации ещё нет добавленных документов</p>
         </div>
       )}
+      {(favourites || searchGosts || archiveGosts) && gosts.length == 0 && (
+        <div className="no_gosts_container">
+          <p>Нет документов</p>
+        </div>
+      )}
+      {gosts.length > 0 && (
+        <div>
+          {!(favourites || archiveGosts || searchGosts) && (
+            <div className="sortGosts">
+              <p>Сортировать по: </p>
+              <select
+                id="selectSorting"
+                onChange={(e) =>
+                  handleSort(
+                    e.target.value,
+                    JSON.parse(
+                      e.target.options[e.target.selectedIndex].getAttribute(
+                        "asc"
+                      )
+                    )
+                  )
+                }
+              >
+                <option value={`ID`} asc="true">
+                  порядковому номеру - возрастание
+                </option>
+                <option value={`ID`} asc="false">
+                  порядковому номеру - убывание
+                </option>
+                <option value={`OKScode`} asc="true">
+                  коду ОКС - возрастание
+                </option>
+                <option value={`OKScode`} asc="false">
+                  коду ОКС - убывание
+                </option>
+                <option value={`Designation`} asc="true">
+                  обозначению - от А до Я
+                </option>
+                <option value={`Designation`} asc="false">
+                  обозначению - от Я до А
+                </option>
+                <option value={`Denomination`} asc="true">
+                  наименованию - от А до Я
+                </option>
+                <option value={`Denomination`} asc="false">
+                  наименованию - от Я до А
+                </option>
+                <option value={`RequestsNumber`} asc="true">
+                  количеству обращений - возрастание
+                </option>
+                <option value={`RequestsNumber`} asc="false">
+                  количеству обращений - убывание
+                </option>
+              </select>
+            </div>
+          )}
 
-      <table className="gostsTable">
-        <thead>
-          <tr>
-            <th scope="col">№</th>
-            <th scope="col">Обозначение</th>
-            <th scope="col">Код ОКС</th>
-            <th scope="col">Наименование</th>
-            <th scope="col">Количество обращений</th>
-            <th />
-            <th />
-          </tr>
-        </thead>
-        <tbody>{renderGostsTable()}</tbody>
-      </table>
+          <table className="gostsTable">
+            <thead>
+              <tr>
+                <th scope="col">№</th>
+                <th scope="col">Обозначение</th>
+                <th scope="col">Код ОКС</th>
+                <th scope="col">Наименование</th>
+                <th scope="col">Количество обращений</th>
+                <th />
+                <th />
+              </tr>
+            </thead>
+            <tbody>{renderGostsTable()}</tbody>
+          </table>
 
-      <Pagination
-        className="pagination-bar"
-        activePage={pagination.currentPage}
-        totalItemsCount={pagination.total}
-        itemsCountPerPage={pagination.pageSize}
-        onChange={handlePageChange}
-      />
-      <div className="pageSize">
-        <p>Показывать по: </p>
-        <select
-          id="selectPageSize"
-          value={pageSize}
-          onChange={(e) => handlePageSizeChange(parseInt(e.target.value))}
-        >
-          <option value="10">10</option>
-          <option value="25">25</option>
-          <option value="50">50</option>
-          <option value="100">100</option>
-        </select>
-      </div>
+          <Pagination
+            className="pagination-bar"
+            activePage={pagination.currentPage}
+            totalItemsCount={pagination.total}
+            itemsCountPerPage={pagination.pageSize}
+            onChange={handlePageChange}
+          />
+          <div className="pageSize">
+            <p>Показывать по: </p>
+            <select
+              id="selectPageSize"
+              value={pageSize}
+              onChange={(e) => handlePageSizeChange(parseInt(e.target.value))}
+            >
+              <option value="10">10</option>
+              <option value="25">25</option>
+              <option value="50">50</option>
+              <option value="100">100</option>
+            </select>
+          </div>
+        </div>
+      )}
     </>
   );
 };

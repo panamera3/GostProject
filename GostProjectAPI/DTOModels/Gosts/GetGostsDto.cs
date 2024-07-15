@@ -19,5 +19,7 @@ namespace GostProjectAPI.DTOModels.Gosts
 		public FilterGosts? Filter { get; set; }
 
         public string? SearchInFilePrompt { get; set; }
+
+        public bool Archived { get; set; } = false;
     }
 }

@@ -1,10 +1,9 @@
 import "./Home.css";
-import { useState, useEffect, useRef } from "react";
 import HeaderAdmin from "../../components/HeaderAdmin/HeaderAdmin";
 import HeaderUser from "../../components/Header/HeaderUser";
 import GostsTable from "../../components/GostsTable/GostsTable";
 
-const Home = ({searchGosts, favourites, archiveGosts}) => {
+const Home = ({ searchGosts, favourites, archiveGosts }) => {
   return (
     <>
       {localStorage.getItem("role") == "Admin" ? (

@@ -15,6 +15,7 @@ const Gost = () => {
   const navigate = useNavigate();
 
   const [isFavourite, setIsFavourite] = useState(false);
+  const [isArchived, setIsArchived] = useState(false);
 
   useEffect(() => {
     axios({
@@ -29,13 +30,14 @@ const Gost = () => {
 
     axios({
       method: "get",
-      url: `/api/Gost/CheckFavouriteGosts/${localStorage.getItem("id")}/${
-        params.id
-      }`,
+      url: `/api/Gost/CheckFavouriteAndArchiveGost/${localStorage.getItem(
+        "id"
+      )}/${params.id}`,
       headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
     })
-      .then((favourite) => {
-        setIsFavourite(favourite.data);
+      .then((response) => {
+        setIsFavourite(response.data.isFavourite);
+        setIsArchived(response.data.isArchived);
       })
       .catch((error) => {
         console.log(error);
@@ -60,56 +62,39 @@ const Gost = () => {
   };
   const favGostHandler = () => {
     const userId = localStorage.getItem("id");
-    if (!isFavourite) {
-      axios({
-        method: "post",
-        responseType: "json",
-        url: `/api/Gost/AddFavouriteGost/?userId=${userId}&gostId=${params.id}`,
-      })
-        .then((gost) => {
-          toast.success("Успешно добавлено в избранное!", {
-            position: "top-right",
-            autoClose: 3000,
-            hideProgressBar: true,
-            progress: undefined,
-            pauseOnHover: false,
-            draggable: false,
-          });
-          setIsFavourite(true);
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-    } else {
-      axios({
-        method: "delete",
-        url: `/api/Gost/DeleteFavouriteGost/?userId=${userId}&gostId=${params.id}`,
-      })
-        .then((gost) => {
-          toast.success("Успешно удалено из избранного!", {
-            position: "top-right",
-            autoClose: 3000,
-            hideProgressBar: true,
-            progress: undefined,
-            pauseOnHover: false,
-            draggable: false,
-          });
-          setIsFavourite(false);
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-    }
-  };
-
-  const archiveGost = () => {
     axios({
-      method: "post",
-      url: `/api/Gost/ArchiveGost?gostID=${params.id}`,
-      headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+      method: "put",
+      responseType: "json",
+      url: `/api/Gost/ChangeFavouriteGost/?userId=${userId}&gostId=${
+        params.id
+      }&isFavourite=${!isFavourite}`,
     })
       .then((gost) => {
-        toast.success("ГОСТ был успешно архивирован");
+        toast.success(
+          !isFavourite
+            ? "Успешно добавлено в избранное!"
+            : "Успешно удалено из избранного!"
+        );
+        setIsFavourite(!isFavourite);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
+  const archiveGostHandler = () => {
+    axios({
+      method: "put",
+      url: `/api/Gost/ChangeArchiveGost?gostID=${
+        params.id
+      }&isArchived=${!isArchived}`,
+    })
+      .then((gost) => {
+        toast.success(
+          !isArchived
+            ? "ГОСТ был успешно архивирован"
+            : "ГОСТ был успешно разархивирован"
+        );
         navigate("/home");
       })
       .catch((error) => {
@@ -138,7 +123,12 @@ const Gost = () => {
           {true && (
             <div>
               <a href={`/gostEdit/` + params.id}>Редактировать</a>
-              <p onClick={archiveGost}>Архивировать</p>
+              {isArchived && (
+                <p onClick={() => archiveGostHandler()}>Разархивировать</p>
+              )}
+              {!isArchived && (
+                <p onClick={() => archiveGostHandler()}>Архивировать</p>
+              )}
               <p onClick={deleteHandler}>Удалить</p>
             </div>
           )}

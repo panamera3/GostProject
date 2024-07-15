@@ -40,5 +40,7 @@ namespace GostProjectAPI.DTOModels.Gosts
 		public List<string>? Keywords { get; set; }
 
 		public List<string>? Keyphrases { get; set; }
+
+		public List<uint>? NormativeReferences { get; set; }
 	}
 }

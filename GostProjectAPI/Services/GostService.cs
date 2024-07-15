@@ -1,19 +1,14 @@
-﻿using Amazon.Runtime.Internal.Endpoints.StandardLibrary;
-using Amazon.S3;
+﻿using Amazon.S3;
 using Amazon.S3.Model;
 using Amazon.S3.Transfer;
 using GostProjectAPI.Data;
 using GostProjectAPI.Data.Entities;
-using GostProjectAPI.Data.Enums.Gost;
 using GostProjectAPI.DTOModels;
 using GostProjectAPI.DTOModels.Gosts;
 using GostProjectAPI.Extensions;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Options;
 using Microsoft.Office.Interop.Word;
 using System.Data;
-using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using UglyToad.PdfPig;
@@ -55,7 +50,7 @@ namespace GostProjectAPI.Services
 			var gosts = _dbContext.Gosts.AsQueryable();
 
 			// var filteredByCompanyGosts = gosts.Where(g => g.AcceptanceLevel != AcceptanceLevel.Local || g.DeveloperId == getParams.CompanyID);
-			var filteredByCompanyGosts = gosts.Where(g => g.DeveloperId == getParams.CompanyID);
+			var filteredByCompanyGosts = gosts.Where(g => g.DeveloperId == getParams.CompanyID).Where(g => g.IsArchived == getParams.Archived);
 
 			var filteredGosts = filteredByCompanyGosts;
 
@@ -461,24 +456,25 @@ namespace GostProjectAPI.Services
 
 			List<Keyword> keywords = new();
 			List<Keyphrase> keyphrases = new();
+			List<NormativeReference> normativeReferences = new();
 
-			if (gostEditDto.Keywords != null)
+			// Преобразование Keywords в сущности Keyword
+			foreach (var keywordValue in gostEditDto.Keywords)
 			{
-				// Преобразование Keywords в сущности Keyword
-				foreach (var keywordValue in gostEditDto.Keywords)
-				{
-					var keyword = new Keyword { Name = keywordValue, GostId = gostEditDto.ID };
-					keywords.Add(keyword);
-				}
+				var keyword = new Keyword { Name = keywordValue, GostId = gostEditDto.ID };
+				keywords.Add(keyword);
 			}
-			if (gostEditDto.Keyphrases != null)
+			// Преобразование Keyphrases в сущности Keyphrase
+			foreach (var keyphraseValue in gostEditDto.Keyphrases)
 			{
-				// Преобразование Keyphrases в сущности Keyphrase
-				foreach (var keyphraseValue in gostEditDto.Keyphrases)
-				{
-					var keyphrase = new Keyphrase { Name = keyphraseValue, GostId = gostEditDto.ID };
-					keyphrases.Add(keyphrase);
-				}
+				var keyphrase = new Keyphrase { Name = keyphraseValue, GostId = gostEditDto.ID };
+				keyphrases.Add(keyphrase);
+			}
+			// Преобразование NormativeReferences в сущности NormativeReference
+			foreach (var referenceValue in gostEditDto.NormativeReferences)
+			{
+				var reference = new NormativeReference { ReferenceGostId = referenceValue, RootGostId = gostEditDto.ID };
+				normativeReferences.Add(reference);
 			}
 
 			keywords.ForEach(async keyword =>
@@ -488,6 +484,10 @@ namespace GostProjectAPI.Services
 			keyphrases.ForEach(async keyphrase =>
 			{
 				await _dbContext.Keyphrases.AddAsync(keyphrase);
+			});
+			normativeReferences.ForEach(async reference =>
+			{
+				await _dbContext.NormativeReferences.AddAsync(reference);
 			});
 
 			await _dbContext.SaveChangesAsync();
@@ -532,7 +532,7 @@ namespace GostProjectAPI.Services
 		public async Task<List<Gost>?> GetFavouritesGostsAsync(uint userID)
 		{
 			var favouritesGosts = await _dbContext.FavouritesGosts.Where(g => g.UserId == userID).Select(g => g.GostId).ToListAsync();
-			var allGosts = await _dbContext.Gosts.Where(g => favouritesGosts.Contains(g.ID)).ToListAsync(); 
+			var allGosts = await _dbContext.Gosts.Where(g => favouritesGosts.Contains(g.ID)).ToListAsync();
 			return allGosts;
 		}
 
@@ -578,10 +578,12 @@ namespace GostProjectAPI.Services
 			return true;
 		}
 
-		public async Task<bool> CheckFavouriteGostsAsync(uint userID, uint gostID)
+		public async Task<FavouriteAndArchivedGostDto> CheckFavouriteAndArchiveGostAsync(uint userID, uint gostID)
 		{
-			var state = await _dbContext.FavouritesGosts.AnyAsync(f => f.UserId == userID && f.GostId == gostID);
-			return state;
+			bool isFavourite = await _dbContext.FavouritesGosts.AnyAsync(f => f.UserId == userID && f.GostId == gostID);
+			bool isArchived = await _dbContext.Gosts.AnyAsync(g => g.ID == gostID && g.IsArchived == true);
+			var response = new FavouriteAndArchivedGostDto { IsArchived = isArchived, IsFavourite = isFavourite };
+			return response;
 		}
 
 		public async Task<Gost> AddRequestAsync(uint gostID)
@@ -601,16 +603,14 @@ namespace GostProjectAPI.Services
 			return null;
 		}
 
-		public async Task<Gost> ArchiveGostAsync(uint gostID)
+		public async Task<Gost?> ArchiveGostAsync(uint gostID, bool isArchived)
 		{
 			var oldGost = await GetGostAsync(gostID);
-
-			if (oldGost == null) // || oldGost.OwnerID != user/company ID)
+			if (oldGost == null)
 				return null;
 
-			oldGost.IsArchived = true;
+			oldGost.IsArchived = isArchived;
 			_dbContext.Gosts.Update(oldGost);
-
 			await _dbContext.SaveChangesAsync();
 
 			return oldGost;
@@ -628,9 +628,18 @@ namespace GostProjectAPI.Services
 			return updateGostDates;
 		}
 
-		public async Task<List<DataForNormativeReference>> GetDataForNormativeReferencesAsync(uint companyID)
+		public async Task<List<DataForNormativeReference>> GetDataForNormativeReferencesAsync(uint companyID, uint? gostID)
 		{
-			var dataForNormativeReference = await _dbContext.Gosts.Where(g => g.DeveloperId == companyID).Select(g => new DataForNormativeReference { ID = g.ID, Designation = g.Designation }).ToListAsync();
+			var dataForNormativeReference = await _dbContext.Gosts
+				.Where(g => g.DeveloperId == companyID)
+				.Select(g => new DataForNormativeReference { ID = g.ID, Designation = g.Designation })
+				.ToListAsync();
+
+			if (gostID.HasValue)
+			{
+				dataForNormativeReference = dataForNormativeReference.Where(g => g.ID != gostID.Value).ToList();
+			}
+
 			return dataForNormativeReference;
 		}
 
