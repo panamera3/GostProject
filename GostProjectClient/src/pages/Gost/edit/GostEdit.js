@@ -3,7 +3,7 @@ import { useParams } from "react-router-dom";
 import HeaderAdmin from "../../../components/HeaderAdmin/HeaderAdmin";
 import GostTable from "../../../components/GostTable/GostTable";
 
-const GostEdit = () => {  
+const GostEdit = () => {
   const params = useParams();
 
   return (
@@ -13,6 +13,9 @@ const GostEdit = () => {
         <div className="activities_container">
           <div>
             <a href="/home">Назад</a>
+          </div>
+          <div>
+            <p>Редактирование ГОСТа</p>
           </div>
         </div>
         <GostTable edit id={params.id} />

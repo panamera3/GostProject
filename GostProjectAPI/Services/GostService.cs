@@ -361,13 +361,14 @@ namespace GostProjectAPI.Services
 			return await _dbContext.Gosts.FirstOrDefaultAsync(g => g.ID == gostID);
 		}
 
-		public async Task<GostWithKeys?> GetFullGostAsync(uint gostID)
+		public async Task<GostWithKeysAndReferences?> GetFullGostAsync(uint gostID)
 		{
 			Gost gost = await _dbContext.Gosts.FirstOrDefaultAsync(g => g.ID == gostID);
 			List<Keyword> keywords = await _keysService.GetKeyWordsAsync(gostID);
 			List<Keyphrase> keyphrases = await _keysService.GetKeyPhrasesAsync(gostID);
-			GostWithKeys gostWithKeys = new() { Gost = gost, Keywords = keywords, Keyphrases = keyphrases };
-			return gostWithKeys;
+			List<NormativeReference> normativeReferences = await GetNormativeReferencesAsync(gostID);
+			GostWithKeysAndReferences gostWithKeysAndReferences = new() { Gost = gost, Keywords = keywords, Keyphrases = keyphrases, NormativeReferences = normativeReferences };
+			return gostWithKeysAndReferences;
 		}
 
 		public async Task<string?> GetGostNameAsync(uint gostID)
@@ -432,7 +433,6 @@ namespace GostProjectAPI.Services
 			return gost;
 		}
 
-
 		public async Task<Gost?> EditGostAsync(GostEditDto gostEditDto)
 		{
 			var oldGost = await GetGostAsync(gostEditDto.ID);
@@ -442,53 +442,77 @@ namespace GostProjectAPI.Services
 
 			foreach (var property in typeof(GostEditDto).GetProperties())
 			{
-				var value = property.GetValue(gostEditDto);
-				if (value != null && value.ToString() != "")
+				if (!property.Name.ToLower().Contains("key") && property.Name.ToLower() != "normativereferences")
 				{
-					var gostProperty = oldGost.GetType().GetProperty(property.Name);
-					gostProperty.SetValue(oldGost, value);
+					var value = property.GetValue(gostEditDto);
+					if (value != null && value.ToString() != "")
+					{
+						var gostProperty = oldGost.GetType().GetProperty(property.Name);
+						gostProperty.SetValue(oldGost, value);
+					}
+					if (value != null && value.ToString() == "0")
+					{
+						var gostProperty = oldGost.GetType().GetProperty(property.Name);
+						gostProperty.SetValue(oldGost, null);
+					}
 				}
 			}
 
 			_dbContext.Gosts.Update(oldGost);
 			await _dbContext.SaveChangesAsync();
 
-
-			List<Keyword> keywords = new();
-			List<Keyphrase> keyphrases = new();
-			List<NormativeReference> normativeReferences = new();
-
-			// Преобразование Keywords в сущности Keyword
-			foreach (var keywordValue in gostEditDto.Keywords)
+			if(oldGost.GostIdReplaced.HasValue)
 			{
-				var keyword = new Keyword { Name = keywordValue, GostId = gostEditDto.ID };
-				keywords.Add(keyword);
-			}
-			// Преобразование Keyphrases в сущности Keyphrase
-			foreach (var keyphraseValue in gostEditDto.Keyphrases)
-			{
-				var keyphrase = new Keyphrase { Name = keyphraseValue, GostId = gostEditDto.ID };
-				keyphrases.Add(keyphrase);
-			}
-			// Преобразование NormativeReferences в сущности NormativeReference
-			foreach (var referenceValue in gostEditDto.NormativeReferences)
-			{
-				var reference = new NormativeReference { ReferenceGostId = referenceValue, RootGostId = gostEditDto.ID };
-				normativeReferences.Add(reference);
+				var replacedGost = await GetGostAsync(oldGost.GostIdReplaced.Value);
+				if(replacedGost != null)
+				{
+					replacedGost.ActionStatus = Data.Enums.Gost.ActionStatus.Replaced;
+					_dbContext.Gosts.Update(replacedGost);
+					await _dbContext.SaveChangesAsync();
+				}
 			}
 
-			keywords.ForEach(async keyword =>
+			if (gostEditDto.Keywords != null)
 			{
-				await _dbContext.Keywords.AddAsync(keyword);
-			});
-			keyphrases.ForEach(async keyphrase =>
+				var existingKeywords = await _dbContext.Keywords.Where(k => k.GostId == gostEditDto.ID).ToListAsync();
+				_dbContext.Keywords.RemoveRange(existingKeywords.Where(k => !gostEditDto.Keywords.Contains(k.Name)));
+
+				foreach (var keyword in gostEditDto.Keywords)
+				{
+					if (!await _dbContext.Keywords.AnyAsync(k => k.Name == keyword && k.GostId == gostEditDto.ID))
+					{
+						await _dbContext.Keywords.AddAsync(new Keyword { Name = keyword, GostId = gostEditDto.ID });
+					}
+				}
+			}
+
+			if (gostEditDto.Keyphrases != null)
 			{
-				await _dbContext.Keyphrases.AddAsync(keyphrase);
-			});
-			normativeReferences.ForEach(async reference =>
+				var existingKeyphrases = await _dbContext.Keyphrases.Where(k => k.GostId == gostEditDto.ID).ToListAsync();
+				_dbContext.Keyphrases.RemoveRange(existingKeyphrases.Where(k => !gostEditDto.Keyphrases.Contains(k.Name)));
+
+				foreach (var keyphrase in gostEditDto.Keyphrases)
+				{
+					if (!await _dbContext.Keyphrases.AnyAsync(k => k.Name == keyphrase && k.GostId == gostEditDto.ID))
+					{
+						await _dbContext.Keyphrases.AddAsync(new Keyphrase { Name = keyphrase, GostId = gostEditDto.ID });
+					}
+				}
+			}
+
+			if (gostEditDto.NormativeReferences != null)
 			{
-				await _dbContext.NormativeReferences.AddAsync(reference);
-			});
+				var existingReferences = await _dbContext.NormativeReferences.Where(r => r.RootGostId == gostEditDto.ID).ToListAsync();
+				_dbContext.NormativeReferences.RemoveRange(existingReferences.Where(r => !gostEditDto.NormativeReferences.Contains(r.ReferenceGostId)));
+
+				foreach (var referenceGostId in gostEditDto.NormativeReferences)
+				{
+					if (!await _dbContext.NormativeReferences.AnyAsync(r => r.ReferenceGostId == referenceGostId && r.RootGostId == gostEditDto.ID))
+					{
+						await _dbContext.NormativeReferences.AddAsync(new NormativeReference { ReferenceGostId = referenceGostId, RootGostId = gostEditDto.ID });
+					}
+				}
+			}
 
 			await _dbContext.SaveChangesAsync();
 

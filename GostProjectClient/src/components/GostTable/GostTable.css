@@ -70,7 +70,7 @@ select.gostInputAdd {
   padding: 0.5em;
 }
 
-.requiredAddField {
+.requiredField {
   color: red;
   font-size: 1.5em;
 }
@@ -80,7 +80,7 @@ select.gostInputAdd {
   vertical-align: top;
 }
 
-.requiredAddField,
+.requiredField,
 .hintForKeys {
   display: inline;
 }

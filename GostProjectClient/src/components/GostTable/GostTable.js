@@ -169,11 +169,25 @@ const GostTable = ({ id, view, edit, add }) => {
             return;
           }
 
+          const gostKeywords = gost.data.keywords;
+          const gostKeyphrases = gost.data.keyphrases;
           setGost(gost.data.gost);
-          setKeywords(gost.data.keywords);
-          setKeyphrases(gost.data.keyphrases);
+          setKeywords(gostKeywords);
+          setKeyphrases(gostKeyphrases);
+
+          setFormData(() => ({
+            keywords: gostKeywords
+              .map((keyword) => keyword.name)
+              .join(", ")
+              .trim(),
+            keyphrases: gostKeyphrases
+              .map((keyphrase) => keyphrase.name)
+              .join(", ")
+              .trim(),
+          }));
+
           setReplacedContainerVisibility(
-            gost.data.normativeReferences ? true : false
+            gost.data.gost.gostIdReplaced ? true : false
           );
         })
         .catch((error) => {
@@ -206,11 +220,13 @@ const GostTable = ({ id, view, edit, add }) => {
   }, []);
 
   const getDataForNormativeReferences = () => {
+    var url = `/api/Gost/GetDataForNormativeReferences/?companyID=${localStorage.getItem(
+      "workCompanyID"
+    )}`;
+    url += edit ? `&gostID=${gost.id}` : "";
     axios({
       method: "get",
-      url: `/api/Gost/GetDataForNormativeReferences/?companyID=${localStorage.getItem(
-        "workCompanyID"
-      )}${edit && `&gostID=${gost.id}`}`,
+      url: url,
       headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
     })
       .then((gostsNormativeReferences) => {
@@ -461,7 +477,7 @@ const GostTable = ({ id, view, edit, add }) => {
     }
   };
 
-  const requiredAddFields = [
+  const requiredFields = [
     "designation",
     "denomination",
     "oksCode",
@@ -494,7 +510,6 @@ const GostTable = ({ id, view, edit, add }) => {
           value={value}
           onChange={(e) => handleInputChange(key, e.target.value)}
         >
-          <option value="">Выберите статус</option>
           {actionStatusOptions
             .filter((option) => option.label.toLowerCase() !== "заменён")
             .map((option) => (
@@ -513,7 +528,6 @@ const GostTable = ({ id, view, edit, add }) => {
           value={value}
           onChange={(e) => handleInputChange(key, e.target.value)}
         >
-          <option value="">Выберите уровень принятия</option>
           {acceptanceLevelOptions.map((option) => (
             <option key={option.value} value={option.value}>
               {option.label}
@@ -523,15 +537,15 @@ const GostTable = ({ id, view, edit, add }) => {
       );
     }
 
-    if (key === "gostReplaced") {
+    if (key === "gostIdReplaced") {
       return (
         <>
           <select
-            onChange={() => {
-              replacedVisibilityChange();
+            onChange={(event) => {
+              replacedVisibilityChange(event);
               changeNormativeReferencesForEdit();
             }}
-            value={normativeReferences}
+            value={replacedContainerVisibility ? 2 : 1}
           >
             <option value={1}>Принят впервые</option>
             <option value={2}>Принят взамен</option>
@@ -549,6 +563,44 @@ const GostTable = ({ id, view, edit, add }) => {
               ))}
             </select>
           )}
+        </>
+      );
+    }
+
+    if (key === "normativeReferences") {
+      return (
+        <>
+          {selectedItems && selectedItems.length > 0 ? (
+            <ul>
+              {selectedItems.map((item) => (
+                <li key={item.id}>
+                  {item.designation}
+                  <button
+                    className="delete_normative_reference_button btn_blue"
+                    onClick={() => handleRemoveItem(item.id)}
+                  >
+                    Удалить
+                  </button>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p>Нет ссылок</p>
+          )}
+
+          <select onChange={handleSelectChange}>
+            <option value="">Выберите нормативную ссылку</option>
+            {gostsNormativeReferences
+              .filter(
+                (item) =>
+                  !selectedItems.some((selected) => selected.id === item.id)
+              )
+              .map((item) => (
+                <option key={item.id} value={item.id}>
+                  {item.designation}
+                </option>
+              ))}
+          </select>
         </>
       );
     }
@@ -578,30 +630,45 @@ const GostTable = ({ id, view, edit, add }) => {
           "actionStatus",
           "changes",
           "amendments",
-          "gostReplaced",
+          "gostIdReplaced",
+          "keywords",
+          "keyphrases",
+          "normativeReferences",
         ];
 
         return (
           <>
-            {edit &&
-              editFields.map((key, index) => (
-                <tr key={index}>
-                  <td>
-                    <label htmlFor={key}>{translationGostDict[key]}</label>
-                  </td>
-                  <td>{renderInputField(key)}</td>
-                </tr>
-              ))}
-
-            {edit && (
-              <tr>
-                <td colSpan="2">
-                  <div className="file-input-container">
-                    <input type="file" onChange={handleFileChange} />
-                  </div>
+            {editFields.map((key, index) => (
+              <tr key={index}>
+                <td>
+                  <label htmlFor={key}>
+                    {translationGostDict[key]}
+                    {requiredFields.includes(key) && (
+                      <p className="requiredField">*</p>
+                    )}
+                    {key.toLowerCase().includes("key") && (
+                      <>
+                        <img
+                          alt="?"
+                          // src={hintImg}
+                          className="hintForKeys"
+                          title="Введите значения через запятую"
+                        />
+                      </>
+                    )}
+                  </label>
                 </td>
+                <td>{renderInputField(key)}</td>
               </tr>
-            )}
+            ))}
+
+            <tr>
+              <td colSpan="2">
+                <div className="file-input-container">
+                  <input type="file" onChange={handleFileChange} />
+                </div>
+              </td>
+            </tr>
           </>
         );
       }
@@ -683,8 +750,8 @@ const GostTable = ({ id, view, edit, add }) => {
                 <td>
                   <label htmlFor={key}>
                     {translationGostDict[key]}
-                    {requiredAddFields.includes(key) && (
-                      <p className="requiredAddField">*</p>
+                    {requiredFields.includes(key) && (
+                      <p className="requiredField">*</p>
                     )}
                     {key.toLowerCase().includes("key") && (
                       <>
@@ -867,10 +934,10 @@ const GostTable = ({ id, view, edit, add }) => {
       formAddData.append(key, formData[key]);
     }
 
-    const normativeReferencesAdd = selectedItems.map((item) => item.id);
+    const normativeReferences = selectedItems.map((item) => item.id);
 
     if (add) {
-      const missingFields = requiredAddFields.filter(
+      const missingFields = requiredFields.filter(
         (field) => !formData[field] || formData[field] === ""
       );
 
@@ -901,7 +968,7 @@ const GostTable = ({ id, view, edit, add }) => {
           acceptanceLevel: Number(formData.acceptanceLevel),
           text: formData.text,
           actionStatus: Number(formData.actionStatus),
-          normativeReferences: normativeReferencesAdd,
+          normativeReferences: normativeReferences,
           acceptanceYear: Number(formData.acceptanceYear),
           developerName: formData.developerName,
           introdutionYear: Number(formData.introdutionYear),
@@ -939,6 +1006,50 @@ const GostTable = ({ id, view, edit, add }) => {
       });
     }
     if (edit) {
+      const missingFields = requiredFields.filter(
+        (field) => formData[field] === ""
+      );
+
+      if (missingFields.length > 0) {
+        toast.error("Заполните все обязательные поля (*)");
+        return;
+      }
+
+      if (formData.acceptanceYear) {
+        if (isNaN(formData.acceptanceYear)) {
+          toast.error(
+            `Поля "Год принятия" и "Год введения" должны содержать только числа`
+          );
+          return;
+        }
+      }
+      if (formData.introdutionYear) {
+        if (isNaN(formData.introdutionYear)) {
+          toast.error(
+            `Поля "Год принятия" и "Год введения" должны содержать только числа`
+          );
+          return;
+        }
+      }
+
+      const keywordsToCompare = keywords
+        .map((keyword) => keyword.name)
+        .join(", ")
+        .trim();
+      const keywordsData =
+        keywordsToCompare !== formData.keywords?.trim()
+          ? formData.keywords?.split(",").map((keyword) => keyword.trim())
+          : undefined;
+
+      const keyphrasesToCompare = keyphrases
+        .map((keyphrase) => keyphrase.name)
+        .join(", ")
+        .trim();
+      const keyphrasesData =
+        keyphrasesToCompare !== formData.keyphrases?.trim()
+          ? formData.keyphrases?.split(",").map((keyphrase) => keyphrase.trim())
+          : undefined;
+
       axios({
         method: "post",
         url: `/api/Gost/EditGost`,
@@ -956,9 +1067,12 @@ const GostTable = ({ id, view, edit, add }) => {
           actionStatus: formData.actionStatus,
           changes: formData.changes,
           amendments: formData.amendments,
-          keywords: formData.keywords?.split(","),
-          keyphrases: formData.keyphrases?.split(","),
-          gostIdReplaced: formData.gostReplaced,
+          normativeReferences: normativeReferences,
+          keywords: keywordsData,
+          keyphrases: keyphrasesData,
+          gostIdReplaced: replacedContainerVisibility
+            ? formData.gostIdReplaced
+            : 0,
         },
         headers: {
           "Content-Type": "application/json",
