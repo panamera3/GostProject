@@ -1,5 +1,5 @@
 import { Routes, Route, Navigate, BrowserRouter } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import "./App.css";
 import Login from "./pages/Login/Login";
 import Registration from "./pages/Registration/Registration";
@@ -26,41 +26,59 @@ import axios from "axios";
 function App() {
   useEffect(() => {
     if (localStorage.getItem("id") && localStorage.getItem("workCompanyID")) {
+      const controller = new AbortController();
+      const signal = controller.signal;
+      let reloadTimeout;
+
       const reloadAfterError = () => {
-        setTimeout(() => {
+        reloadTimeout = setTimeout(() => {
           window.location.reload();
         }, 5000);
-      }
+      };
+
       const fetchData = async () => {
-        axios({
-          method: "post",
-          url: '/api/Auth/CheckUserAndCompany',
-          data: {
-            userId: localStorage.getItem("id"),
-            companyId: localStorage.getItem("workCompanyID")
-          },
-        })
-          .catch((error) => {
+        try {
+          await axios.post(
+            "/api/Auth/CheckUserAndCompany",
+            {
+              userId: localStorage.getItem("id"),
+              companyId: localStorage.getItem("workCompanyID"),
+            },
+            { signal }
+          );
+        } catch (error) {
+          if (error.response) {
             if (error.response.status === 404) {
               localStorage.clear();
-              toast.error("Пользователь или компания не найдены. Будет произведён выход из аккаунта.");
+              toast.error(
+                "Пользователь или компания не найдены. Будет произведён выход из аккаунта."
+              );
               reloadAfterError();
-            }
-            if (error.response.status === 400) {
+            } else if (error.response.status === 400) {
               localStorage.clear();
-              toast.error("Что-то пошло не так. Будет произведён выход из аккаунта.");
+              toast.error(
+                "Что-то пошло не так. Будет произведён выход из аккаунта."
+              );
               reloadAfterError();
+            } else if (error.response.status.toString().startsWith("5")) {
+              toast.error(
+                "Произошла ошибка на сервере. Пожалуйста, попробуйте позже."
+              );
+            } else if (error.response.status.toString().startsWith("4")) {
+              toast.error(
+                "Произошла ошибка на клиенте. Пожалуйста, попробуйте позже."
+              );
             }
-            if (error.response.status.toString().startsWith("5")) {
-              toast.error("Произошла ошибка на сервере. Пожалуйста, попробуйте позже.");
-            }
-            if (error.response.status.toString().startsWith("4")) {
-              toast.error("Произошла ошибка на клиенте. Пожалуйста, попробуйте позже.");
-            }
-          });
+          }
+        }
       };
 
       fetchData();
+
+      return () => {
+        controller.abort();
+        clearTimeout(reloadTimeout);
+      };
     }
   }, []);
 

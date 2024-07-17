@@ -172,7 +172,7 @@ namespace GostProjectAPI.Services
 			};
 			var s3Client = new AmazonS3Client("OEROXDNUP3Q8L16FYNMV", "SJwow3RoWBjQ5CAKqF7tfe5FLOs1ucKTs9jdJNsI", config);
 
-			string bucketName = "66f0e91a-object-storage";
+			string bucketName = "66f0e91a-df7cfc88-fa43-4fff-8dd2-a3c430888b1a";
 			string fileExtension = Path.GetExtension(gostFile.FileName);
 			string fileName = Path.GetFileNameWithoutExtension(gostFile.FileName);
 			string uniqueIdentifier = Guid.NewGuid().ToString().Substring(0, 8);
