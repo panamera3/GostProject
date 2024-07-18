@@ -172,11 +172,11 @@ namespace GostProjectAPI.Services
 			};
 			var s3Client = new AmazonS3Client("OEROXDNUP3Q8L16FYNMV", "SJwow3RoWBjQ5CAKqF7tfe5FLOs1ucKTs9jdJNsI", config);
 
-			string bucketName = "66f0e91a-df7cfc88-fa43-4fff-8dd2-a3c430888b1a";
+			string bucketName = "66f0e91a-gost_storage";
 			string fileExtension = Path.GetExtension(gostFile.FileName);
 			string fileName = Path.GetFileNameWithoutExtension(gostFile.FileName);
 			string uniqueIdentifier = Guid.NewGuid().ToString().Substring(0, 8);
-			string keyName = $"UrFU/{fileName}_{uniqueIdentifier}{fileExtension}";
+			string keyName = $"{fileName}_{uniqueIdentifier}{fileExtension}";
 
 			var existingFile = await _dbContext.GostFiles
 				.Where(f => f.Path.Contains(keyName))
@@ -186,7 +186,7 @@ namespace GostProjectAPI.Services
 			{
 				// If the file exists, append a different unique identifier to the file name
 				uniqueIdentifier = Guid.NewGuid().ToString().Substring(0, 8);
-				keyName = $"UrFU/{fileName}_{uniqueIdentifier}{fileExtension}";
+				keyName = $"{fileName}_{uniqueIdentifier}{fileExtension}";
 			}
 
 			using (var newMemoryStream = new MemoryStream())
@@ -250,7 +250,7 @@ namespace GostProjectAPI.Services
 			};
 			var s3Client = new AmazonS3Client("OEROXDNUP3Q8L16FYNMV", "SJwow3RoWBjQ5CAKqF7tfe5FLOs1ucKTs9jdJNsI", config);
 
-			string bucketName = "66f0e91a-object-storage";
+			string bucketName = "66f0e91a-gost_storage";
 
 			var existingFile = await _dbContext.GostFiles
 				.Where(f => f.GostId == gostID)
@@ -386,48 +386,37 @@ namespace GostProjectAPI.Services
 			await _dbContext.Gosts.AddAsync(gost);
 			await _dbContext.SaveChangesAsync();
 
-			List<Keyword> keywords = new();
-			List<Keyphrase> keyphrases = new();
+			List<NormativeReference> normativeReferences = new();
+			foreach (var normativeReferenceValue in gostAddDto.NormativeReferences)
+			{
+				var normativeReference = new NormativeReference { ReferenceGostId = normativeReferenceValue, RootGostId = gost.ID };
+				normativeReferences.Add(normativeReference);
+			}
+			await _dbContext.NormativeReferences.AddRangeAsync(normativeReferences);
+			await _dbContext.SaveChangesAsync();
 
-			// Преобразование Keywords в сущности Keyword
+			List<Keyword> keywords = new();
 			foreach (var keywordValue in gostAddDto.Keywords)
 			{
 				var keyword = new Keyword { Name = keywordValue, GostId = gost.ID };
 				keywords.Add(keyword);
 			}
+			keywords.ForEach(async keyword =>
+			{
+				await _dbContext.Keywords.AddAsync(keyword);
+			});
+			await _dbContext.SaveChangesAsync();
 
-			// Преобразование Keyphrases в сущности Keyphrase
+			List<Keyphrase> keyphrases = new();
 			foreach (var keyphraseValue in gostAddDto.Keyphrases)
 			{
 				var keyphrase = new Keyphrase { Name = keyphraseValue, GostId = gost.ID };
 				keyphrases.Add(keyphrase);
 			}
-
-			keywords.ForEach(async keyword =>
-			{
-				await _dbContext.Keywords.AddAsync(keyword);
-			});
-
 			keyphrases.ForEach(async keyphrase =>
 			{
 				await _dbContext.Keyphrases.AddAsync(keyphrase);
 			});
-
-			List<NormativeReference> normativeReferences = new();
-			foreach (var normativeReferenceValue in gostAddDto.NormativeReferences)
-			{
-				if (_dbContext.Gosts.Any(gost => gost.ID == normativeReferenceValue))
-				{
-					var normativeReference = new NormativeReference { ReferenceGostId = normativeReferenceValue, RootGostId = gost.ID };
-					normativeReferences.Add(normativeReference);
-				}
-			}
-			normativeReferences.ForEach(async normativeReference =>
-			{
-				await _dbContext.NormativeReferences.AddAsync(normativeReference);
-			});
-
-
 			await _dbContext.SaveChangesAsync();
 
 			return gost;
@@ -461,10 +450,10 @@ namespace GostProjectAPI.Services
 			_dbContext.Gosts.Update(oldGost);
 			await _dbContext.SaveChangesAsync();
 
-			if(oldGost.GostIdReplaced.HasValue)
+			if (oldGost.GostIdReplaced.HasValue)
 			{
 				var replacedGost = await GetGostAsync(oldGost.GostIdReplaced.Value);
-				if(replacedGost != null)
+				if (replacedGost != null)
 				{
 					replacedGost.ActionStatus = Data.Enums.Gost.ActionStatus.Replaced;
 					_dbContext.Gosts.Update(replacedGost);

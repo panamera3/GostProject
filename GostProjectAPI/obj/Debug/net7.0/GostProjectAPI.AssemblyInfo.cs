@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("GostProjectAPI")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+aa31336eaf0dc992730c414bc337c4480b5f43ca")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+e4acd3a3b345daaed741fdc0658efa6539e81f45")]
 [assembly: System.Reflection.AssemblyProductAttribute("GostProjectAPI")]
 [assembly: System.Reflection.AssemblyTitleAttribute("GostProjectAPI")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

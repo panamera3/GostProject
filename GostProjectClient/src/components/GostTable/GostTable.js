@@ -33,6 +33,8 @@ const GostTable = ({ id, view, edit, add }) => {
 
   const [gostFile, setGostFile] = useState("");
 
+  const [selectedItems, setSelectedItems] = useState([]);
+
   const handleFileChange = (event) => {
     const file = event.target.files[0];
     setSelectedFile(file);
@@ -123,7 +125,7 @@ const GostTable = ({ id, view, edit, add }) => {
             })
             .catch((error) => {
               console.log(error);
-              toast.success("Файл к ГОСТу не был заменён");
+              toast.error("Файл к ГОСТу не был заменён");
             });
         } else {
           toast.success("ГОСТ был успешно отредактирован");
@@ -201,6 +203,7 @@ const GostTable = ({ id, view, edit, add }) => {
       })
         .then((references) => {
           setNormativeReferences(references.data);
+          setSelectedItems(references.data);
         })
         .catch((error) => {
           console.log(error);
@@ -252,10 +255,18 @@ const GostTable = ({ id, view, edit, add }) => {
   }, []);
 
   useEffect(() => {
+    var referenceGostIds;
     if (normativeReferences) {
-      const referenceGostIds = normativeReferences.map(
+      referenceGostIds = normativeReferences.map(
         (reference) => reference.referenceGostId
       );
+    }
+    if (selectedItems) {
+      referenceGostIds = selectedItems.map(
+        (reference) => reference.referenceGostId
+      );
+    }
+    if (normativeReferences || selectedItems) {
       axios({
         method: "post",
         url: "/api/Gost/GetGostsRange",
@@ -274,9 +285,7 @@ const GostTable = ({ id, view, edit, add }) => {
           console.error(error);
         });
     }
-  }, [normativeReferences]);
-
-  const [selectedItems, setSelectedItems] = useState([]);
+  }, [normativeReferences, selectedItems]);
 
   const handleSelectChange = (event) => {
     const selectedOption = {
@@ -382,6 +391,7 @@ const GostTable = ({ id, view, edit, add }) => {
     referenceGostNames
   ) => {
     if (view) {
+      console.log(normativeReferences);
       if (normativeReferences && normativeReferences.length > 0) {
         return (
           <ul>
@@ -573,15 +583,17 @@ const GostTable = ({ id, view, edit, add }) => {
           {selectedItems && selectedItems.length > 0 ? (
             <ul>
               {selectedItems.map((item) => (
-                <li key={item.id}>
-                  {item.designation}
-                  <button
-                    className="delete_normative_reference_button btn_blue"
-                    onClick={() => handleRemoveItem(item.id)}
-                  >
-                    Удалить
-                  </button>
-                </li>
+                <>
+                  <li key={item.referenceGostId}>
+                    {referenceGostNames[item.referenceGostId]}
+                    <button
+                      className="delete_normative_reference_button btn_blue"
+                      onClick={() => handleRemoveItem(item.referenceGostId)}
+                    >
+                      Удалить
+                    </button>
+                  </li>
+                </>
               ))}
             </ul>
           ) : (
@@ -602,6 +614,16 @@ const GostTable = ({ id, view, edit, add }) => {
               ))}
           </select>
         </>
+      );
+    }
+
+    if (key === "content") {
+      return (
+        <textarea
+          className="gostInputAdd"
+          value={value}
+          onChange={(e) => handleInputChange(key, e.target.value)}
+        />
       );
     }
 
