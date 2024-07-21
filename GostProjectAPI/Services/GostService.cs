@@ -389,7 +389,20 @@ namespace GostProjectAPI.Services
 			List<NormativeReference> normativeReferences = new();
 			foreach (var normativeReferenceValue in gostAddDto.NormativeReferences)
 			{
-				var normativeReference = new NormativeReference { ReferenceGostId = normativeReferenceValue, RootGostId = gost.ID };
+				NormativeReference normativeReference = new();
+
+				if (uint.TryParse(normativeReferenceValue, out uint referenceId))
+				{
+					normativeReference.ReferenceGostId = referenceId;
+					normativeReference.ReferenceGostDesignation = null; 
+				}
+				else
+				{
+					normativeReference.ReferenceGostDesignation = normativeReferenceValue;
+					normativeReference.ReferenceGostId = null;
+				}
+
+				normativeReference.RootGostId = gost.ID;
 				normativeReferences.Add(normativeReference);
 			}
 			await _dbContext.NormativeReferences.AddRangeAsync(normativeReferences);
@@ -491,14 +504,39 @@ namespace GostProjectAPI.Services
 
 			if (gostEditDto.NormativeReferences != null)
 			{
-				var existingReferences = await _dbContext.NormativeReferences.Where(r => r.RootGostId == gostEditDto.ID).ToListAsync();
-				_dbContext.NormativeReferences.RemoveRange(existingReferences.Where(r => !gostEditDto.NormativeReferences.Contains(r.ReferenceGostId)));
+				var existingReferences = await _dbContext.NormativeReferences
+					.Where(r => r.RootGostId == gostEditDto.ID)
+					.ToListAsync();
 
-				foreach (var referenceGostId in gostEditDto.NormativeReferences)
+				_dbContext.NormativeReferences.RemoveRange(existingReferences
+					.Where(r => !gostEditDto.NormativeReferences.Contains(r.ReferenceGostId?.ToString())
+								 && !gostEditDto.NormativeReferences.Contains(r.ReferenceGostDesignation)));
+
+				foreach (var reference in gostEditDto.NormativeReferences)
 				{
-					if (!await _dbContext.NormativeReferences.AnyAsync(r => r.ReferenceGostId == referenceGostId && r.RootGostId == gostEditDto.ID))
+					uint referenceGostId;
+					var isId = uint.TryParse(reference, out referenceGostId);
+
+					if (!await _dbContext.NormativeReferences.AnyAsync(r =>
+						(r.ReferenceGostId == referenceGostId && r.RootGostId == gostEditDto.ID) ||
+						(r.ReferenceGostDesignation == reference && r.RootGostId == gostEditDto.ID)))
 					{
-						await _dbContext.NormativeReferences.AddAsync(new NormativeReference { ReferenceGostId = referenceGostId, RootGostId = gostEditDto.ID });
+						if (isId)
+						{
+							await _dbContext.NormativeReferences.AddAsync(new NormativeReference
+							{
+								ReferenceGostId = referenceGostId,
+								RootGostId = gostEditDto.ID
+							});
+						}
+						else
+						{
+							await _dbContext.NormativeReferences.AddAsync(new NormativeReference
+							{
+								ReferenceGostDesignation = reference,
+								RootGostId = gostEditDto.ID
+							});
+						}
 					}
 				}
 			}

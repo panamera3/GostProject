@@ -33,7 +33,6 @@ const MyProfile = () => {
   }, []);
 
   useEffect(() => {
-    console.log("user", user);
     if (Object.keys(user).length > 0) {
       axios({
         method: "get",

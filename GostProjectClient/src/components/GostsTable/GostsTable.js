@@ -158,30 +158,17 @@ const GostsTable = ({ favourites, archiveGosts, searchGosts }) => {
 
   const likeHandler = (state, gostId) => {
     const userId = localStorage.getItem("id");
-    if (state) {
-      axios({
-        method: "post",
-        responseType: "json",
-        url: `/api/Gost/AddFavouriteGost/?userId=${userId}&gostId=${gostId}`,
+    axios({
+      method: "put",
+      responseType: "json",
+      url: `/api/Gost/ChangeFavouriteGost/?userId=${userId}&gostId=${gostId}&isFavourite=${state}`,
+    })
+      .then((gost) => {
+        refreshFavouritesGosts();
       })
-        .then((gost) => {
-          refreshFavouritesGosts();
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-    } else {
-      axios({
-        method: "delete",
-        url: `/api/Gost/DeleteFavouriteGost/?userId=${userId}&gostId=${gostId}`,
-      })
-        .then((gost) => {
-          refreshFavouritesGosts();
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-    }
+      .catch((error) => {
+        console.log(error);
+      });
   };
 
   const renderGostsTable = () => {

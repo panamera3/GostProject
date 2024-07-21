@@ -71,43 +71,75 @@ const Search = () => {
   };
 
   const handleSelectKeyword = (event) => {
-    const selectedKeywordId = parseInt(event.target.value);
-    if (selectedKeywordId) {
+    const selectedValue = event.target.value;
+    if (selectedValue) {
+      const [selectedKeywordId, selectedGostId] = selectedValue
+        .split(",")
+        .map(Number);
       const selectedKeyword = uniqueKeywords.find(
-        (kw) => kw.id === selectedKeywordId
+        (kw) => kw.id === selectedKeywordId && kw.gostId === selectedGostId
       );
-      setSelectedKeywords([...selectedKeywords, selectedKeyword]);
-      event.target.value = "";
+
+      if (selectedKeyword) {
+        setSelectedKeywords([...selectedKeywords, selectedKeyword]);
+        event.target.value = "";
+      } else {
+        const newKeyword = {
+          id: selectedKeywordId,
+          gostId: selectedGostId,
+          name: event.target.options[event.target.selectedIndex].text,
+        };
+        setSelectedKeywords([...selectedKeywords, newKeyword]);
+        event.target.value = "";
+      }
     }
   };
-
-  const handleRemoveKeyword = (id) => {
+  const handleRemoveKeyword = (event, name, gostId) => {
+    event.preventDefault();
     setSelectedKeywords(
-      selectedKeywords.filter((keyword) => keyword.id !== id)
+      selectedKeywords.filter(
+        (keyword) => keyword.Name !== name || keyword.GostId !== gostId
+      )
     );
   };
 
   const handleSelectKeyphrase = (event) => {
-    const selectedKeyphraseId = parseInt(event.target.value);
-    if (selectedKeyphraseId) {
+    const selectedValue = event.target.value;
+    if (selectedValue) {
+      const [selectedKeyphraseId, selectedGostId] = selectedValue
+        .split(",")
+        .map(Number);
       const selectedKeyphrase = uniqueKeyphrases.find(
-        (kp) => kp.id === selectedKeyphraseId
+        (kw) => kw.id === selectedKeyphraseId && kw.gostId === selectedGostId
       );
-      setSelectedKeyphrases([...selectedKeyphrases, selectedKeyphrase]);
-      event.target.value = "";
+
+      if (selectedKeyphrase) {
+        setSelectedKeyphrases([...selectedKeyphrases, selectedKeyphrase]);
+        event.target.value = "";
+      } else {
+        const newKeyphrase = {
+          id: selectedKeyphraseId,
+          gostId: selectedGostId,
+          name: event.target.options[event.target.selectedIndex].text,
+        };
+        setSelectedKeyphrases([...selectedKeyphrases, newKeyphrase]);
+        event.target.value = "";
+      }
     }
   };
-
-  const handleRemoveKeyphrase = (id) => {
+  const handleRemoveKeyphrase = (event, name, gostId) => {
+    event.preventDefault();
     setSelectedKeyphrases(
-      selectedKeyphrases.filter((keyphrase) => keyphrase.id !== id)
+      selectedKeyphrases.filter(
+        (keyphrase) => keyphrase.Name !== name || keyphrase.GostId !== gostId
+      )
     );
   };
 
   const fetchRequestedInsteadOptions = async () => {
     try {
       const response = await axios.get(
-        `/api/Gost/GetDataForNormativeReferences/${localStorage.getItem(
+        `/api/Gost/GetDataForNormativeReferences/?companyID=${localStorage.getItem(
           "workCompanyID"
         )}`
       );
@@ -332,14 +364,20 @@ const Search = () => {
                     {selectedKeywords && selectedKeywords.length > 0 ? (
                       <ul>
                         {selectedKeywords.map((keyword) => (
-                          <li key={keyword.id}>
+                          <li key={keyword.name}>
                             {keyword.name}
-                            <button
+                            <BtnBlue
                               className="delete_keys_button"
-                              onClick={() => handleRemoveKeyword(keyword.id)}
+                              onClick={(event) =>
+                                handleRemoveKeyword(
+                                  event,
+                                  keyword.name,
+                                  keyword.gostId
+                                )
+                              }
                             >
                               Удалить
-                            </button>
+                            </BtnBlue>
                           </li>
                         ))}
                       </ul>
@@ -353,11 +391,16 @@ const Search = () => {
                         .filter(
                           (keyword) =>
                             !selectedKeywords.some(
-                              (selected) => selected.id === keyword.id
+                              (selected) =>
+                                selected.name === keyword.name &&
+                                selected.gostId === keyword.gostId
                             )
                         )
                         .map((keyword) => (
-                          <option key={keyword.id} value={keyword.id}>
+                          <option
+                            key={keyword.name}
+                            value={`${keyword.name},${keyword.gostId}`}
+                          >
                             {keyword.name}
                           </option>
                         ))}
@@ -371,16 +414,20 @@ const Search = () => {
                     {selectedKeyphrases && selectedKeyphrases.length > 0 ? (
                       <ul>
                         {selectedKeyphrases.map((keyphrase) => (
-                          <li key={keyphrase.id}>
+                          <li key={keyphrase.name}>
                             {keyphrase.name}
-                            <button
+                            <BtnBlue
                               className="delete_keys_button"
-                              onClick={() =>
-                                handleRemoveKeyphrase(keyphrase.id)
+                              onClick={(event) =>
+                                handleRemoveKeyphrase(
+                                  event,
+                                  keyphrase.name,
+                                  keyphrase.gostId
+                                )
                               }
                             >
                               Удалить
-                            </button>
+                            </BtnBlue>
                           </li>
                         ))}
                       </ul>
@@ -389,16 +436,21 @@ const Search = () => {
                     )}
 
                     <select onChange={handleSelectKeyphrase}>
-                      <option value="">Выберите ключевую фразу</option>
+                      <option value="">Выберите ключевое слово</option>
                       {uniqueKeyphrases
                         .filter(
                           (keyphrase) =>
                             !selectedKeyphrases.some(
-                              (selected) => selected.id === keyphrase.id
+                              (selected) =>
+                                selected.name === keyphrase.name &&
+                                selected.gostId === keyphrase.gostId
                             )
                         )
                         .map((keyphrase) => (
-                          <option key={keyphrase.id} value={keyphrase.id}>
+                          <option
+                            key={keyphrase.name}
+                            value={`${keyphrase.name},${keyphrase.gostId}`}
+                          >
                             {keyphrase.name}
                           </option>
                         ))}

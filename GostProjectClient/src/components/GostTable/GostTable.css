@@ -70,12 +70,12 @@ select.gostInputAdd {
   font-size: 1.5em;
 }
 
-.hintForKeys {
+.hint {
   cursor: pointer;
   vertical-align: top;
 }
 
 .requiredField,
-.hintForKeys {
+.hint {
   display: inline;
 }

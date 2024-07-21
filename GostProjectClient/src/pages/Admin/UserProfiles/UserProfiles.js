@@ -10,7 +10,11 @@ import { useNavigate } from "react-router-dom";
 import { translationRolesDict } from "../../../components/constants/translationRolesDict";
 import { toast } from "react-toastify";
 import { computeHeadingLevel } from "@testing-library/react";
-import { BodyContainer, BtnBlue, BtnDarkGray } from "../../../components/styles/styled_components";
+import {
+  BodyContainer,
+  BtnBlue,
+  BtnDarkGray,
+} from "../../../components/styles/styled_components";
 
 const UserProfiles = () => {
   const navigate = useNavigate();
@@ -139,17 +143,19 @@ const UserProfiles = () => {
             />
           </td>
           <td>
-            <img
-              src={deleteImg}
-              alt="удалить"
-              onClick={() =>
-                openModalDelete(user.id, [
-                  user.lastName,
-                  user.firstName,
-                  user.patronymic,
-                ])
-              }
-            />
+            {user.id != localStorage.getItem("id") && (
+              <img
+                src={deleteImg}
+                alt="удалить"
+                onClick={() =>
+                  openModalDelete(user.id, [
+                    user.lastName,
+                    user.firstName,
+                    user.patronymic,
+                  ])
+                }
+              />
+            )}
           </td>
         </tr>
       ));
@@ -195,16 +201,11 @@ const UserProfiles = () => {
         </div>
         <form onSubmit={filterUsers} className="filter_users_form">
           <div className="filter_users">
-            <select
-              placeholder="Отдел"
-              name="department"
-            >
+            <select placeholder="Отдел" name="department">
               {renderOptions()}
             </select>
             <input placeholder="ФИО пользователя" name="fullname" />
-            <BtnBlue type="sumbit">
-              Найти
-            </BtnBlue>
+            <BtnBlue type="sumbit">Найти</BtnBlue>
           </div>
         </form>
         <table className="user_profiles_table">
@@ -239,12 +240,8 @@ const UserProfiles = () => {
               ?
             </p>
             <div className="modalDelete_buttons_container">
-              <BtnBlue onClick={() => deleteUser()}>
-                Удалить
-              </BtnBlue>
-              <BtnDarkGray
-                onClick={() => closeModalDelete()}
-              >
+              <BtnBlue onClick={() => deleteUser()}>Удалить</BtnBlue>
+              <BtnDarkGray onClick={() => closeModalDelete()}>
                 Отменить
               </BtnDarkGray>
             </div>

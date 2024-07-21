@@ -14,6 +14,7 @@ import {
   BtnGray,
 } from "../styles/styled_components";
 // import hintImg from "../../images/hint.svg";
+// import switchImg from "../../images/switch.svg";
 
 const GostTable = ({ id, view, edit, add }) => {
   const navigate = useNavigate();
@@ -40,6 +41,7 @@ const GostTable = ({ id, view, edit, add }) => {
   const [gostFile, setGostFile] = useState("");
 
   const [selectedItems, setSelectedItems] = useState([]);
+  const [normativeReferencesMode, setNormativeReferencesMode] = useState(false);
 
   const handleFileChange = (event) => {
     const file = event.target.files[0];
@@ -206,17 +208,30 @@ const GostTable = ({ id, view, edit, add }) => {
         url: `/api/Gost/GetNormativeReferences/${id}`,
         headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
       })
-        .then((references) => {
-          setNormativeReferences(references.data);
-          setSelectedItems(
-            references.data.map((reference) => ({
-              id: String(reference.referenceGostId),
-            }))
-          );
-          if (references.data) {
-            const referenceGostIds = references.data.map(
-              (reference) => reference.referenceGostId
-            );
+        .then((response) => {
+          const references = response.data;
+          setNormativeReferences(references);
+
+          const selectedItems = references.reduce((items, reference) => {
+            if (reference.referenceGostId !== null) {
+              items.push({
+                id: String(reference.referenceGostId),
+                designation: reference.referenceGost?.designation || "",
+              });
+            } else {
+              items.push({
+                id: null,
+                designation: reference.referenceGostDesignation,
+              });
+            }
+            return items;
+          }, []);
+          setSelectedItems(selectedItems);
+
+          if (references) {
+            const referenceGostIds = references
+              .filter((reference) => reference.referenceGostId !== null)
+              .map((reference) => reference.referenceGostId);
 
             axios({
               method: "post",
@@ -287,19 +302,54 @@ const GostTable = ({ id, view, edit, add }) => {
         console.log(error);
       });
   };
+  const handleNormativeReferenceChange = (event) => {
+    let selectedOption;
 
-  const handleSelectChange = (event) => {
-    const selectedOption = {
-      id: event.target.value,
-      designation: event.target.options[event.target.selectedIndex].text,
-    };
-    if (!selectedItems.some((item) => item.id === selectedOption.id)) {
+    // Обрабатываем выбор из выпадающего списка
+    if (event.target.tagName === "SELECT") {
+      const value = event.target.value;
+
+      if (value) {
+        selectedOption = {
+          id: value,
+          designation:
+            event.target.options[event.target.selectedIndex]?.text || "",
+        };
+      }
+    }
+    // Обрабатываем ввод в текстовом поле
+    else if (event.target.tagName === "INPUT" && event.key === "Enter") {
+      event.preventDefault(); // Предотвращаем отправку формы
+
+      const value = event.target.value.trim(); // Убираем пробелы по краям
+
+      if (value) {
+        // Проверяем, что введено не пустое значение
+        selectedOption = {
+          id: null,
+          designation: value,
+        };
+      }
+    }
+
+    // Добавляем выбранный элемент, если он не существует в selectedItems
+    if (
+      selectedOption &&
+      !selectedItems.some(
+        (item) => item.designation === selectedOption.designation
+      )
+    ) {
       setSelectedItems((prevItems) => [...prevItems, selectedOption]);
+      event.target.value = ""; // Очищаем поле ввода после добавления
     }
   };
 
-  const handleRemoveItem = (id) => {
-    setSelectedItems(selectedItems.filter((item) => item.id !== id));
+  const handleRemoveItem = (identifier) => {
+    setSelectedItems((prevItems) =>
+      prevItems.filter(
+        (item) => item.id !== identifier && item.designation !== identifier
+      )
+    );
   };
 
   const replacedVisibilityChange = (event) => {
@@ -407,9 +457,15 @@ const GostTable = ({ id, view, edit, add }) => {
           <ul>
             {normativeReferences.map((reference) => (
               <li key={reference.id}>
-                <a href={`/gost/${reference.referenceGostId}`}>
-                  {referenceGostNames[reference.referenceGostId] || ""}
-                </a>
+                {reference.referenceGostId ? (
+                  <a href={`/gost/${reference.referenceGostId}`}>
+                    {referenceGostNames[reference.referenceGostId] || ""}
+                  </a>
+                ) : (
+                  <p style={{ padding: 0 }}>
+                    {reference.referenceGostDesignation || "Нет обозначения"}
+                  </p>
+                )}
               </li>
             ))}
           </ul>
@@ -504,6 +560,10 @@ const GostTable = ({ id, view, edit, add }) => {
     }));
   };
 
+  const switchNormativeReferencesMode = () => {
+    setNormativeReferencesMode(!normativeReferencesMode);
+  };
+
   const renderAddEditField = (key) => {
     const value = formData[key] !== undefined ? formData[key] : gost[key];
 
@@ -574,20 +634,27 @@ const GostTable = ({ id, view, edit, add }) => {
     }
 
     if (key === "normativeReferences") {
-      console.log(gostsNormativeReferences);
-      console.log(selectedItems);
       return (
         <>
           {selectedItems && selectedItems.length > 0 ? (
             <ul>
               {selectedItems.map((item) => (
                 <li key={item.id}>
-                  {
-                    gostsNormativeReferences.find((gost) => gost.id == item.id)
-                      ?.designation
-                  }
+                  {item.id ? (
+                    <a href={`/gost/${item.id}`}>
+                      {
+                        gostsNormativeReferences.find(
+                          (gost) => gost.id == item.id
+                        )?.designation
+                      }
+                    </a>
+                  ) : (
+                    <p style={{ display: "inline" }}>{item.designation}</p>
+                  )}
                   <BtnDeleteNormativeReference
-                    onClick={() => handleRemoveItem(item.id)}
+                    onClick={() =>
+                      handleRemoveItem(item.id ? item.id : item.designation)
+                    }
                   >
                     Удалить
                   </BtnDeleteNormativeReference>
@@ -598,19 +665,42 @@ const GostTable = ({ id, view, edit, add }) => {
             <p>Нет ссылок</p>
           )}
 
-          <select onChange={handleSelectChange}>
-            <option value="">Выберите нормативную ссылку</option>
-            {gostsNormativeReferences
-              .filter(
-                (item) =>
-                  !selectedItems.some((selected) => selected.id == item.id)
-              )
-              .map((item) => (
-                <option key={item.id} value={item.id}>
-                  {item.designation}
-                </option>
-              ))}
-          </select>
+          {!normativeReferencesMode && (
+            <select
+              onChange={handleNormativeReferenceChange}
+              style={{ marginRight: "1em" }}
+            >
+              <option value="">Выберите нормативную ссылку</option>
+              {gostsNormativeReferences
+                .filter(
+                  (item) =>
+                    !selectedItems.some(
+                      (selected) =>
+                        selected.id === item.id ||
+                        selected.designation === item.designation
+                    )
+                )
+                .map((item) => (
+                  <option key={item.id} value={item.id}>
+                    {item.designation}
+                  </option>
+                ))}
+            </select>
+          )}
+
+          {normativeReferencesMode && (
+            <input
+              style={{ width: "70%", margin: 0, marginRight: "1em" }}
+              onKeyDown={handleNormativeReferenceChange}
+              placeholder="Введите обозначение ГОСТа и нажмите Enter"
+            />
+          )}
+
+          <img
+            // src={switchImg}
+            alt="→"
+            onClick={switchNormativeReferencesMode}
+          />
         </>
       );
     }
@@ -671,8 +761,18 @@ const GostTable = ({ id, view, edit, add }) => {
                         <img
                           alt="?"
                           // src={hintImg}
-                          className="hintForKeys"
+                          className="hint"
                           title="Введите значения через запятую"
+                        />
+                      </>
+                    )}
+                    {key == "normativeReferences" && (
+                      <>
+                        <img
+                          alt="?"
+                          // src={hintImg}
+                          className="hint"
+                          title="Для добавления ссылки на ГОСТ, которого нет в базе, нажмите кнопку для переключения режима"
                         />
                       </>
                     )}
@@ -749,8 +849,18 @@ const GostTable = ({ id, view, edit, add }) => {
                         <img
                           alt="?"
                           // src={hintImg}
-                          className="hintForKeys"
+                          className="hint"
                           title="Введите значения через запятую"
+                        />
+                      </>
+                    )}
+                    {key == "normativeReferences" && (
+                      <>
+                        <img
+                          alt="?"
+                          // src={hintImg}
+                          className="hint"
+                          title="Для добавления ссылки на ГОСТ, которого нет в базе, нажмите кнопку для переключения режима"
                         />
                       </>
                     )}
@@ -795,7 +905,9 @@ const GostTable = ({ id, view, edit, add }) => {
       formAddData.append(key, formData[key]);
     }
 
-    const normativeReferences = selectedItems.map((item) => item.id);
+    const normativeReferences = selectedItems.map(
+      (item) => item.id || item.designation
+    );
 
     if (add) {
       const missingFields = requiredFields.filter(
@@ -922,7 +1034,6 @@ const GostTable = ({ id, view, edit, add }) => {
       })
         .then((gost) => {
           setGost(gost.data);
-          console.log(id);
           setEditedGostId(id);
         })
         .catch((error) => {
