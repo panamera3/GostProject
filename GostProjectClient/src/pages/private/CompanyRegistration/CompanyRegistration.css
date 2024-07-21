@@ -21,8 +21,11 @@
   display: none;
 }
 
-.step-container {
-  width: 40%;
+.step:not(.step-hidden) {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
 
 .company-registration-container .btn {

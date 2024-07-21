@@ -9,6 +9,11 @@ import Home from "../Home/Home";
 import { acceptanceLevelOptions } from "../../components/constants/AcceptanceLevelOptions";
 import { actionStatusOptions } from "../../components/constants/ActionStatusOptions";
 import GostsTable from "../../components/GostsTable/GostsTable";
+import {
+  BodyContainer,
+  BtnBlue,
+  BtnDarkGray,
+} from "../../components/styles/styled_components";
 
 const Search = () => {
   const navigate = useNavigate();
@@ -292,7 +297,7 @@ const Search = () => {
         <HeaderUser />
       )}
 
-      <div className="body_container">
+      <BodyContainer>
         {!textSearch && (
           <>
             <a href="/home">Назад</a>
@@ -401,15 +406,10 @@ const Search = () => {
                   </div>
                 </div>
               </div>
-              <button className="btn_blue" type="submit">
-                Применить
-              </button>
-              <button
-                onClick={() => changeToTextSearch()}
-                className="btn_darkGray"
-              >
+              <BtnBlue type="submit">Применить</BtnBlue>
+              <BtnDarkGray onClick={() => changeToTextSearch()}>
                 К поиску по тексту в документах
-              </button>
+              </BtnDarkGray>
             </form>
           </>
         )}
@@ -429,9 +429,7 @@ const Search = () => {
                   name="searchText"
                   placeholder="Введите текст"
                 />
-                <button className="btn_blue" type="submit">
-                  Применить
-                </button>
+                <BtnBlue type="submit">Применить</BtnBlue>
               </div>
             </form>
             {afterTextSearch && (
@@ -441,7 +439,7 @@ const Search = () => {
             )}
           </>
         )}
-      </div>
+      </BodyContainer>
     </>
   );
 };

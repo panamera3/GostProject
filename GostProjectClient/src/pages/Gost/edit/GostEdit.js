@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { useParams } from "react-router-dom";
 import HeaderAdmin from "../../../components/HeaderAdmin/HeaderAdmin";
 import GostTable from "../../../components/GostTable/GostTable";
+import { BodyContainer } from "../../../components/styles/styled_components";
 
 const GostEdit = () => {
   const params = useParams();
@@ -9,7 +10,7 @@ const GostEdit = () => {
   return (
     <>
       <HeaderAdmin />
-      <div className="body_container">
+      <BodyContainer>
         <div className="activities_container">
           <div>
             <a href="/home">Назад</a>
@@ -19,7 +20,7 @@ const GostEdit = () => {
           </div>
         </div>
         <GostTable edit id={params.id} />
-      </div>
+      </BodyContainer>
     </>
   );
 };

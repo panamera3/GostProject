@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { toast } from "react-toastify";
 import UserRole from "../../types/user/userRole";
+import { BtnBlue, Input } from "../../components/styles/styled_components";
 
 const Registration = () => {
   const navigate = useNavigate();
@@ -138,56 +139,52 @@ const Registration = () => {
                 <h2>Регистрация</h2>
               </div>
               <div>
-                <input
+                <Input
                   name="login"
                   id="login_input"
                   type="text"
                   ref={refs.usernameRegistrationInputRef}
                   placeholder="Логин"
-                  className={
-                    fieldValidity.username ? "example" : "invalid-field"
-                  }
+                  isInvalid={!fieldValidity.username}
                 />
-                <input
+                <Input
                   name="password"
                   id="password_input"
                   type="password"
                   ref={refs.passwordRegistrationInputRef}
                   placeholder="Пароль"
-                  className={fieldValidity.password ? "" : "invalid-field"}
+                  isInvalid={!fieldValidity.password}
                 />
-                <input
+                <Input
                   name="password_confirm"
                   id="password_confirm_input"
                   type="password"
                   ref={refs.passwordConfirmRegistrationInputRef}
                   placeholder="Подтверждение пароля"
-                  className={fieldValidity.passwordConfirm ? "" : "invalid-field"}
+                  isInvalid={!fieldValidity.passwordConfirm}
                 />
-                <input
+                <Input
                   name="fullname"
                   id="fullname_input"
                   ref={refs.fullnameRegistrationInputRef}
                   placeholder="Фамилия Имя Отчество"
-                  className={fieldValidity.fullname ? "" : "invalid-field"}
+                  isInvalid={!fieldValidity.fullname}
                 />
-                <input
+                <Input
                   name="companyCode"
                   id="companyCode_input"
                   ref={refs.companyCodeRegistrationInputRef}
                   placeholder="Код подключения к организации"
-                  className={fieldValidity.companyCode ? "" : "invalid-field"}
+                  isInvalid={!fieldValidity.companyCode}
                 />
-                <input
+                <Input
                   name="department"
                   id="department_input"
                   ref={refs.departmentRegistrationInputRef}
                   placeholder="Департамент"
                 />
               </div>
-              <button type="submit" className="btn_blue">
-                Зарегистрироваться
-              </button>
+              <BtnBlue type="submit">Зарегистрироваться</BtnBlue>
             </div>
           </form>
         </div>

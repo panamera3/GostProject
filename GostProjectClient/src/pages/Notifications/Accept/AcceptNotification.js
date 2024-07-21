@@ -4,6 +4,11 @@ import "./AcceptNotification.css";
 import axios from "axios";
 import { useParams, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import {
+  BodyContainer,
+  BtnBlue,
+  BtnDarkGray,
+} from "../../../components/styles/styled_components";
 
 const AcceptNotification = () => {
   const params = useParams();
@@ -67,7 +72,7 @@ const AcceptNotification = () => {
   return (
     <>
       <HeaderAdmin />
-      <div className="body_container">
+      <BodyContainer>
         <div className="activities_container">
           <a href="/notifications">Назад</a>
           <p>Редактирование заявки</p>
@@ -115,14 +120,10 @@ const AcceptNotification = () => {
           )}
         </div>
         <div className="buttons">
-          <button className="btn_blue" onClick={acceptUser}>
-            Принять заявку
-          </button>
-          <button className="btn_darkGray" onClick={rejectUser}>
-            Отклонить
-          </button>
+          <BtnBlue onClick={acceptUser}>Принять заявку</BtnBlue>
+          <BtnDarkGray onClick={rejectUser}>Отклонить</BtnDarkGray>
         </div>
-      </div>
+      </BodyContainer>
     </>
   );
 };

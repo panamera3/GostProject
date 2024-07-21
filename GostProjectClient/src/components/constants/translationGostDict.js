@@ -11,7 +11,7 @@ export const translationGostDict = {
   developerCompany: "Компания разработчик",
   content: "Содержание",
   gostReplaced: "Принят взамен",
-  gostIdReplaced: "Номер принятого взамен",
+  gostIdReplaced: "Принят взамен",
   keywords: "Ключевые слова",
   keyphrases: "Ключевые фразы",
   acceptanceLevel: "Уровень принятия",
@@ -21,5 +21,7 @@ export const translationGostDict = {
   changes: "Изменения",
   amendments: "Поправки",
   requestsNumber: "Количество обращений",
-  isArchived: "Архивирован"
+  isArchived: "Архивирован",
+  gostReplacedWith: "Принят взамен",
+  gostFile: "Файл",
 };

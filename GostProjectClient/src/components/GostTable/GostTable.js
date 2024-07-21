@@ -1,12 +1,18 @@
 import "./GostTable.css";
 import { useNavigate } from "react-router-dom";
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
 import Modal from "../Modal/Modal";
 import { translationGostDict } from "../constants/translationGostDict";
 import { actionStatusOptions } from "../constants/ActionStatusOptions";
 import { acceptanceLevelOptions } from "../constants/AcceptanceLevelOptions";
 import { toast } from "react-toastify";
+import {
+  BtnBlue,
+  BtnDarkGray,
+  BtnDeleteNormativeReference,
+  BtnGray,
+} from "../styles/styled_components";
 // import hintImg from "../../images/hint.svg";
 
 const GostTable = ({ id, view, edit, add }) => {
@@ -72,7 +78,6 @@ const GostTable = ({ id, view, edit, add }) => {
             console.log(error);
           });
       }
-      setNormativeReferences(gost.normativeReferences || []);
     }
     if (gost) {
       if (add || edit) {
@@ -203,7 +208,36 @@ const GostTable = ({ id, view, edit, add }) => {
       })
         .then((references) => {
           setNormativeReferences(references.data);
-          setSelectedItems(references.data);
+          setSelectedItems(
+            references.data.map((reference) => ({
+              id: String(reference.referenceGostId),
+            }))
+          );
+          if (references.data) {
+            const referenceGostIds = references.data.map(
+              (reference) => reference.referenceGostId
+            );
+
+            axios({
+              method: "post",
+              url: "/api/Gost/GetGostsRange",
+              headers: {
+                Authorization: `Bearer ${localStorage.getItem("token")}`,
+              },
+              data: { GostIDs: referenceGostIds },
+            })
+              .then((response) => {
+                const fetchedGosts = response.data;
+                const newReferenceGostNames = {};
+                fetchedGosts.forEach((gost) => {
+                  newReferenceGostNames[gost.id] = gost.designation;
+                });
+                setReferenceGostNames(newReferenceGostNames);
+              })
+              .catch((error) => {
+                console.error(error);
+              });
+          }
         })
         .catch((error) => {
           console.log(error);
@@ -219,6 +253,20 @@ const GostTable = ({ id, view, edit, add }) => {
         .catch((error) => {
           console.log(error);
         });
+    }
+  }, []);
+
+  useEffect(() => {
+    if (!view) {
+      const handleBeforeUnload = (event) => {
+        event.preventDefault();
+      };
+
+      window.addEventListener("beforeunload", handleBeforeUnload);
+
+      return () => {
+        window.removeEventListener("beforeunload", handleBeforeUnload);
+      };
     }
   }, []);
 
@@ -239,53 +287,6 @@ const GostTable = ({ id, view, edit, add }) => {
         console.log(error);
       });
   };
-
-  useEffect(() => {
-    if (!view) {
-      const handleBeforeUnload = (event) => {
-        event.preventDefault();
-      };
-
-      window.addEventListener("beforeunload", handleBeforeUnload);
-
-      return () => {
-        window.removeEventListener("beforeunload", handleBeforeUnload);
-      };
-    }
-  }, []);
-
-  useEffect(() => {
-    var referenceGostIds;
-    if (normativeReferences) {
-      referenceGostIds = normativeReferences.map(
-        (reference) => reference.referenceGostId
-      );
-    }
-    if (selectedItems) {
-      referenceGostIds = selectedItems.map(
-        (reference) => reference.referenceGostId
-      );
-    }
-    if (normativeReferences || selectedItems) {
-      axios({
-        method: "post",
-        url: "/api/Gost/GetGostsRange",
-        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
-        data: { GostIDs: referenceGostIds },
-      })
-        .then((response) => {
-          const fetchedGosts = response.data;
-          const newReferenceGostNames = {};
-          fetchedGosts.forEach((gost) => {
-            newReferenceGostNames[gost.id] = gost.designation;
-          });
-          setReferenceGostNames(newReferenceGostNames);
-        })
-        .catch((error) => {
-          console.error(error);
-        });
-    }
-  }, [normativeReferences, selectedItems]);
 
   const handleSelectChange = (event) => {
     const selectedOption = {
@@ -319,7 +320,6 @@ const GostTable = ({ id, view, edit, add }) => {
 
   const excluded_keys = [
     "developerUser",
-    "normativeReferences",
     "developerId",
     "developerCompany",
     "id",
@@ -347,6 +347,27 @@ const GostTable = ({ id, view, edit, add }) => {
   };
 
   const getViewValue = (key, value) => {
+    if (key === "normativeReferences") {
+      return getNormativeReferencesValue(
+        normativeReferences,
+        referenceGostNames
+      );
+    }
+
+    if (key === "keywords") {
+      return getKeywordsValue(keywords);
+    }
+
+    if (key === "keyphrases") {
+      return getKeyphrasesValue(keyphrases);
+    }
+    if (key === "gostReplacedWith") {
+      return getGostReplacedWithValue(gost.gostIdReplaced, gostReplacedName);
+    }
+    if (key === "gostFile") {
+      return getGostFilePath();
+    }
+
     if (value) {
       if (value === true) {
         return "Да";
@@ -366,15 +387,6 @@ const GostTable = ({ id, view, edit, add }) => {
     }
   };
 
-  const getEditValue = (key, value) => (
-    <input
-      className="gostInput"
-      placeholder={translationGostDict[key] || key}
-      value={value}
-      onChange={(e) => handleInputChange(key, e.target.value)}
-    />
-  );
-
   const getUpdateDate = (key, updateGostDates) =>
     updateGostDates &&
     updateGostDates.some(
@@ -386,14 +398,12 @@ const GostTable = ({ id, view, edit, add }) => {
       : "";
 
   const getNormativeReferencesValue = (
-    view,
     normativeReferences,
     referenceGostNames
   ) => {
-    if (view) {
-      console.log(normativeReferences);
-      if (normativeReferences && normativeReferences.length > 0) {
-        return (
+    return (
+      <>
+        {normativeReferences && normativeReferences.length > 0 ? (
           <ul>
             {normativeReferences.map((reference) => (
               <li key={reference.id}>
@@ -403,27 +413,11 @@ const GostTable = ({ id, view, edit, add }) => {
               </li>
             ))}
           </ul>
-        );
-      } else {
-        return <p>Нет ссылок</p>;
-      }
-    } else {
-      return (
-        <ul>
-          {normativeReferences.map((reference) => (
-            <li key={reference.id}>
-              <input
-                type="text"
-                value={referenceGostNames[reference.referenceGostId] || ""}
-                onChange={(e) =>
-                  handleInputChange("normativeReferences", e.target.value)
-                }
-              />
-            </li>
-          ))}
-        </ul>
-      );
-    }
+        ) : (
+          <p>Нет ссылок</p>
+        )}
+      </>
+    );
   };
 
   const getKeywordsValue = (keywords) => {
@@ -510,7 +504,7 @@ const GostTable = ({ id, view, edit, add }) => {
     }));
   };
 
-  const renderInputField = (key) => {
+  const renderAddEditField = (key) => {
     const value = formData[key] !== undefined ? formData[key] : gost[key];
 
     if (key === "actionStatus") {
@@ -520,6 +514,7 @@ const GostTable = ({ id, view, edit, add }) => {
           value={value}
           onChange={(e) => handleInputChange(key, e.target.value)}
         >
+          <option value="">Выберите статус</option>
           {actionStatusOptions
             .filter((option) => option.label.toLowerCase() !== "заменён")
             .map((option) => (
@@ -538,6 +533,7 @@ const GostTable = ({ id, view, edit, add }) => {
           value={value}
           onChange={(e) => handleInputChange(key, e.target.value)}
         >
+          <option value="">Выберите уровень принятия</option>
           {acceptanceLevelOptions.map((option) => (
             <option key={option.value} value={option.value}>
               {option.label}
@@ -553,7 +549,7 @@ const GostTable = ({ id, view, edit, add }) => {
           <select
             onChange={(event) => {
               replacedVisibilityChange(event);
-              changeNormativeReferencesForEdit();
+              if (edit) changeNormativeReferencesForEdit();
             }}
             value={replacedContainerVisibility ? 2 : 1}
           >
@@ -578,22 +574,24 @@ const GostTable = ({ id, view, edit, add }) => {
     }
 
     if (key === "normativeReferences") {
+      console.log(gostsNormativeReferences);
+      console.log(selectedItems);
       return (
         <>
           {selectedItems && selectedItems.length > 0 ? (
             <ul>
               {selectedItems.map((item) => (
-                <>
-                  <li key={item.referenceGostId}>
-                    {referenceGostNames[item.referenceGostId]}
-                    <button
-                      className="delete_normative_reference_button btn_blue"
-                      onClick={() => handleRemoveItem(item.referenceGostId)}
-                    >
-                      Удалить
-                    </button>
-                  </li>
-                </>
+                <li key={item.id}>
+                  {
+                    gostsNormativeReferences.find((gost) => gost.id == item.id)
+                      ?.designation
+                  }
+                  <BtnDeleteNormativeReference
+                    onClick={() => handleRemoveItem(item.id)}
+                  >
+                    Удалить
+                  </BtnDeleteNormativeReference>
+                </li>
               ))}
             </ul>
           ) : (
@@ -605,7 +603,7 @@ const GostTable = ({ id, view, edit, add }) => {
             {gostsNormativeReferences
               .filter(
                 (item) =>
-                  !selectedItems.some((selected) => selected.id === item.id)
+                  !selectedItems.some((selected) => selected.id == item.id)
               )
               .map((item) => (
                 <option key={item.id} value={item.id}>
@@ -680,7 +678,7 @@ const GostTable = ({ id, view, edit, add }) => {
                     )}
                   </label>
                 </td>
-                <td>{renderInputField(key)}</td>
+                <td>{renderAddEditField(key)}</td>
               </tr>
             ))}
 
@@ -694,55 +692,24 @@ const GostTable = ({ id, view, edit, add }) => {
           </>
         );
       }
-      return Object.keys(gost)
+
+      const viewFields = Object.keys(gost).concat(
+        "normativeReferences",
+        "keywords",
+        "keyphrases",
+        "gostReplacedWith",
+        "gostFile"
+      );
+
+      return viewFields
         .filter((key) => !excluded_keys.includes(key))
-        .map((key) => ({
-          key,
-          label: translationGostDict[key] || key,
-          value: getViewValue(key, gost[key]),
-          updateDate: getUpdateDate(key, updateGostDates),
-        }))
-        .concat([
-          {
-            key: "normativeReferences",
-            label: "Нормативные ссылки",
-            value: getNormativeReferencesValue(
-              view,
-              normativeReferences,
-              referenceGostNames
-            ),
-          },
-          {
-            key: "keywords",
-            label: "Ключевые слова",
-            value: getKeywordsValue(keywords),
-          },
-          {
-            key: "keyphrases",
-            label: "Ключевые фразы",
-            value: getKeyphrasesValue(keyphrases),
-          },
-          {
-            key: "gostReplacedWith",
-            label: "Принят взамен",
-            value: getGostReplacedWithValue(
-              gost.gostIdReplaced,
-              gostReplacedName
-            ),
-          },
-          {
-            key: "gostFile",
-            label: "Файл",
-            value: getGostFilePath(),
-          },
-        ])
-        .map(({ key, label, value, updateDate }) => (
-          <tr key={key}>
+        .map((key, index) => (
+          <tr key={index}>
             <td>
-              <label htmlFor={key}>{label}</label>
+              <label htmlFor={key}>{translationGostDict[key] || key}</label>
             </td>
-            <td>{formatValue(value)}</td>
-            <td>{updateDate}</td>
+            <td>{formatValue(getViewValue(key, gost[key]))}</td>
+            <td>{getUpdateDate(key, updateGostDates)}</td>
           </tr>
         ));
     } else {
@@ -763,6 +730,8 @@ const GostTable = ({ id, view, edit, add }) => {
           "text",
           "changes",
           "amendments",
+          "normativeReferences",
+          "gostIdReplaced",
         ];
 
         return (
@@ -787,139 +756,9 @@ const GostTable = ({ id, view, edit, add }) => {
                     )}
                   </label>
                 </td>
-                <td>
-                  {(() => {
-                    switch (key) {
-                      case "actionStatus":
-                        return (
-                          <select
-                            className="gostInputAdd"
-                            value={formData.actionStatus}
-                            onChange={(e) =>
-                              handleInputChange("actionStatus", e.target.value)
-                            }
-                          >
-                            <option value="">Выберите статус</option>
-                            {actionStatusOptions
-                              .filter(
-                                (option) =>
-                                  option.label.toLowerCase() != "заменён"
-                              )
-                              .map((option) => (
-                                <option key={option.value} value={option.value}>
-                                  {option.label}
-                                </option>
-                              ))}
-                          </select>
-                        );
-                      case "acceptanceLevel":
-                        return (
-                          <select
-                            className="gostInputAdd"
-                            value={formData.acceptanceLevel}
-                            onChange={(e) =>
-                              handleInputChange(
-                                "acceptanceLevel",
-                                e.target.value
-                              )
-                            }
-                          >
-                            <option value="">Выберите уровень принятия</option>
-                            {acceptanceLevelOptions.map((option) => (
-                              <option key={option.value} value={option.value}>
-                                {option.label}
-                              </option>
-                            ))}
-                          </select>
-                        );
-                      case "content":
-                        return (
-                          <textarea
-                            className="gostInputAdd"
-                            value={formData[key]}
-                            onChange={(e) =>
-                              handleInputChange(key, e.target.value)
-                            }
-                          />
-                        );
-                      default:
-                        return (
-                          <input
-                            className="gostInputAdd"
-                            value={formData[key]}
-                            onChange={(e) =>
-                              handleInputChange(key, e.target.value)
-                            }
-                          />
-                        );
-                    }
-                  })()}
-                </td>
+                <td>{renderAddEditField(key)}</td>
               </tr>
             ))}
-            <tr>
-              <td>
-                <label>Нормативные ссылки</label>
-              </td>
-              <td>
-                {selectedItems && selectedItems.length > 0 ? (
-                  <ul>
-                    {selectedItems.map((item) => (
-                      <li key={item.id}>
-                        {item.designation}
-                        <button
-                          className="delete_normative_reference_button btn_blue"
-                          onClick={() => handleRemoveItem(item.id)}
-                        >
-                          Удалить
-                        </button>
-                      </li>
-                    ))}
-                  </ul>
-                ) : (
-                  <p>Нет ссылок</p>
-                )}
-
-                <select onChange={handleSelectChange}>
-                  <option value="">Выберите нормативную ссылку</option>
-                  {gostsNormativeReferences
-                    .filter(
-                      (item) =>
-                        !selectedItems.some(
-                          (selected) => selected.id === item.id
-                        )
-                    )
-                    .map((item) => (
-                      <option key={item.id} value={item.id}>
-                        {item.designation}
-                      </option>
-                    ))}
-                </select>
-              </td>
-            </tr>
-
-            <tr>
-              <td>
-                <label>Принят взамен</label>
-              </td>
-              <td>
-                <select onChange={replacedVisibilityChange}>
-                  <option value={1}>Принят впервые</option>
-                  <option value={2}>Принят взамен</option>
-                </select>
-                {replacedContainerVisibility && (
-                  <>
-                    <select onChange={handleReplacedChange}>
-                      {gostsNormativeReferences.map((item) => (
-                        <option key={item.id} value={item.id}>
-                          {item.designation}
-                        </option>
-                      ))}
-                    </select>
-                  </>
-                )}
-              </td>
-            </tr>
             <tr>
               <td colSpan="2">
                 <div className="file-input-container">
@@ -979,24 +818,16 @@ const GostTable = ({ id, view, edit, add }) => {
         method: "post",
         url: `/api/Gost/AddGost`,
         data: {
-          designation: formData.designation,
-          denomination: formData.denomination,
-          oksCode: formData.oksCode,
-          okpdCode: formData.okpdCode,
+          ...formData,
           developerId: localStorage.getItem("workCompanyID"),
-          content: formData.content,
           keywords: formData.keywords.split(","),
           keyphrases: formData.keyphrases.split(","),
           acceptanceLevel: Number(formData.acceptanceLevel),
-          text: formData.text,
           actionStatus: Number(formData.actionStatus),
-          normativeReferences: normativeReferences,
           acceptanceYear: Number(formData.acceptanceYear),
-          developerName: formData.developerName,
           introdutionYear: Number(formData.introdutionYear),
-          ...(gostIdReplaced !== -1 && {
-            gostIdReplaced: Number(gostIdReplaced),
-          }),
+          gostIdReplaced: Number(formData.gostIdReplaced),
+          normativeReferences,
         },
         headers: {
           "Content-Type": "application/json",
@@ -1076,20 +907,9 @@ const GostTable = ({ id, view, edit, add }) => {
         method: "post",
         url: `/api/Gost/EditGost`,
         data: {
-          id: id,
-          designation: formData.designation,
-          denomination: formData.denomination,
-          oksCode: formData.oksCode,
-          okpdCode: formData.okpdCode,
-          acceptanceYear: formData.acceptanceYear,
-          introdutionYear: formData.introdutionYear,
-          developerName: formData.developerName,
-          content: formData.content,
-          acceptanceLevel: formData.acceptanceLevel,
-          actionStatus: formData.actionStatus,
-          changes: formData.changes,
-          amendments: formData.amendments,
-          normativeReferences: normativeReferences,
+          id,
+          ...formData,
+          normativeReferences,
           keywords: keywordsData,
           keyphrases: keyphrasesData,
           gostIdReplaced: replacedContainerVisibility
@@ -1145,30 +965,18 @@ const GostTable = ({ id, view, edit, add }) => {
           </table>
           {!view && edit && (
             <>
-              <button className="btn_blue" type="submit">
-                Сохранить
-              </button>
-              <button
-                className="btn_darkGray"
-                type="button"
-                onClick={openModalCard}
-              >
+              <BtnBlue type="submit">Сохранить</BtnBlue>
+              <BtnDarkGray type="button" onClick={openModalCard}>
                 Отменить
-              </button>
+              </BtnDarkGray>
             </>
           )}
           {!view && add && (
             <>
-              <button className="btn_blue" type="submit">
-                Добавить
-              </button>
-              <button
-                className="btn_darkGray"
-                type="button"
-                onClick={openModalCard}
-              >
+              <BtnBlue type="submit">Добавить</BtnBlue>
+              <BtnDarkGray type="button" onClick={openModalCard}>
                 Отменить
-              </button>
+              </BtnDarkGray>
             </>
           )}
         </form>
@@ -1185,12 +993,8 @@ const GostTable = ({ id, view, edit, add }) => {
             <p>Вы точно хотите покинуть раздел редактирования документа?</p>
           </div>
           <div className="modalCancel_buttons">
-            <button className="btn_blue" onClick={cancelHandler}>
-              Покинуть
-            </button>
-            <button className="btn_gray" onClick={closeModalCard}>
-              Вернуться
-            </button>
+            <BtnBlue onClick={cancelHandler}>Покинуть</BtnBlue>
+            <BtnGray onClick={closeModalCard}>Вернуться</BtnGray>
           </div>
         </Modal>
       )}

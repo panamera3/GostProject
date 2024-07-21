@@ -10,6 +10,7 @@ import { useNavigate } from "react-router-dom";
 import { translationRolesDict } from "../../../components/constants/translationRolesDict";
 import { toast } from "react-toastify";
 import { computeHeadingLevel } from "@testing-library/react";
+import { BodyContainer, BtnBlue, BtnDarkGray } from "../../../components/styles/styled_components";
 
 const UserProfiles = () => {
   const navigate = useNavigate();
@@ -188,7 +189,7 @@ const UserProfiles = () => {
   return (
     <>
       <HeaderAdmin />
-      <div className="body_container">
+      <BodyContainer>
         <div className="activities_container">
           <a href="/home">Назад</a>
         </div>
@@ -201,9 +202,9 @@ const UserProfiles = () => {
               {renderOptions()}
             </select>
             <input placeholder="ФИО пользователя" name="fullname" />
-            <button className="btn_blue" type="sumbit">
+            <BtnBlue type="sumbit">
               Найти
-            </button>
+            </BtnBlue>
           </div>
         </form>
         <table className="user_profiles_table">
@@ -219,7 +220,7 @@ const UserProfiles = () => {
           </thead>
           <tbody>{renderUsers()}</tbody>
         </table>
-      </div>
+      </BodyContainer>
 
       {isModalDeleteOpen && (
         <Modal
@@ -238,15 +239,14 @@ const UserProfiles = () => {
               ?
             </p>
             <div className="modalDelete_buttons_container">
-              <button className="btn_blue" onClick={() => deleteUser()}>
+              <BtnBlue onClick={() => deleteUser()}>
                 Удалить
-              </button>
-              <button
-                className="btn_darkGray"
+              </BtnBlue>
+              <BtnDarkGray
                 onClick={() => closeModalDelete()}
               >
                 Отменить
-              </button>
+              </BtnDarkGray>
             </div>
           </div>
         </Modal>

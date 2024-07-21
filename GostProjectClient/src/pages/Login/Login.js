@@ -8,6 +8,7 @@ import { toast } from "react-toastify";
 import eye from "../../images/eye.svg";
 import eye_closed from "../../images/eye_closed.svg";
 import { notificationStatus } from "../../components/constants/NotificationStatus";
+import { BtnBlue, Input } from "../../components/styles/styled_components";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -109,22 +110,22 @@ const Login = () => {
                 <h2>Вход</h2>
               </div>
               <div className="test_name">
-                <input
+                <Input
                   name="login"
                   id="login_input"
                   type="login"
                   ref={usernameLoginInputRef}
                   placeholder="Логин"
-                  className={fieldValidity.username ? "" : "invalid-field"}
+                    isInvalid={!fieldValidity.username}
                 />
                 <div style={{ position: "relative" }}>
-                  <input
+                  <Input
                     name="password"
                     id="password_input"
                     type={showPassword ? "text" : "password"}
                     ref={passwordLoginInputRef}
                     placeholder="Пароль"
-                    className={fieldValidity.password ? "" : "invalid-field"}
+                    isInvalid={!fieldValidity.password}
                   />
                   <img
                     src={showPassword ? eye : eye_closed}
@@ -134,9 +135,7 @@ const Login = () => {
                   />
                 </div>
               </div>
-              <button type="submit" className="btn_blue">
-                Войти
-              </button>
+              <BtnBlue type="submit">Войти</BtnBlue>
             </div>
           </form>
         </div>

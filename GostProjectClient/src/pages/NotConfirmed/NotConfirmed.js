@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import "./NotConfirmed.css";
 import { useNavigate } from "react-router-dom";
+import { BtnBlue } from "../../components/styles/styled_components";
 
 const NotConfirmed = () => {
   const navigate = useNavigate();
@@ -17,9 +18,9 @@ const NotConfirmed = () => {
         <h1>
           Дождитесь подтверждения своего аккаунта администратором компании.
         </h1>
-        <button onClick={() => navigate("/login")} className="btn_blue">
+        <BtnBlue onClick={() => navigate("/login")}>
           На страницу авторизации
-        </button>
+        </BtnBlue>
       </div>
     </>
   );

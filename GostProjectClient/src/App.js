@@ -1,6 +1,5 @@
 import { Routes, Route, Navigate, BrowserRouter } from "react-router-dom";
 import { useEffect } from "react";
-import "./App.css";
 import Login from "./pages/Login/Login";
 import Registration from "./pages/Registration/Registration";
 import Home from "./pages/Home/Home";
@@ -22,6 +21,7 @@ import Search from "./pages/Search/Search";
 import NotConfirmed from "./pages/NotConfirmed/NotConfirmed";
 import PrivateRoute from "./components/PrivateRoute/PrivateRoute";
 import axios from "axios";
+import { GlobalStyle } from "./components/styles/styled_components";
 
 function App() {
   useEffect(() => {
@@ -84,48 +84,38 @@ function App() {
 
   return (
     <>
-      <div className="body">
-        <ToastContainer />
-        <BrowserRouter>
-          <Routes>
-            <Route path="/" element={<NotConfirmed />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/registration" element={<Registration />} />
+      <GlobalStyle />
+      <ToastContainer />
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<NotConfirmed />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/registration" element={<Registration />} />
 
-            <Route path="/" element={<PrivateRoute />}>
-              <Route path="/home" element={<Home />} />
-              <Route path="/userProfiles" element={<UserProfiles />} />
-              <Route path="/editUser/:id" element={<EditUserProfile />} />
-              <Route path="/gostAdd" element={<GostAdd />} />
-              <Route path="/gostEdit/:id" element={<GostEdit />} />
-              <Route path="/gost/:id" element={<Gost />} />
-              <Route path="/favourites" element={<FavouritesGosts />} />
-              <Route path="/afterSearch" element={<SearchGosts />} />
-              <Route path="/myProfile" element={<MyProfile />} />
-              <Route path="/archive" element={<ArchiveGosts />} />
-              <Route path="/activity" element={<Activity />} />
-              <Route path="/notifications" element={<Notifications />} />
-              <Route
-                path="/notification/:id"
-                element={<AcceptNotification />}
-              />
-              <Route path="/search" element={<Search />} />
-            </Route>
+          <Route path="/" element={<PrivateRoute />}>
+            <Route path="/home" element={<Home />} />
+            <Route path="/userProfiles" element={<UserProfiles />} />
+            <Route path="/editUser/:id" element={<EditUserProfile />} />
+            <Route path="/gostAdd" element={<GostAdd />} />
+            <Route path="/gostEdit/:id" element={<GostEdit />} />
+            <Route path="/gost/:id" element={<Gost />} />
+            <Route path="/favourites" element={<FavouritesGosts />} />
+            <Route path="/afterSearch" element={<SearchGosts />} />
+            <Route path="/myProfile" element={<MyProfile />} />
+            <Route path="/archive" element={<ArchiveGosts />} />
+            <Route path="/activity" element={<Activity />} />
+            <Route path="/notifications" element={<Notifications />} />
+            <Route path="/notification/:id" element={<AcceptNotification />} />
+            <Route path="/search" element={<Search />} />
+          </Route>
 
-            {/*
-            <Route path="/" element={<NotConfirmed />} />
-            */}
-
-            <Route
-              path="/companyRegistration"
-              element={<CompanyRegistration />}
-            />
-            {/* перенаправлять пользователя на главную страницу, если ввёл несуществующий путь */}
-
-            <Route path="*" element={<Navigate to="/" />} />
-          </Routes>
-        </BrowserRouter>
-      </div>
+          <Route
+            path="/companyRegistration"
+            element={<CompanyRegistration />}
+          />
+          <Route path="*" element={<Navigate to="/" />} />
+        </Routes>
+      </BrowserRouter>
     </>
   );
 }

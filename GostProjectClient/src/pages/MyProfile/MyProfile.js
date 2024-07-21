@@ -9,6 +9,7 @@ import { CopyToClipboard } from "react-copy-to-clipboard";
 import { toast } from "react-toastify";
 
 import { translationRolesDict } from "../../components/constants/translationRolesDict";
+import { BodyContainer } from "../../components/styles/styled_components";
 
 const MyProfile = () => {
   const [user, setUser] = useState({});
@@ -32,7 +33,7 @@ const MyProfile = () => {
   }, []);
 
   useEffect(() => {
-    console.log("user", user)
+    console.log("user", user);
     if (Object.keys(user).length > 0) {
       axios({
         method: "get",
@@ -162,10 +163,13 @@ const MyProfile = () => {
       ) : (
         <HeaderUser />
       )}
-      <div className="body_container">
+      <BodyContainer>
         <div className="activities_container">
           <a href="/home">Назад</a>
-          <a href={`/editUser/${localStorage.getItem("id")}`} id="editMyProfile">
+          <a
+            href={`/editUser/${localStorage.getItem("id")}`}
+            id="editMyProfile"
+          >
             Редактировать мой профиль
           </a>
         </div>
@@ -176,7 +180,8 @@ const MyProfile = () => {
                 <b>ФИО пользователя</b>
               </p>
               <p className="user-field-value">
-                {user && `${user["lastName"]} ${user["firstName"]} ${user["patronymic"]}`}
+                {user &&
+                  `${user["lastName"]} ${user["firstName"]} ${user["patronymic"]}`}
               </p>
             </div>
             <div className="user-fields">
@@ -249,7 +254,7 @@ const MyProfile = () => {
             </div>
           )}
         </div>
-      </div>
+      </BodyContainer>
     </>
   );
 };

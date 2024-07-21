@@ -1,17 +1,17 @@
-import { useState, useEffect, useRef } from "react";
 import HeaderAdmin from "../../../components/HeaderAdmin/HeaderAdmin";
 import GostTable from "../../../components/GostTable/GostTable";
+import { BodyContainer } from "../../../components/styles/styled_components";
 
 const GostAdd = () => {
   return (
     <>
       <HeaderAdmin />
-      <div className="body_container">
+      <BodyContainer>
         <div>
           <a href="/home">Назад</a>
         </div>
         <GostTable add />
-      </div>
+      </BodyContainer>
     </>
   );
 };

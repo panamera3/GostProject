@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import "./LeftColumnLogReg.css";
 import { useNavigate } from "react-router-dom";
+import { BtnWhite } from "../styles/styled_components";
 
 const LeftColumnLogReg = ({ login, registration, children }) => {
   const navigate = useNavigate();
@@ -18,30 +19,28 @@ const LeftColumnLogReg = ({ login, registration, children }) => {
                 Впервые на платформе? Необходимо зарегистрироваться по кнопке
                 ниже
               </p>
-              <button
-                className="btn_white"
+              <BtnWhite
                 type="button"
                 onClick={() => {
                   navigate("/registration");
                 }}
               >
                 Зарегистрироваться
-              </button>
+              </BtnWhite>
             </>
           )}
           {registration && (
             <>
               <h2>Вход</h2>
               <p>Уже есть аккаунт? Вы можете войти в него по кнопке ниже</p>
-              <button
-                className="btn_white"
+              <BtnWhite
                 type="button"
                 onClick={() => {
                   navigate("/login");
                 }}
               >
                 Войти
-              </button>
+              </BtnWhite>
             </>
           )}
         </div>

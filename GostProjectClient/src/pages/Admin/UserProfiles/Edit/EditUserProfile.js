@@ -8,6 +8,7 @@ import { useParams } from "react-router-dom";
 import axios from "axios";
 import { toast } from "react-toastify";
 import UserRole from "../../../../types/user/userRole";
+import { BodyContainer, BtnBlue, BtnDarkGray, BtnGray } from "../../../../components/styles/styled_components";
 
 const EditUserProfile = () => {
   const params = useParams();
@@ -94,7 +95,7 @@ const EditUserProfile = () => {
   return (
     <>
       <HeaderAdmin />
-      <div className="body_container">
+      <BodyContainer>
         <div className="activities_container">
           <a href="/userProfiles">Назад</a>
         </div>
@@ -181,19 +182,18 @@ const EditUserProfile = () => {
             )}
           </div>
           <div className="buttons">
-            <button className="btn_blue" type="submit">
+            <BtnBlue type="submit">
               Сохранить
-            </button>
-            <button
-              className="btn_darkGray"
+            </BtnBlue>
+            <BtnDarkGray
               type="button"
               onClick={openModalCard}
             >
               Отменить
-            </button>
+            </BtnDarkGray>
           </div>
         </form>
-      </div>
+      </BodyContainer>
 
       {isModalOpen && (
         <Modal
@@ -207,12 +207,12 @@ const EditUserProfile = () => {
             <p>Вы точно хотите покинуть раздел редактирования пользователя?</p>
           </div>
           <div className="modalCancel_buttons">
-            <button className="btn_blue" onClick={cancelHandler}>
+            <BtnBlue onClick={cancelHandler}>
               Покинуть
-            </button>
-            <button className="btn_gray" onClick={closeModalCard}>
+            </BtnBlue>
+            <BtnGray onClick={closeModalCard}>
               Вернуться
-            </button>
+            </BtnGray>
           </div>
         </Modal>
       )}

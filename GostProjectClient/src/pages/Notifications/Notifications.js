@@ -3,6 +3,7 @@ import HeaderAdmin from "../../components/HeaderAdmin/HeaderAdmin";
 import "./Notifications.css";
 import axios from "axios";
 import NotificationsTable from "../../components/NotificationsTable/NotificationsTable";
+import { BodyContainer } from "../../components/styles/styled_components";
 
 const Notifications = () => {
   const [user, setUser] = useState({});
@@ -43,9 +44,9 @@ const Notifications = () => {
   return (
     <>
       <HeaderAdmin />
-      <div className="body_container">
+      <BodyContainer>
         <NotificationsTable />
-      </div>
+      </BodyContainer>
     </>
   );
 };

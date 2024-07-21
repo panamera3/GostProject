@@ -9,6 +9,7 @@ import { useParams } from "react-router-dom";
 import UserRole from "../../types/user/userRole";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { BodyContainer } from "../../components/styles/styled_components";
 
 const Gost = () => {
   const params = useParams();
@@ -109,7 +110,7 @@ const Gost = () => {
       ) : (
         <HeaderUser />
       )}
-      <div className="body_container">
+      <BodyContainer>
         <div className="activities_container">
           <div>
             <a href="/home">Назад</a>
@@ -134,7 +135,7 @@ const Gost = () => {
           )}
         </div>
         <GostTable view id={params.id} />
-      </div>
+      </BodyContainer>
     </>
   );
 };

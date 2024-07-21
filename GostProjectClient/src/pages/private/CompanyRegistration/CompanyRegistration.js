@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { toast } from "react-toastify";
 import UserRole from "../../../types/user/userRole";
+import { BtnBlue, BtnMidGray } from "../../../components/styles/styled_components";
 
 const CompanyRegistration = () => {
   const navigate = useNavigate();
@@ -181,9 +182,9 @@ const CompanyRegistration = () => {
                 ref={emailCompanyRegistrationInputRef}
                 placeholder="Электронная почта"
               />
-              <button className="btn_blue" onClick={handleNextStep}>
+              <BtnBlue onClick={handleNextStep}>
                 Далее
-              </button>
+              </BtnBlue>
             </div>
             <div
               className={
@@ -224,12 +225,12 @@ const CompanyRegistration = () => {
                 ref={confirmPasswordCompanyRegistrationInputRef}
                 placeholder="Подтверждение пароля"
               />
-              <button className="btn btn_midGray" onClick={handlePrevStep}>
+              <BtnMidGray onClick={handlePrevStep}>
                 Назад
-              </button>
-              <button className="btn btn_blue" type="submit">
+              </BtnMidGray>
+              <BtnBlue type="submit">
                 Зарегистрироваться
-              </button>
+              </BtnBlue>
             </div>
           </div>
         </form>
