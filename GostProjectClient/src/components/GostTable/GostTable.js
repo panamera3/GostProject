@@ -13,6 +13,7 @@ import {
   BtnDeleteNormativeReference,
   BtnGray,
 } from "../styles/styled_components";
+import ReactSelect from "react-select";
 // import hintImg from "../../images/hint.svg";
 // import switchImg from "../../images/switch.svg";
 
@@ -302,45 +303,66 @@ const GostTable = ({ id, view, edit, add }) => {
         console.log(error);
       });
   };
-  const handleNormativeReferenceChange = (event) => {
-    let selectedOption;
 
-    // Обрабатываем выбор из выпадающего списка
-    if (event.target.tagName === "SELECT") {
-      const value = event.target.value;
+  const [inputValue, setInputValue] = useState("");
 
-      if (value) {
-        selectedOption = {
-          id: value,
-          designation:
-            event.target.options[event.target.selectedIndex]?.text || "",
-        };
+  const handleNormativeReferenceChange = (selectedOption) => {
+    if (selectedOption) {
+      const newOption = {
+        id: String(selectedOption.value),
+        designation: selectedOption.label,
+      };
+      if (
+        !selectedItems.some(
+          (item) => item.designation === newOption.designation
+        )
+      ) {
+        setSelectedItems((prevItems) => [...prevItems, newOption]);
       }
+
+      setInputValue("");
     }
-    // Обрабатываем ввод в текстовом поле
-    else if (event.target.tagName === "INPUT" && event.key === "Enter") {
-      event.preventDefault(); // Предотвращаем отправку формы
+  };
 
-      const value = event.target.value.trim(); // Убираем пробелы по краям
+  const normativeReferencesOptions = gostsNormativeReferences
+    .filter(
+      (item) =>
+        !selectedItems.some(
+          (selected) =>
+            selected.id === item.id || selected.designation === item.designation
+        )
+    )
+    .map((item) => ({
+      value: item.id,
+      label: item.designation,
+    }));
 
-      if (value) {
-        // Проверяем, что введено не пустое значение
-        selectedOption = {
-          id: null,
-          designation: value,
-        };
+  const handleKeyDown = (event) => {
+    if (event.key === "Enter") {
+      event.preventDefault();
+
+      const matchingOption = normativeReferencesOptions.find(
+        (option) =>
+          option.label.toLowerCase() === inputValue.trim().toLowerCase()
+      );
+
+      if (matchingOption) {
+        handleNormativeReferenceChange(matchingOption);
+      } else if (
+        inputValue.trim() &&
+        !selectedItems.some((item) => item.designation === inputValue.trim())
+      ) {
+        setSelectedItems((prevItems) => [
+          ...prevItems,
+          {
+            id: null,
+            designation: inputValue.trim(),
+          },
+        ]);
       }
-    }
 
-    // Добавляем выбранный элемент, если он не существует в selectedItems
-    if (
-      selectedOption &&
-      !selectedItems.some(
-        (item) => item.designation === selectedOption.designation
-      )
-    ) {
-      setSelectedItems((prevItems) => [...prevItems, selectedOption]);
-      event.target.value = ""; // Очищаем поле ввода после добавления
+      // Очищаем поле ввода после добавления или выбора
+      setInputValue("");
     }
   };
 
@@ -665,7 +687,35 @@ const GostTable = ({ id, view, edit, add }) => {
             <p>Нет ссылок</p>
           )}
 
-          {!normativeReferencesMode && (
+          <ReactSelect
+            options={normativeReferencesOptions}
+            onChange={handleNormativeReferenceChange}
+            onKeyDown={handleKeyDown}
+            placeholder="Выберите или введите обозначение ГОСТа"
+            styles={{
+              container: (provided) => ({
+                ...provided,
+                marginRight: "1em",
+              }),
+              control: (provided) => ({
+                ...provided,
+                borderRadius: "12px",
+                border: "1px solid #a8a8a8",
+              }),
+            }}
+            onInputChange={(inputValue) => setInputValue(inputValue)}
+            isClearable
+            isSearchable
+            noOptionsMessage={() =>
+              "Нет доступных вариантов. Нажмите Enter, если необходимо добавить введённый Вами вариант."
+            }
+            onFocus={() => setInputValue("")}
+            inputValue={inputValue}
+          />
+
+          {/*
+
+{!normativeReferencesMode && (
             <select
               onChange={handleNormativeReferenceChange}
               style={{ marginRight: "1em" }}
@@ -701,6 +751,7 @@ const GostTable = ({ id, view, edit, add }) => {
             alt="→"
             onClick={switchNormativeReferencesMode}
           />
+  */}
         </>
       );
     }
@@ -766,7 +817,8 @@ const GostTable = ({ id, view, edit, add }) => {
                         />
                       </>
                     )}
-                    {key == "normativeReferences" && (
+                    {/*
+                    key == "normativeReferences" && (
                       <>
                         <img
                           alt="?"
@@ -775,7 +827,8 @@ const GostTable = ({ id, view, edit, add }) => {
                           title="Для добавления ссылки на ГОСТ, которого нет в базе, нажмите кнопку для переключения режима"
                         />
                       </>
-                    )}
+                    )
+                      */}
                   </label>
                 </td>
                 <td>{renderAddEditField(key)}</td>

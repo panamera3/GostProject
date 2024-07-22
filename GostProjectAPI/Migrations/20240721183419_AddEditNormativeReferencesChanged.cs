@@ -22,7 +22,7 @@ namespace GostProjectAPI.Migrations
             migrationBuilder.DropIndex(
                 name: "IX_NormativeReferences_RootGostId_ReferenceGostId",
                 table: "NormativeReferences");
-
+            
             migrationBuilder.AlterColumn<uint>(
                 name: "ReferenceGostId",
                 table: "NormativeReferences",

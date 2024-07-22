@@ -248,9 +248,6 @@ const GostsTable = ({ favourites, archiveGosts, searchGosts }) => {
       });
   };
 
-  console.log(gosts);
-  console.log(gosts.length);
-
   return (
     <>
       {!favourites && !searchGosts && !archiveGosts && gosts.length == 0 && (
