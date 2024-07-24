@@ -9,6 +9,7 @@ import {
   BtnBlue,
   BtnDarkGray,
 } from "../../../components/styles/styled_components";
+import BackLink from "../../../components/BackLink/BackLink";
 
 const AcceptNotification = () => {
   const params = useParams();
@@ -74,7 +75,7 @@ const AcceptNotification = () => {
       <HeaderAdmin />
       <BodyContainer>
         <div className="activities_container">
-          <a href="/notifications">Назад</a>
+          <BackLink />
           <p>Редактирование заявки</p>
         </div>
         <div className="notification_container">

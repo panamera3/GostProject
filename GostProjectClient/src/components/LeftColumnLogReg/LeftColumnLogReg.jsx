@@ -1,12 +1,9 @@
-import { useEffect } from "react";
 import "./LeftColumnLogReg.css";
 import { useNavigate } from "react-router-dom";
 import { BtnWhite } from "../styles/styled_components";
 
 const LeftColumnLogReg = ({ login, registration, children }) => {
   const navigate = useNavigate();
-
-  const redirectHandler = () => {};
 
   return (
     <>

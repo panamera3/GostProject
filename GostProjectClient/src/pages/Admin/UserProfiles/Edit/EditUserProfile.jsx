@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import HeaderUser from "../../../../components/Header/HeaderUser";
 import HeaderAdmin from "../../../../components/HeaderAdmin/HeaderAdmin";
 import "./EditUserProfile.css";
 import { useNavigate } from "react-router-dom";
@@ -8,7 +7,13 @@ import { useParams } from "react-router-dom";
 import axios from "axios";
 import { toast } from "react-toastify";
 import UserRole from "../../../../types/user/userRole";
-import { BodyContainer, BtnBlue, BtnDarkGray, BtnGray } from "../../../../components/styles/styled_components";
+import {
+  BodyContainer,
+  BtnBlue,
+  BtnDarkGray,
+  BtnGray,
+} from "../../../../components/styles/styled_components";
+import BackLink from "../../../../components/BackLink/BackLink";
 
 const EditUserProfile = () => {
   const params = useParams();
@@ -97,7 +102,7 @@ const EditUserProfile = () => {
       <HeaderAdmin />
       <BodyContainer>
         <div className="activities_container">
-          <a href="/userProfiles">Назад</a>
+          <BackLink/>
         </div>
 
         <form onSubmit={submitHandler}>
@@ -182,13 +187,8 @@ const EditUserProfile = () => {
             )}
           </div>
           <div className="buttons">
-            <BtnBlue type="submit">
-              Сохранить
-            </BtnBlue>
-            <BtnDarkGray
-              type="button"
-              onClick={openModalCard}
-            >
+            <BtnBlue type="submit">Сохранить</BtnBlue>
+            <BtnDarkGray type="button" onClick={openModalCard}>
               Отменить
             </BtnDarkGray>
           </div>
@@ -207,12 +207,8 @@ const EditUserProfile = () => {
             <p>Вы точно хотите покинуть раздел редактирования пользователя?</p>
           </div>
           <div className="modalCancel_buttons">
-            <BtnBlue onClick={cancelHandler}>
-              Покинуть
-            </BtnBlue>
-            <BtnGray onClick={closeModalCard}>
-              Вернуться
-            </BtnGray>
+            <BtnBlue onClick={cancelHandler}>Покинуть</BtnBlue>
+            <BtnGray onClick={closeModalCard}>Вернуться</BtnGray>
           </div>
         </Modal>
       )}

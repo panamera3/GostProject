@@ -14,6 +14,7 @@ import {
   BtnBlue,
   BtnDarkGray,
 } from "../../components/styles/styled_components";
+import BackLink from "../../components/BackLink/BackLink";
 
 const Search = () => {
   const navigate = useNavigate();
@@ -332,7 +333,7 @@ const Search = () => {
       <BodyContainer>
         {!textSearch && (
           <>
-            <a href="/home">Назад</a>
+            <BackLink />
             <form onSubmit={searchHandler} className="modalSearchForm">
               <div className="form_search_container">
                 <div className="form_search_container_without_keys">

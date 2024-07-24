@@ -1,14 +1,12 @@
 import "./Login.css";
 import LeftColumnLogReg from "../../components/LeftColumnLogReg/LeftColumnLogReg";
-import { useState, useEffect, useRef } from "react";
+import { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import UserRole from "../../types/user/userRole";
 import { toast } from "react-toastify";
-import eye from "../../images/eye.svg";
-import eye_closed from "../../images/eye_closed.svg";
-import { notificationStatus } from "../../components/constants/NotificationStatus";
 import { BtnBlue, Input } from "../../components/styles/styled_components";
+import { eyeClosedIcon, eyeIcon } from "../../assets/images";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -128,7 +126,7 @@ const Login = () => {
                     isInvalid={!fieldValidity.password}
                   />
                   <img
-                    src={showPassword ? eye : eye_closed}
+                    src={showPassword ? eyeIcon : eyeClosedIcon}
                     alt="eye"
                     id="eye_icon"
                     onClick={() => setShowPassword(!showPassword)}

@@ -4,12 +4,13 @@ import HeaderAdmin from "../../components/HeaderAdmin/HeaderAdmin";
 import "./MyProfile.css";
 import axios from "axios";
 import { useSearchParams } from "react-router-dom";
-import copy from "../../images/copy.svg";
 import { CopyToClipboard } from "react-copy-to-clipboard";
 import { toast } from "react-toastify";
 
 import { translationRolesDict } from "../../components/constants/translationRolesDict";
 import { BodyContainer } from "../../components/styles/styled_components";
+import { copyIcon } from "../../assets/images";
+import BackLink from "../../components/BackLink/BackLink";
 
 const MyProfile = () => {
   const [user, setUser] = useState({});
@@ -164,7 +165,7 @@ const MyProfile = () => {
       )}
       <BodyContainer>
         <div className="activities_container">
-          <a href="/home">Назад</a>
+          <BackLink />
           <a
             href={`/editUser/${localStorage.getItem("id")}`}
             id="editMyProfile"
@@ -233,7 +234,7 @@ const MyProfile = () => {
                   text={company && company["code"]}
                   onCopy={copyCompanyCode}
                 >
-                  <img src={copy} alt="copy" />
+                  <img src={copyIcon} alt="copy" />
                 </CopyToClipboard>
               </div>
               <div className="profile-frequency-container">

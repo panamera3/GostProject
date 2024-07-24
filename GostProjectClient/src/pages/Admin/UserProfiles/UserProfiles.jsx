@@ -1,20 +1,19 @@
 import axios from "axios";
 import HeaderAdmin from "../../../components/HeaderAdmin/HeaderAdmin";
 import "./UserProfiles.css";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import UserRole from "../../../types/user/userRole";
 import Modal from "../../../components/Modal/Modal";
-import deleteImg from "../../../images/delete.svg";
-import editImg from "../../../images/edit.svg";
 import { useNavigate } from "react-router-dom";
 import { translationRolesDict } from "../../../components/constants/translationRolesDict";
 import { toast } from "react-toastify";
-import { computeHeadingLevel } from "@testing-library/react";
 import {
   BodyContainer,
   BtnBlue,
   BtnDarkGray,
 } from "../../../components/styles/styled_components";
+import { deleteIcon, editIcon } from "../../../assets/images";
+import BackLink from "../../../components/BackLink/BackLink";
 
 const UserProfiles = () => {
   const navigate = useNavigate();
@@ -135,7 +134,7 @@ const UserProfiles = () => {
           </td>
           <td>
             <img
-              src={editImg}
+              src={editIcon}
               alt="редактировать"
               onClick={() => {
                 navigate(`/editUser/${user.id}`);
@@ -145,7 +144,7 @@ const UserProfiles = () => {
           <td>
             {user.id != localStorage.getItem("id") && (
               <img
-                src={deleteImg}
+                src={deleteIcon}
                 alt="удалить"
                 onClick={() =>
                   openModalDelete(user.id, [
@@ -197,7 +196,7 @@ const UserProfiles = () => {
       <HeaderAdmin />
       <BodyContainer>
         <div className="activities_container">
-          <a href="/home">Назад</a>
+          <BackLink/>
         </div>
         <form onSubmit={filterUsers} className="filter_users_form">
           <div className="filter_users">

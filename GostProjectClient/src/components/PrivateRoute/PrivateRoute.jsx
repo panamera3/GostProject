@@ -1,5 +1,4 @@
-import { Route, Navigate, useLocation, Outlet } from "react-router-dom";
-import { useContext, useEffect, useState } from "react";
+import { Navigate, useLocation, Outlet } from "react-router-dom";
 
 const PrivateRoute = () => {
   const location = useLocation();

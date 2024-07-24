@@ -1,15 +1,15 @@
 import "./Gost.css";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import GostTable from "../../components/GostTable/GostTable";
 import HeaderAdmin from "../../components/HeaderAdmin/HeaderAdmin";
 import HeaderUser from "../../components/Header/HeaderUser";
 import axios from "axios";
 import { useParams } from "react-router-dom";
-import UserRole from "../../types/user/userRole";
-import { ToastContainer, toast } from "react-toastify";
+import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { BodyContainer } from "../../components/styles/styled_components";
+import BackLink from "../../components/BackLink/BackLink";
 
 const Gost = () => {
   const params = useParams();
@@ -113,7 +113,7 @@ const Gost = () => {
       <BodyContainer>
         <div className="activities_container">
           <div>
-            <a href="/home">Назад</a>
+            <BackLink/>
             {isFavourite && (
               <p onClick={() => favGostHandler()}>Удалить из избранного</p>
             )}

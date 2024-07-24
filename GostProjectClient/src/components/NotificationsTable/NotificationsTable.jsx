@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import axios from "axios";
-import externalLink from "../../images/external-link.svg";
+import { externalLinkIcon } from "../../assets/images";
 
 const NotificationsTable = () => {
   const [notifications, setNotifications] = useState([]);
@@ -37,7 +37,7 @@ const NotificationsTable = () => {
           </td>
           <td>
             <img
-              src={externalLink}
+              src={externalLinkIcon}
               alt="view"
               onClick={() => {
                 navigate(`/notification/${notification.id}`);

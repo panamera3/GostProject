@@ -1,13 +1,10 @@
 import "./GostsTable.css";
-import file from "../../images/file-minus.svg";
-import like from "../../images/like.svg";
-import likeActive from "../../images/like_active.svg";
 import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import axios from "axios";
-import { translationGostDict } from "../constants/translationGostDict";
 import Pagination from "react-js-pagination";
 import { toast } from "react-toastify";
+import { fileMinusIcon, likeActiveIcon, likeIcon } from "../../assets/images";
 
 const GostsTable = ({ favourites, archiveGosts, searchGosts }) => {
   const navigate = useNavigate();
@@ -193,7 +190,7 @@ const GostsTable = ({ favourites, archiveGosts, searchGosts }) => {
           <td>
             <img
               className="gostsTableButton"
-              src={file}
+              src={fileMinusIcon}
               alt="view"
               onClick={() => {
                 navigate(`/gost/${gost.id}`);
@@ -205,7 +202,7 @@ const GostsTable = ({ favourites, archiveGosts, searchGosts }) => {
               favouritesGosts.some((favGost) => favGost.id === gost.id) && (
                 <img
                   className="gostsTableButton"
-                  src={likeActive}
+                  src={likeActiveIcon}
                   alt="like"
                   onClick={() => likeHandler(false, gost.id)}
                 />
@@ -214,7 +211,7 @@ const GostsTable = ({ favourites, archiveGosts, searchGosts }) => {
               !favouritesGosts.some((favGost) => favGost.id === gost.id) && (
                 <img
                   className="gostsTableButton"
-                  src={like}
+                  src={likeIcon}
                   alt="like"
                   onClick={() => likeHandler(true, gost.id)}
                 />

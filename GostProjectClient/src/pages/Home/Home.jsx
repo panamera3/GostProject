@@ -3,6 +3,7 @@ import HeaderAdmin from "../../components/HeaderAdmin/HeaderAdmin";
 import HeaderUser from "../../components/Header/HeaderUser";
 import GostsTable from "../../components/GostsTable/GostsTable";
 import { BodyContainer } from "../../components/styles/styled_components";
+import BackLink from "../../components/BackLink/BackLink";
 
 const Home = ({ searchGosts, favourites, archiveGosts }) => {
   return (
@@ -15,12 +16,12 @@ const Home = ({ searchGosts, favourites, archiveGosts }) => {
       <BodyContainer>
         {searchGosts && (
           <div className="activities_container">
-            <a href="/search">Назад</a>
+            <BackLink />
           </div>
         )}
         {favourites && (
           <div className="activities_container">
-            <a href="/home">Назад</a>
+            <BackLink />
           </div>
         )}
         <GostsTable

@@ -129,6 +129,10 @@ const BtnDeleteNormativeReference = styled.button`
   padding: 0.5em;
 `;
 
+const BlackA = styled.a`
+  color: #000000;
+`;
+
 export {
   GlobalStyle,
   Button,
@@ -140,4 +144,5 @@ export {
   BtnDarkGray,
   BtnMidGray,
   BtnDeleteNormativeReference,
+  BlackA,
 };

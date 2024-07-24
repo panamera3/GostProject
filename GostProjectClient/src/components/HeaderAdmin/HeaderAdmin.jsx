@@ -1,11 +1,9 @@
 import "./HeaderAdmin.css";
-import userImg from "../../images/user.svg";
-import notification from "../../images/notification.svg";
-import notificationActive from "../../images/notificationActive.svg";
 import { useNavigate } from "react-router-dom";
 import { useRef, useState, useEffect } from "react";
 import Modal from "../Modal/Modal";
 import axios from "axios";
+import { notificationActiveIcon, notificationIcon, userIcon } from "../../assets/images";
 
 const HeaderAdmin = ({ user }) => {
   const header = useRef();
@@ -84,7 +82,7 @@ const HeaderAdmin = ({ user }) => {
               {!(notificationsCount > 0) && (
                 <img
                   alt="Notifications"
-                  src={notification}
+                  src={notificationIcon}
                   onClick={() => openModalNotification()}
                 />
               )}
@@ -92,13 +90,13 @@ const HeaderAdmin = ({ user }) => {
               {notificationsCount > 0 && (
                 <img
                   alt="Unread notifications"
-                  src={notificationActive}
+                  src={notificationActiveIcon}
                   onClick={() => openModalNotification()}
                 />
               )}
             </>
           )}
-          <img alt="User" src={userImg} onClick={() => openModalCard()} />
+          <img alt="User" src={userIcon} onClick={() => openModalCard()} />
         </div>
       </div>
       {isModalNotificationOpen && (

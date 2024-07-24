@@ -14,8 +14,6 @@ import {
   BtnGray,
 } from "../styles/styled_components";
 import ReactSelect from "react-select";
-// import hintImg from "../../images/hint.svg";
-// import switchImg from "../../images/switch.svg";
 
 const GostTable = ({ id, view, edit, add }) => {
   const navigate = useNavigate();

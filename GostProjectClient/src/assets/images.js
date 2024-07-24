@@ -1,0 +1,12 @@
+export const eyeIcon = "/icons/eye.svg";
+export const eyeClosedIcon = "/icons/eyeClosed.svg";
+export const copyIcon = "/icons/copy.svg";
+export const deleteIcon = "/icons/delete.svg";
+export const editIcon = "/icons/edit.svg";
+export const externalLinkIcon = "/icons/externalLink.svg";
+export const fileMinusIcon = "/icons/fileMinus.svg";
+export const likeActiveIcon = "/icons/likeActive.svg";
+export const likeIcon = "/icons/like.svg";
+export const notificationIcon = "/icons/notification.svg";
+export const notificationActiveIcon = "/icons/notificationActive.svg";
+export const userIcon = "/icons/user.svg";
