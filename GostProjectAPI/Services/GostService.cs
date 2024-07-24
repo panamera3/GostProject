@@ -184,7 +184,6 @@ namespace GostProjectAPI.Services
 
 			if (existingFile != null)
 			{
-				// If the file exists, append a different unique identifier to the file name
 				uniqueIdentifier = Guid.NewGuid().ToString().Substring(0, 8);
 				keyName = $"{fileName}_{uniqueIdentifier}{fileExtension}";
 			}
@@ -291,20 +290,15 @@ namespace GostProjectAPI.Services
 		{
 			try
 			{
-				// Создаем объект приложения Word
 				var winword = new Application();
-
-				// Открываем документ Word в режиме "только для чтения"
 				var wordDoc = winword.Documents.Open(documentLocation, ReadOnly: true);
 
-				// Выполняем поиск текста в документе
 				bool result;
 				if (caseSensitive)
 					result = wordDoc.Content.Text.IndexOf(stringToSearchFor) >= 0;
 				else
 					result = wordDoc.Content.Text.IndexOf(stringToSearchFor, StringComparison.CurrentCultureIgnoreCase) >= 0;
 
-				// Закрываем документ и приложение Word
 				wordDoc.Close();
 				winword.Quit();
 
@@ -319,7 +313,6 @@ namespace GostProjectAPI.Services
 
 		public static async Task<bool> SearchInPdfFileAsync(string url, string searchText)
 		{
-			// Скачиваем файл с S3
 			string tempFilePath = Path.GetTempFileName();
 
 			using (HttpClient client = new HttpClient())
@@ -333,7 +326,6 @@ namespace GostProjectAPI.Services
 				}
 			}
 
-			// Открываем и ищем в PDF-файле
 			try
 			{
 				using var pcontent = PdfDocument.Open(tempFilePath);
@@ -348,7 +340,6 @@ namespace GostProjectAPI.Services
 			}
 			finally
 			{
-				// Удаляем временный файл
 				if (File.Exists(tempFilePath))
 				{
 					File.Delete(tempFilePath);
@@ -543,7 +534,6 @@ namespace GostProjectAPI.Services
 
 			await _dbContext.SaveChangesAsync();
 
-			// добавление даты актуализации
 			PropertyInfo[] properties = typeof(GostEditDto).GetProperties();
 			List<UpdateGostDate> updatedFields = new();
 

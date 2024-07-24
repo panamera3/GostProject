@@ -66,7 +66,7 @@ const EditUserProfile = () => {
     event.preventDefault();
 
     axios({
-      method: "post",
+      method: "put",
       url: `/api/User/EditUser`,
       data: {
         id: params.id,

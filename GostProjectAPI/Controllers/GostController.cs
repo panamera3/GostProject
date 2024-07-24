@@ -87,8 +87,7 @@ namespace GostProjectAPI.Controllers
 			return Ok(buckets);
 		}
 
-		// HttpPut
-		[HttpPost]
+		[HttpPut]
 		public async Task<JsonResult> EditGost([FromBody] GostEditDto gostEditDto)
 		{
 			return JSON(await _gostService.EditGostAsync(gostEditDto));

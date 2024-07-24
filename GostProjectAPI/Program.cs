@@ -27,7 +27,6 @@ namespace GostProjectAPI
 			// Add services to the container.
 
 			builder.Services.AddControllers();
-			// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 			builder.Services.AddEndpointsApiExplorer();
 			builder.Services.AddSwaggerGen();
 
@@ -79,7 +78,6 @@ namespace GostProjectAPI
 			builder.Services.AddEndpointsApiExplorer();
 			builder.Services.AddSwaggerGen(c =>
 			{
-				// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 				var jwtSecurityScheme = new OpenApiSecurityScheme
 				{
 					Name = "Authorization",

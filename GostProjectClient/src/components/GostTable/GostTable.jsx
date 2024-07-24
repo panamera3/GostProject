@@ -152,13 +152,11 @@ const GostTable = ({ id, view, edit, add }) => {
     if (view || edit) {
       const fetchData = async () => {
         try {
-          // Fetch update dates
           const updateDatesResponse = await axios.get(
             `/api/Gost/GetUpdateGostDates/${id}`
           );
           setUpdateGostDates(updateDatesResponse.data);
 
-          // Fetch main GOST details
           const gostResponse = await axios.get(`/api/Gost/GetGost/${id}`);
 
           if (!gostResponse.data.gost) {
@@ -190,7 +188,6 @@ const GostTable = ({ id, view, edit, add }) => {
 
           setReplacedContainerVisibility(!!gost.gostIdReplaced);
 
-          // Process normative references
           const selectedItems = normativeReferences.reduce(
             (items, reference) => {
               if (reference.referenceGostId !== null) {
@@ -214,7 +211,6 @@ const GostTable = ({ id, view, edit, add }) => {
             .filter((reference) => reference.referenceGostId !== null)
             .map((reference) => reference.referenceGostId);
 
-          // Fetch additional GOSTs based on normative references
           if (referenceGostIds.length > 0) {
             const fetchedGostsResponse = await axios.post(
               "/api/Gost/GetGostsRange",
@@ -230,7 +226,6 @@ const GostTable = ({ id, view, edit, add }) => {
             setReferenceGostNames(newReferenceGostNames);
           }
 
-          // Fetch GOST file
           const gostFileResponse = await axios.get(
             `/api/Gost/GetGostFile/${id}`
           );
@@ -332,7 +327,6 @@ const GostTable = ({ id, view, edit, add }) => {
         ]);
       }
 
-      // Очищаем поле ввода после добавления или выбора
       setInputValue("");
     }
   };
@@ -977,7 +971,7 @@ const GostTable = ({ id, view, edit, add }) => {
           );
 
           axios({
-            method: "post",
+            method: "put",
             url: `/api/Gost/EditGost`,
             data: {
               id: gostIdReplaced,
@@ -1039,7 +1033,7 @@ const GostTable = ({ id, view, edit, add }) => {
           : undefined;
 
       axios({
-        method: "post",
+        method: "put",
         url: `/api/Gost/EditGost`,
         data: {
           id,

@@ -42,8 +42,7 @@ namespace GostProjectAPI.Controllers
 			return BadRequest();
 		}
 
-        // HttpPut
-        [HttpPost]
+        [HttpPut]
         public async Task<JsonResult> EditUser([FromBody] UserEditDto userEdit)
         {
             try

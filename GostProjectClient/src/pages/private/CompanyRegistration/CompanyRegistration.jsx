@@ -131,7 +131,6 @@ const CompanyRegistration = () => {
             navigate("/myProfile");
           } else {
             toast.error(newUser.data.error);
-            console.log(newUser.data.error);
           }
         })
         .catch((error) => {
