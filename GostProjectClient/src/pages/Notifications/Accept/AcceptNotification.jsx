@@ -22,7 +22,6 @@ const AcceptNotification = () => {
     axios({
       method: "get",
       url: `/api/Notification/GetNotification/${params.id}`,
-      headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
     })
       .then((response) => {
         setNotification(response.data);
@@ -38,7 +37,6 @@ const AcceptNotification = () => {
     axios({
       method: "post",
       url: `/api/Notification/AcceptUser/?notificationID=${params.id}&role=${newRole}`,
-      headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
     })
       .then((response) => {
         toast.success("Заявка была успешно принята!", {

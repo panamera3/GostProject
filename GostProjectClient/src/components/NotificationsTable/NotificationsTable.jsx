@@ -2,6 +2,7 @@ import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { externalLinkIcon } from "../../assets/images";
+import Table from "../Table/Table";
 
 const NotificationsTable = () => {
   const [notifications, setNotifications] = useState([]);
@@ -12,7 +13,6 @@ const NotificationsTable = () => {
     axios({
       method: "get",
       url: `/api/Notification/GetUnreadNotifications/?companyID=${companyID}`,
-      headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
     })
       .then((notifications) => {
         setNotifications(notifications.data);
@@ -52,17 +52,11 @@ const NotificationsTable = () => {
   return (
     <>
       <p>Список заявок</p>
-      <table className="notificationsTable">
-        <thead>
-          <tr>
-            <th scope="col">№</th>
-            <th scope="col">ФИО</th>
-            <th scope="col">Логин</th>
-            <th />
-          </tr>
-        </thead>
-        <tbody>{renderNotificationsTable()}</tbody>
-      </table>
+      <Table
+        className="notificationsTable"
+        headers={["№", "ФИО", "Логин", ""]}
+        renderBody={renderNotificationsTable} 
+      />
     </>
   );
 };

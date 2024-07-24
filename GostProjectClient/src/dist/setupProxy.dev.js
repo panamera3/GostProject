@@ -11,6 +11,7 @@ module.exports = function (app) {
       changeOrigin: true,
       headers: {
         "Content-Type": "application/json",
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
       },
     })
   );

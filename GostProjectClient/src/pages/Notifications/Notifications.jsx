@@ -15,7 +15,6 @@ const Notifications = () => {
       axios({
         method: "post",
         url: `/api/Notification/ReadNotifications/?userID=${userId}`,
-        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
       })
         .then((notificationLastSeen) => {
           hasRequestedNotifications.current = true;
@@ -31,7 +30,6 @@ const Notifications = () => {
     axios({
       method: "get",
       url: `/api/User/GetUser/${userId}`,
-      headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
     })
       .then((user) => {
         setUser(user.data);

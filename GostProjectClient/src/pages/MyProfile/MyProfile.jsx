@@ -21,7 +21,6 @@ const MyProfile = () => {
     axios({
       method: "get",
       url: `/api/User/GetUser/${userId}`,
-      headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
     })
       .then((user) => {
         if (user.data) {

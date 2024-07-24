@@ -14,6 +14,7 @@ import {
   BtnGray,
 } from "../styles/styled_components";
 import ReactSelect from "react-select";
+import Table from "../Table/Table";
 
 const GostTable = ({ id, view, edit, add }) => {
   const navigate = useNavigate();
@@ -70,7 +71,6 @@ const GostTable = ({ id, view, edit, add }) => {
         axios({
           method: "get",
           url: `/api/Gost/GetGostName/${gost.gostIdReplaced}`,
-          headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
         })
           .then((gostReplacedName) => {
             setGostReplacedName(gostReplacedName.data);
@@ -150,25 +150,18 @@ const GostTable = ({ id, view, edit, add }) => {
 
   useEffect(() => {
     if (view || edit) {
-      axios({
-        method: "get",
-        url: `/api/Gost/GetUpdateGostDates/${id}`,
-        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
-      })
-        .then((gosts) => {
-          setUpdateGostDates(gosts.data);
-        })
-        .catch((error) => {
-          console.log(error);
-        });
+      const fetchData = async () => {
+        try {
+          // Fetch update dates
+          const updateDatesResponse = await axios.get(
+            `/api/Gost/GetUpdateGostDates/${id}`
+          );
+          setUpdateGostDates(updateDatesResponse.data);
 
-      axios({
-        method: "get",
-        url: `/api/Gost/GetGost/${id}`,
-        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
-      })
-        .then((gost) => {
-          if (!gost.data.gost) {
+          // Fetch main GOST details
+          const gostResponse = await axios.get(`/api/Gost/GetGost/${id}`);
+
+          if (!gostResponse.data.gost) {
             toast.error("ГОСТ не найден");
             setGostNotFound(true);
             setTimeout(() => {
@@ -177,96 +170,77 @@ const GostTable = ({ id, view, edit, add }) => {
             return;
           }
 
-          const gostKeywords = gost.data.keywords;
-          const gostKeyphrases = gost.data.keyphrases;
-          setGost(gost.data.gost);
-          setKeywords(gostKeywords);
-          setKeyphrases(gostKeyphrases);
+          const { gost, keywords, keyphrases, normativeReferences } =
+            gostResponse.data;
+          setGost(gost);
+          setKeywords(keywords);
+          setKeyphrases(keyphrases);
+          setNormativeReferences(normativeReferences);
 
-          setFormData(() => ({
-            keywords: gostKeywords
+          setFormData({
+            keywords: keywords
               .map((keyword) => keyword.name)
               .join(", ")
               .trim(),
-            keyphrases: gostKeyphrases
+            keyphrases: keyphrases
               .map((keyphrase) => keyphrase.name)
               .join(", ")
               .trim(),
-          }));
+          });
 
-          setReplacedContainerVisibility(
-            gost.data.gost.gostIdReplaced ? true : false
+          setReplacedContainerVisibility(!!gost.gostIdReplaced);
+
+          // Process normative references
+          const selectedItems = normativeReferences.reduce(
+            (items, reference) => {
+              if (reference.referenceGostId !== null) {
+                items.push({
+                  id: String(reference.referenceGostId),
+                  designation: reference.referenceGost?.designation || "",
+                });
+              } else {
+                items.push({
+                  id: null,
+                  designation: reference.referenceGostDesignation,
+                });
+              }
+              return items;
+            },
+            []
           );
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-
-      axios({
-        method: "get",
-        url: `/api/Gost/GetNormativeReferences/${id}`,
-        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
-      })
-        .then((response) => {
-          const references = response.data;
-          setNormativeReferences(references);
-
-          const selectedItems = references.reduce((items, reference) => {
-            if (reference.referenceGostId !== null) {
-              items.push({
-                id: String(reference.referenceGostId),
-                designation: reference.referenceGost?.designation || "",
-              });
-            } else {
-              items.push({
-                id: null,
-                designation: reference.referenceGostDesignation,
-              });
-            }
-            return items;
-          }, []);
           setSelectedItems(selectedItems);
 
-          if (references) {
-            const referenceGostIds = references
-              .filter((reference) => reference.referenceGostId !== null)
-              .map((reference) => reference.referenceGostId);
+          const referenceGostIds = normativeReferences
+            .filter((reference) => reference.referenceGostId !== null)
+            .map((reference) => reference.referenceGostId);
 
-            axios({
-              method: "post",
-              url: "/api/Gost/GetGostsRange",
-              headers: {
-                Authorization: `Bearer ${localStorage.getItem("token")}`,
-              },
-              data: { GostIDs: referenceGostIds },
-            })
-              .then((response) => {
-                const fetchedGosts = response.data;
-                const newReferenceGostNames = {};
-                fetchedGosts.forEach((gost) => {
-                  newReferenceGostNames[gost.id] = gost.designation;
-                });
-                setReferenceGostNames(newReferenceGostNames);
-              })
-              .catch((error) => {
-                console.error(error);
-              });
+          // Fetch additional GOSTs based on normative references
+          if (referenceGostIds.length > 0) {
+            const fetchedGostsResponse = await axios.post(
+              "/api/Gost/GetGostsRange",
+              {
+                GostIDs: referenceGostIds,
+              }
+            );
+
+            const newReferenceGostNames = {};
+            fetchedGostsResponse.data.forEach((gost) => {
+              newReferenceGostNames[gost.id] = gost.designation;
+            });
+            setReferenceGostNames(newReferenceGostNames);
           }
-        })
-        .catch((error) => {
-          console.log(error);
-        });
 
-      axios({
-        method: "get",
-        url: `/api/Gost/GetGostFile/${id}`,
-      })
-        .then((gostFile) => {
-          setGostFile(gostFile.data);
-        })
-        .catch((error) => {
-          console.log(error);
-        });
+          // Fetch GOST file
+          const gostFileResponse = await axios.get(
+            `/api/Gost/GetGostFile/${id}`
+          );
+          setGostFile(gostFileResponse.data);
+        } catch (error) {
+          console.error(error);
+        }
+      };
+
+      fetchData();
     }
   }, []);
 
@@ -292,7 +266,6 @@ const GostTable = ({ id, view, edit, add }) => {
     axios({
       method: "get",
       url: url,
-      headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
     })
       .then((gostsNormativeReferences) => {
         setGostsNormativeReferences(gostsNormativeReferences.data);
@@ -471,28 +444,31 @@ const GostTable = ({ id, view, edit, add }) => {
     normativeReferences,
     referenceGostNames
   ) => {
+    if (!normativeReferences || normativeReferences.length === 0) {
+      return <p>Нет ссылок</p>;
+    }
+
+    const renderReference = (reference) => {
+      if (reference.referenceGostId) {
+        return (
+          <a href={`/gost/${reference.referenceGostId}`}>
+            {referenceGostNames[reference.referenceGostId] || ""}
+          </a>
+        );
+      }
+      return (
+        <p style={{ padding: 0 }}>
+          {reference.referenceGostDesignation || "Нет обозначения"}
+        </p>
+      );
+    };
+
     return (
-      <>
-        {normativeReferences && normativeReferences.length > 0 ? (
-          <ul>
-            {normativeReferences.map((reference) => (
-              <li key={reference.id}>
-                {reference.referenceGostId ? (
-                  <a href={`/gost/${reference.referenceGostId}`}>
-                    {referenceGostNames[reference.referenceGostId] || ""}
-                  </a>
-                ) : (
-                  <p style={{ padding: 0 }}>
-                    {reference.referenceGostDesignation || "Нет обозначения"}
-                  </p>
-                )}
-              </li>
-            ))}
-          </ul>
-        ) : (
-          <p>Нет ссылок</p>
-        )}
-      </>
+      <ul>
+        {normativeReferences.map((reference) => (
+          <li key={reference.id}>{renderReference(reference)}</li>
+        ))}
+      </ul>
     );
   };
 
@@ -580,9 +556,11 @@ const GostTable = ({ id, view, edit, add }) => {
     }));
   };
 
+  /*
   const switchNormativeReferencesMode = () => {
     setNormativeReferencesMode(!normativeReferencesMode);
   };
+  */
 
   const renderAddEditField = (key) => {
     const value = formData[key] !== undefined ? formData[key] : gost[key];
@@ -669,7 +647,7 @@ const GostTable = ({ id, view, edit, add }) => {
                       }
                     </a>
                   ) : (
-                    <p style={{ display: "inline" }}>{item.designation}</p>
+                    <span>{item.designation}</span>
                   )}
                   <BtnDeleteNormativeReference
                     onClick={() =>
@@ -992,9 +970,6 @@ const GostTable = ({ id, view, edit, add }) => {
           gostIdReplaced: Number(formData.gostIdReplaced),
           normativeReferences,
         },
-        headers: {
-          "Content-Type": "application/json",
-        },
       }).then((gost) => {
         if (gostIdReplaced !== -1) {
           const replacedStatus = actionStatusOptions.find(
@@ -1007,9 +982,6 @@ const GostTable = ({ id, view, edit, add }) => {
             data: {
               id: gostIdReplaced,
               actionStatus: replacedStatus,
-            },
-            headers: {
-              "Content-Type": "application/json",
             },
           })
             .then((gost) => {})
@@ -1079,9 +1051,6 @@ const GostTable = ({ id, view, edit, add }) => {
             ? formData.gostIdReplaced
             : 0,
         },
-        headers: {
-          "Content-Type": "application/json",
-        },
       })
         .then((gost) => {
           setGost(gost.data);
@@ -1113,18 +1082,15 @@ const GostTable = ({ id, view, edit, add }) => {
       )}
       {!gostNotFound && (
         <form onSubmit={submitHandler}>
-          <table className="gost_table">
-            <thead>
-              <tr>
-                <th scope="col">Поле</th>
-                <th scope="col">Значение</th>
-                {!add && !edit && (
-                  <th scope="col">Дата последней актуализации</th>
-                )}
-              </tr>
-            </thead>
-            <tbody>{renderGostTable()}</tbody>
-          </table>
+          <Table
+            className="gost_table"
+            headers={[
+              "Поле",
+              "Значение",
+              ...(add || edit ? [] : ["Дата последней актуализации"]),
+            ]}
+            renderBody={renderGostTable}
+          />
           {!view && edit && (
             <>
               <BtnBlue type="submit">Сохранить</BtnBlue>

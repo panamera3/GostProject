@@ -14,6 +14,7 @@ import {
 } from "../../../components/styles/styled_components";
 import { deleteIcon, editIcon } from "../../../assets/images";
 import BackLink from "../../../components/BackLink/BackLink";
+import Table from "../../../components/Table/Table";
 
 const UserProfiles = () => {
   const navigate = useNavigate();
@@ -31,7 +32,6 @@ const UserProfiles = () => {
       url: `/api/User/GetUniqueDepartments/${localStorage.getItem(
         "workCompanyID"
       )}`,
-      headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
     })
       .then((departments) => {
         setUniqueDepartments(departments.data);
@@ -45,7 +45,6 @@ const UserProfiles = () => {
     axios({
       method: "get",
       url: `/api/User/GetUsers/${localStorage.getItem("workCompanyID")}`,
-      headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
     })
       .then((users) => {
         setUsers(users.data);
@@ -83,7 +82,6 @@ const UserProfiles = () => {
     axios({
       method: "delete",
       url: `/api/User/DeleteUser/${deleteUserId}`,
-      headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
     })
       .then(() => {
         closeModalDelete();
@@ -181,7 +179,6 @@ const UserProfiles = () => {
         fullname: values.fullname ? values.fullname : "",
         companyID: localStorage.getItem("workCompanyID"),
       },
-      headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
     })
       .then((filteredUsers) => {
         setUsers(filteredUsers.data);
@@ -196,7 +193,7 @@ const UserProfiles = () => {
       <HeaderAdmin />
       <BodyContainer>
         <div className="activities_container">
-          <BackLink/>
+          <BackLink />
         </div>
         <form onSubmit={filterUsers} className="filter_users_form">
           <div className="filter_users">
@@ -207,19 +204,11 @@ const UserProfiles = () => {
             <BtnBlue type="sumbit">Найти</BtnBlue>
           </div>
         </form>
-        <table className="user_profiles_table">
-          <thead>
-            <tr>
-              <th scope="col">№</th>
-              <th scope="col">Отдел</th>
-              <th scope="col">Роль</th>
-              <th scope="col">ФИО пользователя</th>
-              <th />
-              <th />
-            </tr>
-          </thead>
-          <tbody>{renderUsers()}</tbody>
-        </table>
+        <Table
+          className="user_profiles_table"
+          headers={["№", "Отдел", "Роль", "ФИО пользователя", "", ""]}
+          renderBody={renderUsers}
+        />
       </BodyContainer>
 
       {isModalDeleteOpen && (

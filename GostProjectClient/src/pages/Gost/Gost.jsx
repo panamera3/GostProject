@@ -22,7 +22,6 @@ const Gost = () => {
     axios({
       method: "post",
       url: `/api/Gost/AddRequest?gostID=${params.id}`,
-      headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
     })
       .then((gost) => {})
       .catch((error) => {
@@ -34,7 +33,6 @@ const Gost = () => {
       url: `/api/Gost/CheckFavouriteAndArchiveGost/${localStorage.getItem(
         "id"
       )}/${params.id}`,
-      headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
     })
       .then((response) => {
         setIsFavourite(response.data.isFavourite);
@@ -49,7 +47,6 @@ const Gost = () => {
     axios({
       method: "delete",
       url: `/api/Gost/DeleteGost/${params.id}`,
-      headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
     })
       .then((data) => {
         if (data.status === 200) {

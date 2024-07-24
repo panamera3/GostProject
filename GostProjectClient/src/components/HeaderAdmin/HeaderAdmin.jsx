@@ -18,7 +18,6 @@ const HeaderAdmin = ({ user }) => {
     axios({
       method: "get",
       url: `/api/Notification/GetUnreadNotifications/?companyID=${companyID}`,
-      headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
     })
       .then((notifications) => {
         setnotificationsCount(notifications.data.length);

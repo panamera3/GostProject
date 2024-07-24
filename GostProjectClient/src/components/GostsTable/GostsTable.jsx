@@ -5,6 +5,7 @@ import axios from "axios";
 import Pagination from "react-js-pagination";
 import { toast } from "react-toastify";
 import { fileMinusIcon, likeActiveIcon, likeIcon } from "../../assets/images";
+import Table from "../Table/Table";
 
 const GostsTable = ({ favourites, archiveGosts, searchGosts }) => {
   const navigate = useNavigate();
@@ -126,10 +127,6 @@ const GostsTable = ({ favourites, archiveGosts, searchGosts }) => {
             sortDirection: sortDirection,
             archived: archiveGosts,
           },
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-            "Content-Type": "application/json",
-          },
         })
           .then((gosts) => {
             setGosts(gosts.data.data);
@@ -232,10 +229,6 @@ const GostsTable = ({ favourites, archiveGosts, searchGosts }) => {
         sortField: selectedSort,
         sortDirection: selectedAsc ? "ASC" : "DESC",
       },
-      headers: {
-        "Content-Type": "application/json",
-        //'Authorization': Bearer ${localStorage.getItem("token")}
-      },
     })
       .then((gosts) => {
         setGosts(gosts.data.data);
@@ -309,20 +302,19 @@ const GostsTable = ({ favourites, archiveGosts, searchGosts }) => {
             </div>
           )}
 
-          <table className="gostsTable">
-            <thead>
-              <tr>
-                <th scope="col">№</th>
-                <th scope="col">Обозначение</th>
-                <th scope="col">Код ОКС</th>
-                <th scope="col">Наименование</th>
-                <th scope="col">Количество обращений</th>
-                <th />
-                <th />
-              </tr>
-            </thead>
-            <tbody>{renderGostsTable()}</tbody>
-          </table>
+          <Table
+            className="gostsTable"
+            headers={[
+              "№",
+              "Обозначение",
+              "Код ОКС",
+              "Наименование",
+              "Количество обращений",
+              "",
+              "",
+            ]}
+            renderBody={renderGostsTable}
+          />
 
           <Pagination
             className="pagination-bar"

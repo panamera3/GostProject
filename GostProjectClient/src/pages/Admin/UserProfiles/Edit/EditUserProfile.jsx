@@ -27,7 +27,6 @@ const EditUserProfile = () => {
     axios({
       method: "get",
       url: `/api/User/GetUser/${params.id}`,
-      headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
     })
       .then((user) => {
         const fullname =
@@ -76,9 +75,6 @@ const EditUserProfile = () => {
         department: formData.department,
         role: formData.role == 1 ? UserRole.Admin : UserRole.Standart,
         phoneNumber: formData.phoneNumber,
-      },
-      headers: {
-        "Content-Type": "application/json",
       },
     })
       .then((user) => {

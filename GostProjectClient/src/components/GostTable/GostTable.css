@@ -79,3 +79,7 @@ select.gostInputAdd {
 .hint {
   display: inline;
 }
+
+li * {
+  margin: 0.5em !important;
+}

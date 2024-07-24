@@ -160,9 +160,6 @@ const Search = () => {
           pagination,
           filter,
         },
-        headers: {
-          "Content-Type": "application/json",
-        },
       })
         .then((gosts) => {
           localStorage.setItem("searchGosts", JSON.stringify(gosts.data.data));
@@ -219,9 +216,6 @@ const Search = () => {
         companyID: localStorage.getItem("workCompanyID"),
         pagination,
         searchInFilePrompt,
-      },
-      headers: {
-        "Content-Type": "application/json",
       },
     })
       .then((gosts) => {

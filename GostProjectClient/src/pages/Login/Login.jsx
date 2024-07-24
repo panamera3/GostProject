@@ -40,9 +40,6 @@ const Login = () => {
         login: `${username}`,
         password: `${password}`,
       },
-      headers: {
-        "Content-Type": "application/json",
-      },
     })
       .then((user) => {
         const userRole = Object.keys(UserRole).find(
