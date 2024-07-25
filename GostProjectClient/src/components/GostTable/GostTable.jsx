@@ -12,6 +12,7 @@ import {
   BtnDarkGray,
   BtnDeleteNormativeReference,
   BtnGray,
+  NoDataContainer,
 } from "../styles/styled_components";
 import ReactSelect from "react-select";
 import Table from "../Table/Table";
@@ -1070,9 +1071,9 @@ const GostTable = ({ id, view, edit, add }) => {
   return (
     <>
       {gostNotFound && (
-        <div className="no_gost_container">
+        <NoDataContainer>
           <p>Нет данных</p>
-        </div>
+        </NoDataContainer>
       )}
       {!gostNotFound && (
         <form onSubmit={submitHandler}>

@@ -15,12 +15,6 @@ namespace GostProjectAPI.Controllers
 			_companyService = companyService;
 		}
 
-		[HttpGet]
-		public async Task<JsonResult> GetCompanies()
-		{
-			return JSON(await _companyService.GetCompaniesAsync());
-		}
-
 
 		[HttpGet("{companyID}")]
 		public async Task<JsonResult> GetCompany(uint companyID)
@@ -28,11 +22,6 @@ namespace GostProjectAPI.Controllers
 			return JSON(await _companyService.GetCompanyAsync(companyID));
 		}
 
-		[HttpGet("{companyID}")]
-		public async Task<JsonResult> GetCompanyCode(uint companyID)
-		{
-			return JSON(await _companyService.GetCompanyCodeAsync(companyID));
-		}
 
 		[HttpPost]
 		public async Task<JsonResult> ChangeCodeUpdateFrequency([FromQuery] uint companyId, byte months)

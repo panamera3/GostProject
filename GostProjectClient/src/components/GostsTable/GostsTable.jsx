@@ -6,6 +6,7 @@ import Pagination from "react-js-pagination";
 import { toast } from "react-toastify";
 import { fileMinusIcon, likeActiveIcon, likeIcon } from "../../assets/images";
 import Table from "../Table/Table";
+import { NoDataContainer } from "../styles/styled_components";
 
 const GostsTable = ({ favourites, archiveGosts, searchGosts }) => {
   const navigate = useNavigate();
@@ -241,14 +242,14 @@ const GostsTable = ({ favourites, archiveGosts, searchGosts }) => {
   return (
     <>
       {!favourites && !searchGosts && !archiveGosts && gosts.length == 0 && (
-        <div className="no_gosts_container">
+        <NoDataContainer>
           <p>У Вашей организации ещё нет добавленных документов</p>
-        </div>
+        </NoDataContainer>
       )}
       {(favourites || searchGosts || archiveGosts) && gosts.length == 0 && (
-        <div className="no_gosts_container">
+        <NoDataContainer>
           <p>Нет документов</p>
-        </div>
+        </NoDataContainer>
       )}
       {gosts.length > 0 && (
         <div>

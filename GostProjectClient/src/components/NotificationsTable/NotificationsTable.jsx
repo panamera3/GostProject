@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import { externalLinkIcon } from "../../assets/images";
 import Table from "../Table/Table";
+import { NoDataContainer } from "../styles/styled_components";
 
 const NotificationsTable = () => {
   const [notifications, setNotifications] = useState([]);
@@ -46,6 +47,12 @@ const NotificationsTable = () => {
           </td>
         </tr>
       ));
+    } else {
+      return (
+        <NoDataContainer>
+          <p>У Вашей организации нет новых заявок</p>
+        </NoDataContainer>
+      );
     }
   };
 
@@ -55,7 +62,7 @@ const NotificationsTable = () => {
       <Table
         className="notificationsTable"
         headers={["№", "ФИО", "Логин", ""]}
-        renderBody={renderNotificationsTable} 
+        renderBody={renderNotificationsTable}
       />
     </>
   );

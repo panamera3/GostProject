@@ -14,18 +14,6 @@ namespace GostProjectAPI.Controllers
 			_keysService = keysService;
 		}
 
-		[HttpGet("{gostID}")]
-		public async Task<JsonResult> GetKeyWords(uint gostID)
-		{
-			return JSON(await _keysService.GetKeyWordsAsync(gostID));
-		}
-
-		[HttpGet("{gostID}")]
-		public async Task<JsonResult> GetKeyPhrases(uint gostID)
-		{
-			return JSON(await _keysService.GetKeyPhrasesAsync(gostID));
-		}
-
 		[HttpGet("{companyID}")]
 		public async Task<JsonResult> GetUniqueKeywords(uint companyID)
 		{

@@ -6,6 +6,9 @@ module.exports = function (app) {
     createProxyMiddleware({
       target: "http://localhost:5175/api",
       changeOrigin: true,
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
       onProxyReq: (proxyReq, req, res) => {
         const token = localStorage.getItem("token");
         proxyReq.setHeader("Authorization", `Bearer ${token}`);

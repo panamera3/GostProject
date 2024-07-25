@@ -1,11 +1,3 @@
-
-.no_gosts_container  {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-direction: column;
-}
-
 .gostsTable {
   width: 100%;
   margin-top: 1em;

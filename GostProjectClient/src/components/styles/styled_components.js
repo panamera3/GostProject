@@ -133,6 +133,13 @@ const BlackA = styled.a`
   color: #000000;
 `;
 
+const NoDataContainer = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+`;
+
 export {
   GlobalStyle,
   Button,
@@ -145,4 +152,5 @@ export {
   BtnMidGray,
   BtnDeleteNormativeReference,
   BlackA,
+  NoDataContainer,
 };

@@ -71,22 +71,6 @@ namespace GostProjectAPI.Controllers
 			return JSON(await _gostService.ChangeFileToGostAsync(gostFile, gostID));
 		}
 
-		[HttpGet]
-		public async Task<IActionResult> GetAllBuckets()
-		{
-			var config = new AmazonS3Config
-			{
-				ServiceURL = "https://s3.timeweb.cloud",
-				AuthenticationRegion = "ru-1",
-			};
-			var s3Client = new AmazonS3Client("OEROXDNUP3Q8L16FYNMV", "SJwow3RoWBjQ5CAKqF7tfe5FLOs1ucKTs9jdJNsI", config);
-
-			var data = await s3Client.ListBucketsAsync();
-			var buckets = data.Buckets.Select(b => b.BucketName);
-
-			return Ok(buckets);
-		}
-
 		[HttpPut]
 		public async Task<JsonResult> EditGost([FromBody] GostEditDto gostEditDto)
 		{
@@ -156,12 +140,6 @@ namespace GostProjectAPI.Controllers
 		public async Task<JsonResult> GetUpdateGostDates(uint gostID)
 		{
 			return JSON(await _gostService.GetUpdateGostDate(gostID));
-		}
-
-		[HttpGet("{gostID}")]
-		public async Task<JsonResult> GetNormativeReferences(uint gostID)
-		{
-			return JSON(await _gostService.GetNormativeReferencesAsync(gostID));
 		}
 
 		[HttpGet]
