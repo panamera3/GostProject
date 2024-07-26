@@ -45,7 +45,6 @@ namespace GostProjectAPI.Controllers
 						Response.Cookies.Append("token", signedInUser.Token, new CookieOptions
 						{
 							HttpOnly = true,
-							Secure = true,
 							SameSite = SameSiteMode.None
 						});
 
@@ -74,7 +73,6 @@ namespace GostProjectAPI.Controllers
 			Response.Cookies.Append("token", signedInUser.Token, new CookieOptions
 			{
 				HttpOnly = true,
-				Secure = true,
 				SameSite = SameSiteMode.None
 			});
 
@@ -109,7 +107,6 @@ namespace GostProjectAPI.Controllers
 							Response.Cookies.Append("token", signedInUser.Token, new CookieOptions
 							{
 								HttpOnly = true,
-								Secure = true,
 								SameSite = SameSiteMode.None
 							});
 
