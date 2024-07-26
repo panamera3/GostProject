@@ -3,7 +3,11 @@ import { useNavigate } from "react-router-dom";
 import { useRef, useState, useEffect } from "react";
 import Modal from "../Modal/Modal";
 import axios from "axios";
-import { notificationActiveIcon, notificationIcon, userIcon } from "../../assets/images";
+import {
+  notificationActiveIcon,
+  notificationIcon,
+  userIcon,
+} from "../../assets/images";
 
 const HeaderAdmin = ({ user }) => {
   const header = useRef();
@@ -53,6 +57,7 @@ const HeaderAdmin = ({ user }) => {
 
   const exitHandler = () => {
     localStorage.clear();
+    document.cookie = "token=;";
 
     navigate("/login");
   };

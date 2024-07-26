@@ -18,14 +18,22 @@ namespace GostProjectAPI.Controllers
 		private readonly NotificationService _notificationsService;
 		private readonly CompanyService _companyService;
 		private readonly IMapper _mapper;
+		private readonly IWebHostEnvironment _env;
+		private readonly CookieOptions _cookieOptions;
 
-		public AuthController(AuthService authService, UserService usersService, NotificationService notificationsService, IMapper mapper, CompanyService companyService)
+		public AuthController(AuthService authService, UserService usersService, NotificationService notificationsService, IMapper mapper, CompanyService companyService, IWebHostEnvironment env)
 		{
 			_authService = authService;
 			_usersService = usersService;
 			_mapper = mapper;
 			_notificationsService = notificationsService;
 			_companyService = companyService;
+			_env = env;
+			_cookieOptions = new CookieOptions
+			{
+				SameSite = SameSiteMode.None,
+				Secure = true
+			};
 		}
 
 		[HttpPost]
@@ -42,11 +50,7 @@ namespace GostProjectAPI.Controllers
 					if (signedInUser != null)
 					{
 						// Установка куки с токеном
-						Response.Cookies.Append("token", signedInUser.Token, new CookieOptions
-						{
-							HttpOnly = true,
-							SameSite = SameSiteMode.None
-						});
+						Response.Cookies.Append("token", signedInUser.Token, _cookieOptions);
 
 						return Ok(signedInUser);
 					}
@@ -70,11 +74,7 @@ namespace GostProjectAPI.Controllers
 			}
 
 			// Установка куки с токеном
-			Response.Cookies.Append("token", signedInUser.Token, new CookieOptions
-			{
-				HttpOnly = true,
-				SameSite = SameSiteMode.None
-			});
+			Response.Cookies.Append("token", signedInUser.Token, _cookieOptions);
 
 			return Ok(signedInUser);
 		}
@@ -104,11 +104,7 @@ namespace GostProjectAPI.Controllers
 						if (signedInUser != null)
 						{
 							// Установка куки с токеном
-							Response.Cookies.Append("token", signedInUser.Token, new CookieOptions
-							{
-								HttpOnly = true,
-								SameSite = SameSiteMode.None
-							});
+							Response.Cookies.Append("token", signedInUser.Token, _cookieOptions);
 
 							return Ok(signedInUser);
 						}

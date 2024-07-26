@@ -33,7 +33,7 @@ function App() {
       const reloadAfterError = () => {
         reloadTimeout = setTimeout(() => {
           window.location.reload();
-        }, 5000);
+        }, 10000);
       };
 
       const fetchData = async () => {
@@ -48,14 +48,24 @@ function App() {
           );
         } catch (error) {
           if (error.response) {
+            if (error.response.status === 401) {
+              localStorage.clear();
+              document.cookie = "token=;";
+              toast.error(
+                "Срок действия аутентификации истёк. Будет произведён выход из аккаунта, просьба перезайти в аккаунт заново."
+              );
+              reloadAfterError();
+            }
             if (error.response.status === 404) {
               localStorage.clear();
+              document.cookie = "token=;";
               toast.error(
                 "Пользователь или компания не найдены. Будет произведён выход из аккаунта."
               );
               reloadAfterError();
             } else if (error.response.status === 400) {
               localStorage.clear();
+              document.cookie = "token=;";
               toast.error(
                 "Что-то пошло не так. Будет произведён выход из аккаунта."
               );

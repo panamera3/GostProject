@@ -114,32 +114,30 @@ const GostsTable = ({ favourites, archiveGosts, searchGosts }) => {
         total: searchGostsFromHeader.length,
       }));
     } else {
-      if (localStorage.getItem("token")) {
-        axios({
-          method: "post",
-          url: `/api/Gost/GetGosts`,
-          data: {
-            companyID: localStorage.getItem("workCompanyID"),
-            pagination: {
-              pageSize: pagination.pageSize,
-              offset: pagination.offset,
-            },
-            sortField: sortField,
-            sortDirection: sortDirection,
-            archived: archiveGosts,
+      axios({
+        method: "post",
+        url: `/api/Gost/GetGosts`,
+        data: {
+          companyID: localStorage.getItem("workCompanyID"),
+          pagination: {
+            pageSize: pagination.pageSize,
+            offset: pagination.offset,
           },
+          sortField: sortField,
+          sortDirection: sortDirection,
+          archived: archiveGosts,
+        },
+      })
+        .then((gosts) => {
+          setGosts(gosts.data.data);
+          setPagination((prevState) => ({
+            ...prevState,
+            total: gosts.data.pagination.total,
+          }));
         })
-          .then((gosts) => {
-            setGosts(gosts.data.data);
-            setPagination((prevState) => ({
-              ...prevState,
-              total: gosts.data.pagination.total,
-            }));
-          })
-          .catch((error) => {
-            console.log(error);
-          });
-      }
+        .catch((error) => {
+          console.log(error);
+        });
     }
   };
 

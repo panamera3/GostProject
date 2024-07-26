@@ -122,7 +122,6 @@ const CompanyRegistration = () => {
       })
         .then((newUser) => {
           if (!newUser.data.error) {
-            localStorage.setItem("token", newUser.data.token);
             localStorage.setItem("id", newUser.data.id);
             localStorage.setItem("workCompanyID", newUser.data.workCompanyID);
             localStorage.setItem("isConfirmed", newUser.data.isConfirmed);

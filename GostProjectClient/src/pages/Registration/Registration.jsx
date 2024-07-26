@@ -102,7 +102,6 @@ const Registration = () => {
               const userRole = Object.keys(UserRole).find(
                 (key) => UserRole[key] === user.data.role
               );
-              localStorage.setItem("token", user.data.token);
               localStorage.setItem("id", user.data.id);
               localStorage.setItem("workCompanyID", user.data.WorkCompanyID);
               localStorage.setItem("role", userRole);
