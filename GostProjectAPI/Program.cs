@@ -132,7 +132,7 @@ namespace GostProjectAPI
 
 			app.UseCors(options =>
 			{
-				options.AllowAnyOrigin()
+				options.WithOrigins("http://77.232.139.251:3000", "http://localhost:3000")
 					   .AllowAnyMethod()
 					   .AllowAnyHeader()
 					   .AllowCredentials();
