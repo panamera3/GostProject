@@ -146,6 +146,8 @@ namespace GostProjectAPI
 				name: "default",
 				pattern: "{controller=Auth}/{action=Index}/{id?}");
 
+			app.UseHttpsRedirection();
+
 			app.Run();
 		}
 	}

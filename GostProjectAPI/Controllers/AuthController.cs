@@ -29,7 +29,7 @@ namespace GostProjectAPI.Controllers
 		}
 
 		[HttpPost]
-		public async Task<JsonResult> RegisterUser([FromBody] UserAddDto addDto)
+		public async Task<IActionResult> RegisterUser([FromBody] UserAddDto addDto)
 		{
 			try
 			{
@@ -37,24 +37,28 @@ namespace GostProjectAPI.Controllers
 				if (newUser != null)
 				{
 					await _notificationsService.CreateNotification(newUser);
-					return JSON(await _authService.AuthenticateAsync(_mapper.Map<UserAuthDto>(addDto)));
+					var signedInUser = await _authService.AuthenticateAsync(_mapper.Map<UserAuthDto>(addDto));
+
+					if (signedInUser != null)
+					{
+						// Установка куки с токеном
+						Response.Cookies.Append("token", signedInUser.Token, new CookieOptions
+						{
+							HttpOnly = true,
+							Secure = true,
+							SameSite = SameSiteMode.None
+						});
+
+						return Ok(signedInUser);
+					}
 				}
-				else
-					return JSON(await _authService.AuthenticateAsync(_mapper.Map<UserAuthDto>(null)));
+				return BadRequest("Не удалось зарегистрировать пользователя.");
 			}
 			catch (Exception ex)
 			{
-				return JSON(new { error = ex.Message });
+				return BadRequest(new { error = ex.Message });
 			}
 		}
-
-		/*
-		[HttpPost]
-		public async Task<JsonResult> AuthUser([FromBody] UserAuthDto authDto)
-		{
-			return JSON(await _authService.AuthenticateAsync(authDto));
-		}
-		*/
 
 		[HttpPost]
 		public async Task<IActionResult> AuthUser([FromBody] UserAuthDto authDto)
@@ -66,17 +70,19 @@ namespace GostProjectAPI.Controllers
 				return Unauthorized();
 			}
 
+			// Установка куки с токеном
 			Response.Cookies.Append("token", signedInUser.Token, new CookieOptions
 			{
 				HttpOnly = true,
 				Secure = true,
+				SameSite = SameSiteMode.None
 			});
 
 			return Ok(signedInUser);
 		}
 
 		[HttpPost]
-		public async Task<JsonResult> RegisterCompany([FromBody] CompanyAddDto companyAddDto)
+		public async Task<IActionResult> RegisterCompany([FromBody] CompanyAddDto companyAddDto)
 		{
 			UserAddDto newAdmin = null;
 			try
@@ -85,7 +91,7 @@ namespace GostProjectAPI.Controllers
 			}
 			catch (Exception ex)
 			{
-				return JSON(new { error = ex.Message });
+				return BadRequest(new { error = ex.Message });
 			}
 			try
 			{
@@ -94,16 +100,32 @@ namespace GostProjectAPI.Controllers
 					newAdmin.IsConfirmed = true;
 					var newUser = await _usersService.AddUserAsync(newAdmin);
 					if (newUser != null)
-						return JSON(await _authService.AuthenticateAsync(_mapper.Map<UserAuthDto>(newAdmin)));
-					else
-						return JSON(await _authService.AuthenticateAsync(_mapper.Map<UserAuthDto>(null)));
+					{
+						var signedInUser = await _authService.AuthenticateAsync(_mapper.Map<UserAuthDto>(newAdmin));
+
+						if (signedInUser != null)
+						{
+							// Установка куки с токеном
+							Response.Cookies.Append("token", signedInUser.Token, new CookieOptions
+							{
+								HttpOnly = true,
+								Secure = true,
+								SameSite = SameSiteMode.None
+							});
+
+							return Ok(signedInUser);
+						}
+					}
+					return BadRequest(new { error = "Не удалось создать пользователя" });
 				}
 				else
-					return JSON(new { error = "Не удалось создать пользователя" });
+				{
+					return BadRequest(new { error = "Не удалось создать компанию" });
+				}
 			}
 			catch (Exception ex)
 			{
-				return JSON(new { error = ex.Message });
+				return BadRequest(new { error = ex.Message });
 			}
 		}
 
