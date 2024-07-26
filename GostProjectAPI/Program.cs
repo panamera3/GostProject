@@ -1,7 +1,5 @@
-using Amazon.Runtime;
 using Amazon.S3;
 using GostProjectAPI.Data;
-using GostProjectAPI.Data.Entities;
 using GostProjectAPI.Services;
 using GostProjectAPI.Services.Auth;
 using GostProjectAPI.Services.Background;
@@ -58,21 +56,33 @@ namespace GostProjectAPI
 
 			builder.Services.AddHostedService<UpdateCompanyCodeService>();
 
-			builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-				.AddJwtBearer(options =>
+			builder.Services.AddAuthentication(options =>
+			{
+				options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+				options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+			})
+			.AddJwtBearer(options =>
+			{
+				options.RequireHttpsMetadata = false;
+				options.TokenValidationParameters = new TokenValidationParameters
 				{
-					options.RequireHttpsMetadata = false;
-					options.TokenValidationParameters = new TokenValidationParameters
+					ValidateIssuer = true,
+					ValidIssuer = authConfig.Issuer,
+					ValidateAudience = true,
+					ValidAudience = authConfig.Audience,
+					ValidateLifetime = true,
+					IssuerSigningKey = authConfig.SecurityKey,
+					ValidateIssuerSigningKey = true
+				};
+				options.Events = new JwtBearerEvents
+				{
+					OnMessageReceived = context =>
 					{
-						ValidateIssuer = true,
-						ValidIssuer = authConfig.Issuer,
-						ValidateAudience = true,
-						ValidAudience = authConfig.Audience,
-						ValidateLifetime = true,
-						IssuerSigningKey = authConfig.SecurityKey,
-						ValidateIssuerSigningKey = true
-					};
-				});
+						context.Token = context.Request.Cookies["token"];
+						return Task.CompletedTask;
+					}
+				};
+			});
 
 			builder.Services.AddAuthorization();
 			builder.Services.AddEndpointsApiExplorer();
@@ -124,7 +134,8 @@ namespace GostProjectAPI
 			{
 				options.AllowAnyOrigin()
 					   .AllowAnyMethod()
-					   .AllowAnyHeader();
+					   .AllowAnyHeader()
+					   .AllowCredentials();
 			});
 
 			app.UseAuthentication();

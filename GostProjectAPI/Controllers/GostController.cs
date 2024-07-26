@@ -1,13 +1,10 @@
 using Amazon.S3;
-using GostProjectAPI.Data.Entities;
 using GostProjectAPI.DTOModels.Gosts;
 using GostProjectAPI.Services;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace GostProjectAPI.Controllers
 {
-	// [Authorize]
 	[ApiController]
 	[Route("/api/[controller]/[action]")]
 	public class GostController : CommonControllerBase

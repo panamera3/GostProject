@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace GostProjectAPI.Controllers
 {
-	// [Authorize]
 	[ApiController]
 	[Route("/api/[controller]/[action]")]
 	public class CompanyController : CommonControllerBase

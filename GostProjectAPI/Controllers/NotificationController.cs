@@ -1,8 +1,6 @@
-﻿using GostProjectAPI.Data.Entities;
-using GostProjectAPI.Data.Enums;
+﻿using GostProjectAPI.Data.Enums;
 using GostProjectAPI.Services;
 using Microsoft.AspNetCore.Mvc;
-using System.Data;
 
 namespace GostProjectAPI.Controllers
 {

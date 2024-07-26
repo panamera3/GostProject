@@ -807,8 +807,34 @@ const GostTable = ({ id, view, edit, add }) => {
             ))}
 
             <tr>
+              <td
+                colSpan="2"
+                style={{
+                  borderBottom: "0 solid black",
+                }}
+              >
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}
+                >
+                  <p>Текущий файл: </p>
+                  {gostFile && (
+                    <a href={`${gostFile.path}`}>
+                      {gostFile.path.split("/").pop()}
+                    </a>
+                  )}
+                  {!gostFile && <p>Нет файла</p>}
+                </div>
+              </td>
+            </tr>
+
+            <tr>
               <td colSpan="2">
                 <div className="file-input-container">
+                  <p>Заменить файл:</p>
                   <input type="file" onChange={handleFileChange} />
                 </div>
               </td>

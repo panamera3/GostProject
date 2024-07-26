@@ -48,10 +48,31 @@ namespace GostProjectAPI.Controllers
 			}
 		}
 
+		/*
 		[HttpPost]
 		public async Task<JsonResult> AuthUser([FromBody] UserAuthDto authDto)
 		{
 			return JSON(await _authService.AuthenticateAsync(authDto));
+		}
+		*/
+
+		[HttpPost]
+		public async Task<IActionResult> AuthUser([FromBody] UserAuthDto authDto)
+		{
+			var signedInUser = await _authService.AuthenticateAsync(authDto);
+
+			if (signedInUser == null)
+			{
+				return Unauthorized();
+			}
+
+			Response.Cookies.Append("token", signedInUser.Token, new CookieOptions
+			{
+				HttpOnly = true,
+				Secure = true,
+			});
+
+			return Ok(signedInUser);
 		}
 
 		[HttpPost]
