@@ -31,8 +31,8 @@ namespace GostProjectAPI.Controllers
 			_env = env;
 			_cookieOptions = new CookieOptions
 			{
-				SameSite = SameSiteMode.None,
-				Secure = true
+				SameSite = _env.IsDevelopment() ? SameSiteMode.None : SameSiteMode.Unspecified,
+				Secure = _env.IsDevelopment() ? true : false,
 			};
 		}
 
