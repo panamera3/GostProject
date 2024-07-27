@@ -29,9 +29,7 @@ const UserProfiles = () => {
     updateUsers();
     axios({
       method: "get",
-      url: `/api/User/GetUniqueDepartments/${localStorage.getItem(
-        "workCompanyID"
-      )}`,
+      url: `/api/User/GetUniqueDepartments`,
     })
       .then((departments) => {
         setUniqueDepartments(departments.data);
@@ -44,7 +42,7 @@ const UserProfiles = () => {
   const updateUsers = () => {
     axios({
       method: "get",
-      url: `/api/User/GetUsers/${localStorage.getItem("workCompanyID")}`,
+      url: `/api/User/GetUsers`,
     })
       .then((users) => {
         setUsers(users.data);
@@ -88,9 +86,7 @@ const UserProfiles = () => {
         updateUsers();
         axios({
           method: "post",
-          url: `/api/Auth/UpdateCompanyCode/?companyId=${localStorage.getItem(
-            "workCompanyID"
-          )}`,
+          url: `/api/Auth/UpdateCompanyCode`,
         })
           .then(() => {
             toast.warning("Внимание! Код приглашения в компанию был обновлён.");
@@ -177,7 +173,6 @@ const UserProfiles = () => {
       data: {
         department: values.department ? values.department : "",
         fullname: values.fullname ? values.fullname : "",
-        companyID: localStorage.getItem("workCompanyID"),
       },
     })
       .then((filteredUsers) => {

@@ -8,6 +8,7 @@ using GostProjectAPI.DTOModels.Gosts;
 using GostProjectAPI.Extensions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Office.Interop.Word;
+using System.ComponentModel.Design;
 using System.Data;
 using System.Linq.Expressions;
 using System.Reflection;
@@ -20,37 +21,41 @@ namespace GostProjectAPI.Services
 		private readonly IMapper _mapper;
 		private readonly GostDBContext _dbContext;
 		private readonly KeysService _keysService;
+		private readonly CurrentUserService _currentUserService;
 
 		private readonly IAmazonS3 _s3Client;
 
-		public GostService(GostDBContext dbContext, IMapper mapper, KeysService keysService, IAmazonS3 s3Client)
+		public GostService(GostDBContext dbContext, IMapper mapper, KeysService keysService, IAmazonS3 s3Client, CurrentUserService currentUserService)
 		{
 			_dbContext = dbContext;
 			_mapper = mapper;
 			_keysService = keysService;
 
 			_s3Client = s3Client;
+			_currentUserService = currentUserService;
 		}
 
-		public async Task<List<Gost>?> GetGostsAsync(uint companyID)
+		public async Task<List<Gost>?> GetGostsAsync()
 		{
-			//var gosts = await _dbContext.Gosts.Where(g => g.AcceptanceLevel != AcceptanceLevel.Local || g.DeveloperId == companyID).ToListAsync();
-			var gosts = await _dbContext.Gosts.Where(g => g.DeveloperId == companyID).ToListAsync();
+			var companyId = _currentUserService.CompanyId;
+			//var gosts = await _dbContext.Gosts.Where(g => g.AcceptanceLevel != AcceptanceLevel.Local || g.DeveloperId == companyId).ToListAsync();
+			var gosts = await _dbContext.Gosts.Where(g => g.DeveloperId == companyId).ToListAsync();
 			return gosts;
 		}
 
 		public async Task<List<Gost>?> GetGostsRangeAsync(GetGostsInRangeDto getGostsInRangeDto)
 		{
-			var gosts = await _dbContext.Gosts.Where(g => getGostsInRangeDto.GostIDs.Contains(g.ID)).ToListAsync();
+			var gosts = (await GetGostsAsync()).Where(g => getGostsInRangeDto.GostIDs.Contains(g.ID)).ToList();
 			return gosts;
 		}
 
 		public async Task<PagedList<Gost>> GetGostsAsync(GetGostsDto getParams)
 		{
-			var gosts = _dbContext.Gosts.AsQueryable();
+			var companyId = _currentUserService.CompanyId;
+			var gosts = (await GetGostsAsync()).AsQueryable();
 
 			// var filteredByCompanyGosts = gosts.Where(g => g.AcceptanceLevel != AcceptanceLevel.Local || g.DeveloperId == getParams.CompanyID);
-			var filteredByCompanyGosts = gosts.Where(g => g.DeveloperId == getParams.CompanyID).Where(g => g.IsArchived == getParams.Archived);
+			var filteredByCompanyGosts = gosts.Where(g => g.DeveloperId == companyId).Where(g => g.IsArchived == getParams.Archived);
 
 			var filteredGosts = filteredByCompanyGosts;
 
@@ -175,7 +180,7 @@ namespace GostProjectAPI.Services
 			string bucketName = "66f0e91a-gost_storage";
 			string fileExtension = Path.GetExtension(gostFile.FileName);
 			string fileName = Path.GetFileNameWithoutExtension(gostFile.FileName);
-			string uniqueIdentifier = Guid.NewGuid().ToString().Substring(0, 8);
+			string uniqueIdentifier = Guid.NewGuid().ToString()[..8];
 			string keyName = $"{fileName}_{uniqueIdentifier}{fileExtension}";
 
 			var existingFile = await _dbContext.GostFiles
@@ -184,7 +189,7 @@ namespace GostProjectAPI.Services
 
 			if (existingFile != null)
 			{
-				uniqueIdentifier = Guid.NewGuid().ToString().Substring(0, 8);
+				uniqueIdentifier = Guid.NewGuid().ToString()[..8];
 				keyName = $"{fileName}_{uniqueIdentifier}{fileExtension}";
 			}
 
@@ -260,7 +265,7 @@ namespace GostProjectAPI.Services
 				var deleteRequest = new DeleteObjectRequest
 				{
 					BucketName = bucketName,
-					Key = existingFile.Path.Substring(existingFile.Path.LastIndexOf('/') + 1)
+					Key = existingFile.Path[(existingFile.Path.LastIndexOf('/') + 1)..]
 				};
 				await s3Client.DeleteObjectAsync(deleteRequest);
 
@@ -295,9 +300,9 @@ namespace GostProjectAPI.Services
 
 				bool result;
 				if (caseSensitive)
-					result = wordDoc.Content.Text.IndexOf(stringToSearchFor) >= 0;
+					result = wordDoc.Content.Text.Contains(stringToSearchFor, StringComparison.CurrentCulture);
 				else
-					result = wordDoc.Content.Text.IndexOf(stringToSearchFor, StringComparison.CurrentCultureIgnoreCase) >= 0;
+					result = wordDoc.Content.Text.Contains(stringToSearchFor, StringComparison.CurrentCultureIgnoreCase);
 
 				wordDoc.Close();
 				winword.Quit();
@@ -306,7 +311,7 @@ namespace GostProjectAPI.Services
 			}
 			catch (Exception ex)
 			{
-				Console.WriteLine($"Error searching in Word file: {ex.Message}");
+				Console.WriteLine($"Произошла ошибка поиска в Word файле: {ex.Message}");
 				return false;
 			}
 		}
@@ -315,15 +320,13 @@ namespace GostProjectAPI.Services
 		{
 			string tempFilePath = Path.GetTempFileName();
 
-			using (HttpClient client = new HttpClient())
+			using (HttpClient client = new())
 			{
 				var response = await client.GetAsync(url);
 				response.EnsureSuccessStatusCode();
 
-				using (var fs = new FileStream(tempFilePath, FileMode.Create, FileAccess.Write, FileShare.None))
-				{
-					await response.Content.CopyToAsync(fs);
-				}
+				using var fs = new FileStream(tempFilePath, FileMode.Create, FileAccess.Write, FileShare.None);
+				await response.Content.CopyToAsync(fs);
 			}
 
 			try
@@ -373,6 +376,9 @@ namespace GostProjectAPI.Services
 
 			if (gost == null)
 				return null;
+
+			var companyId = _currentUserService.CompanyId;
+			gost.DeveloperId = companyId;
 
 			await _dbContext.Gosts.AddAsync(gost);
 			await _dbContext.SaveChangesAsync();
@@ -505,8 +511,7 @@ namespace GostProjectAPI.Services
 
 				foreach (var reference in gostEditDto.NormativeReferences)
 				{
-					uint referenceGostId;
-					var isId = uint.TryParse(reference, out referenceGostId);
+					var isId = uint.TryParse(reference, out uint referenceGostId);
 
 					if (!await _dbContext.NormativeReferences.AnyAsync(r =>
 						(r.ReferenceGostId == referenceGostId && r.RootGostId == gostEditDto.ID) ||
@@ -541,7 +546,7 @@ namespace GostProjectAPI.Services
 			{
 				if (property.GetValue(gostEditDto) != null && property.Name != "ID")
 				{
-					UpdateGostDate updateField = new UpdateGostDate
+					UpdateGostDate updateField = new()
 					{
 						UpdateDate = DateTime.Now,
 						Name = property.Name,

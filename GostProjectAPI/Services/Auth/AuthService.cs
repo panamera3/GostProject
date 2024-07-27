@@ -48,20 +48,23 @@ namespace GostProjectAPI.Services.Auth
 
             return signedInUser;
         }
-        
-        private ClaimsIdentity GetIdentity(User user)
-        {
-            var claims = new List<Claim>
-            {
-                new Claim("UserId", user.ID.ToString()),
-                new Claim(ClaimsIdentity.DefaultNameClaimType, user.Login),
-                new Claim(ClaimsIdentity.DefaultRoleClaimType, user.Role.ToString()),
-            };
 
-            return new ClaimsIdentity(claims, "Token", ClaimsIdentity.DefaultNameClaimType, ClaimsIdentity.DefaultRoleClaimType);
-        }
+		private ClaimsIdentity GetIdentity(User user)
+		{
+			var claims = new List<Claim>
+	        {
+	        	new("UserId", user.ID.ToString()),
+	        	new("CompanyId", user.WorkCompanyID.ToString()),
+	        	new(ClaimsIdentity.DefaultNameClaimType, user.Login),
+	        	new(ClaimsIdentity.DefaultRoleClaimType, user.Role.ToString()),
+	        };
 
-        private string GenerateJWT(ClaimsIdentity identity)
+			return new ClaimsIdentity(claims, "Token", ClaimsIdentity.DefaultNameClaimType, ClaimsIdentity.DefaultRoleClaimType);
+		}
+
+
+
+		private string GenerateJWT(ClaimsIdentity identity)
         {
             var now = DateTime.UtcNow;
 

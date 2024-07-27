@@ -118,7 +118,6 @@ const GostsTable = ({ favourites, archiveGosts, searchGosts }) => {
         method: "post",
         url: `/api/Gost/GetGosts`,
         data: {
-          companyID: localStorage.getItem("workCompanyID"),
           pagination: {
             pageSize: pagination.pageSize,
             offset: pagination.offset,
@@ -223,7 +222,6 @@ const GostsTable = ({ favourites, archiveGosts, searchGosts }) => {
       method: "post",
       url: `/api/Gost/GetGosts`,
       data: {
-        companyID: localStorage.getItem("workCompanyID"),
         pagination,
         sortField: selectedSort,
         sortDirection: selectedAsc ? "ASC" : "DESC",

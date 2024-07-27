@@ -15,17 +15,17 @@ namespace GostProjectAPI.Controllers
 		}
 
 
-		[HttpGet("{companyID}")]
-		public async Task<JsonResult> GetCompany(uint companyID)
+		[HttpGet]
+		public async Task<JsonResult> GetCompany()
 		{
-			return JSON(await _companyService.GetCompanyAsync(companyID));
+			return JSON(await _companyService.GetCompanyAsync());
 		}
 
 
 		[HttpPost]
-		public async Task<JsonResult> ChangeCodeUpdateFrequency([FromQuery] uint companyId, byte months)
+		public async Task<JsonResult> ChangeCodeUpdateFrequency([FromQuery] byte months)
 		{
-			return JSON(await _companyService.ChangeCodeUpdateFrequencyAsync(companyId, months));
+			return JSON(await _companyService.ChangeCodeUpdateFrequencyAsync(months));
 		}
 	}
 }

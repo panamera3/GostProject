@@ -32,7 +32,7 @@ namespace GostProjectAPI.Controllers
 			_cookieOptions = new CookieOptions
 			{
 				SameSite = _env.IsDevelopment() ? SameSiteMode.None : SameSiteMode.Unspecified,
-				Secure = _env.IsDevelopment() ? true : false,
+				Secure = _env.IsDevelopment(),
 			};
 		}
 
@@ -82,7 +82,7 @@ namespace GostProjectAPI.Controllers
 		[HttpPost]
 		public async Task<IActionResult> RegisterCompany([FromBody] CompanyAddDto companyAddDto)
 		{
-			UserAddDto newAdmin = null;
+			UserAddDto? newAdmin = null;
 			try
 			{
 				newAdmin = await _companyService.AddCompanyAsync(companyAddDto);
@@ -123,9 +123,9 @@ namespace GostProjectAPI.Controllers
 		}
 
 		[HttpPost]
-		public async Task<JsonResult> UpdateCompanyCode([FromQuery] uint companyId)
+		public async Task<JsonResult> UpdateCompanyCode()
 		{
-			return JSON(await _companyService.ResetCompanyCode(companyId));
+			return JSON(await _companyService.ResetCompanyCode());
 		}
 
 		[HttpPost]

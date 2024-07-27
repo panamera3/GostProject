@@ -15,10 +15,10 @@ namespace GostProjectAPI.Controllers
             _usersService = usersService;
         }
 
-        [HttpGet("{companyID}")]
-        public async Task<JsonResult> GetUsers(uint companyID)
+        [HttpGet]
+        public async Task<JsonResult> GetUsers()
         {
-            return JSON(await _usersService.GetUsersAsync(companyID));
+            return JSON(await _usersService.GetUsersAsync());
         }
 
         [HttpGet("{userID}")]
@@ -55,10 +55,10 @@ namespace GostProjectAPI.Controllers
             }
         }
 
-        [HttpGet("{companyID}")]
-        public async Task<JsonResult> GetUniqueDepartments(uint companyID)
+        [HttpGet]
+        public async Task<JsonResult> GetUniqueDepartments()
         {
-            return JSON(await _usersService.GetUniqueDepartmentsAsync(companyID));
+            return JSON(await _usersService.GetUniqueDepartmentsAsync());
         }
 	}
 }

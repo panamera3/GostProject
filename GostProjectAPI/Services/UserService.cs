@@ -4,6 +4,7 @@ using GostProjectAPI.DTOModels.Users;
 using GostProjectAPI.Services.Auth;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
+using System.ComponentModel.Design;
 
 namespace GostProjectAPI.Services
 {
@@ -13,13 +14,15 @@ namespace GostProjectAPI.Services
 		private readonly GostDBContext _dbContext;
 		private readonly IPasswordHasherService _passwordHasher;
 		private readonly IOptions<AuthOptions> _authOptions;
+		private readonly CurrentUserService _currentUserService;
 
-		public UserService(IPasswordHasherService passwordEncoder, GostDBContext dbContext, IMapper mapper, IOptions<AuthOptions> authOptions)
+		public UserService(IPasswordHasherService passwordEncoder, GostDBContext dbContext, IMapper mapper, IOptions<AuthOptions> authOptions, CurrentUserService currentUserService)
 		{
 			_passwordHasher = passwordEncoder;
 			_dbContext = dbContext;
 			_mapper = mapper;
 			_authOptions = authOptions;
+			_currentUserService = currentUserService;
 		}
 
 		public async Task<User?> AddUserAsync(UserAddDto userDTO)
@@ -51,35 +54,37 @@ namespace GostProjectAPI.Services
 			return user;
 		}
 
-		public async Task<List<User>?> GetUsersAsync(uint companyID)
+		public async Task<List<User>?> GetUsersAsync()
 		{
-			return await _dbContext.Users.Where(u => u.WorkCompanyID == companyID).ToListAsync();
+			var companyId = _currentUserService.CompanyId;
+			return await _dbContext.Users.Where(u => u.WorkCompanyID == companyId).ToListAsync();
 		}
 
 		public async Task<User?> GetUserAsync(uint userID)
 		{
-			return await _dbContext.Users.FirstOrDefaultAsync(u => u.ID == userID);
+			var users = await GetUsersAsync();
+			return users?.FirstOrDefault(u => u.ID == userID);
 		}
 
 		public async Task<List<User>?> FilterUsersAsync(FilterUsers filterUsers)
 		{
-			var users = await GetUsersAsync(filterUsers.CompanyID);
+			var users = await GetUsersAsync();
 
 			if (!string.IsNullOrEmpty(filterUsers.Fullname))
 			{
 				var fullNameParts = filterUsers.Fullname.Split(' ');
 				users = users.Where(u =>
 					(fullNameParts.Length == 1 &&
-					 (u.LastName.Contains(fullNameParts[0]) ||
-					  u.FirstName.Contains(fullNameParts[0]) ||
-					  u.Patronymic.Contains(fullNameParts[0]))) ||
+					 (u.LastName.ToLower().Contains(fullNameParts[0]) ||
+					  u.FirstName.ToLower().Contains(fullNameParts[0]) ||
+					  u.Patronymic.ToLower().Contains(fullNameParts[0]))) ||
 					(fullNameParts.Length == 2 &&
-					 (u.LastName.Contains(fullNameParts[0]) &&
-					  u.FirstName.Contains(fullNameParts[1]))) ||
+					 (u.LastName.ToLower().Contains(fullNameParts[0]) &&
+					  u.FirstName.ToLower().Contains(fullNameParts[1]))) ||
 					(fullNameParts.Length == 3 &&
-					 (u.LastName.Contains(fullNameParts[0]) &&
-					  u.FirstName.Contains(fullNameParts[1]) &&
-					  u.Patronymic.Contains(fullNameParts[2])))).ToList();
+					 (u.LastName.ToLower().Contains(fullNameParts[0]) &&
+					  u.FirstName.ToLower().Contains(fullNameParts[1]) &&
+					  u.Patronymic.ToLower().Contains(fullNameParts[2])))).ToList();
 			}
 
 			if (!string.IsNullOrEmpty(filterUsers.Department))
@@ -89,7 +94,6 @@ namespace GostProjectAPI.Services
 
 			return users;
 		}
-
 
 		public async Task<bool> TryDeleteUserAsync(uint userID)
 		{
@@ -149,9 +153,9 @@ namespace GostProjectAPI.Services
 			return oldUser;
 		}
 
-		public async Task<List<string>> GetUniqueDepartmentsAsync(uint companyID)
+		public async Task<List<string>> GetUniqueDepartmentsAsync()
 		{
-			return (await GetUsersAsync(companyID))
+			return (await GetUsersAsync())
 					.Select(u => u.Department)
 					.Distinct()
 					.ToList();

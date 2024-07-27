@@ -10,20 +10,16 @@ namespace GostProjectAPI.Controllers
 	public class GostController : CommonControllerBase
 	{
 		private readonly GostService _gostService;
-		private readonly IAmazonS3 _s3Client;
 
-		public GostController(GostService gostService, IAmazonS3 s3Client)
+		public GostController(GostService gostService)
 		{
 			_gostService = gostService;
-
-			_s3Client = s3Client;
-
 		}
 
 		[HttpGet("{companyID}")]
-		public async Task<JsonResult> GetGosts(uint companyID)
+		public async Task<JsonResult> GetGosts()
 		{
-			return JSON(await _gostService.GetGostsAsync(companyID));
+			return JSON(await _gostService.GetGostsAsync());
 		}
 
 		[HttpPost]

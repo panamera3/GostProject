@@ -13,18 +13,21 @@ namespace GostProjectAPI.Services
 		private readonly IMapper _mapper;
 		private readonly GostDBContext _dbContext;
 		private readonly UserService _usersService;
+		private readonly CurrentUserService _currentUserService;
 
-		public NotificationService(GostDBContext dbContext, IMapper mapper, UserService usersService)
+		public NotificationService(GostDBContext dbContext, IMapper mapper, UserService usersService, CurrentUserService currentUserService)
 		{
 			_dbContext = dbContext;
 			_mapper = mapper;
 			_usersService = usersService;
+			_currentUserService = currentUserService;
 		}
 
-		public async Task<List<NotificationDto>> GetNotificationsAsync(uint companyID)
+		public async Task<List<NotificationDto>> GetNotificationsAsync()
 		{
+			var companyId = _currentUserService.CompanyId;
 			var notifications = await _dbContext.Notifications
-				.Where(n => n.CompanyId == companyID)
+				.Where(n => n.CompanyId == companyId)
 				.Where(n => n.Status == NotificationStatus.UnderConsideration)
 				.Select(n => new NotificationDto
 				{
@@ -45,10 +48,11 @@ namespace GostProjectAPI.Services
 			return notifications;
 		}
 
-		public async Task<NotificationDto> GetNotificationAsync(uint notificationID)
+		public async Task<NotificationDto?> GetNotificationAsync(uint notificationID)
 		{
+			var companyId = _currentUserService.CompanyId;
 			var notification = await _dbContext.Notifications
-				.Where(n => n.ID == notificationID)
+				.Where(n => n.ID == notificationID && n.CompanyId == companyId)
 				.Select(n => new NotificationDto
 				{
 					ID = n.ID,

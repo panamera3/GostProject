@@ -6,9 +6,6 @@ namespace GostProjectAPI.DTOModels.Gosts
     public class GetGostsDto
     {
         [Required]
-        public uint CompanyID { get; set; }
-
-        [Required]
         public PagingOptions Pagination { get; set; }
 
         [EnumDataType(typeof(SortDirection))]

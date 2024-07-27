@@ -36,7 +36,7 @@ const MyProfile = () => {
     if (Object.keys(user).length > 0) {
       axios({
         method: "get",
-        url: `/api/Company/GetCompany/${user.workCompanyID}`,
+        url: `/api/Company/GetCompany`,
       })
         .then((company) => {
           setCompany(company.data);
@@ -115,7 +115,7 @@ const MyProfile = () => {
 
     axios({
       method: "post",
-      url: `/api/Company/ChangeCodeUpdateFrequency/?companyId=${user.workCompanyID}&months=${selectedFrequency}`,
+      url: `/api/Company/ChangeCodeUpdateFrequency/?months=${selectedFrequency}`,
     })
       .then((company) => {
         setCompany(company.data);
@@ -137,16 +137,16 @@ const MyProfile = () => {
         toast.success(
           `Частота обновления кода подключения к организации обновлена и будет производиться раз в ${company.data.codeUpdateFrequencyInMonths} месяцев`,
           {
-            autoClose: 10000,
+            autoClose: 20000,
           }
         );
         toast.success(`Код подключения к организации был обновлён`, {
-          autoClose: 10000,
+          autoClose: 20000,
         });
         toast.success(
           `Дата обновления кода подключения к организации была обновлена и назначена на ${formattedDate}`,
           {
-            autoClose: 10000,
+            autoClose: 20000,
           }
         );
       })

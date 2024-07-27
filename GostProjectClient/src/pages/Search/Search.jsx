@@ -51,9 +51,7 @@ const Search = () => {
 
   const fetchUniqueKeywords = async () => {
     try {
-      const response = await axios.get(
-        `/api/Keys/GetUniqueKeywords/${localStorage.getItem("workCompanyID")}`
-      );
+      const response = await axios.get(`/api/Keys/GetUniqueKeywords`);
       setUniqueKeywords(response.data);
     } catch (error) {
       console.error(error);
@@ -62,9 +60,7 @@ const Search = () => {
 
   const fetchUniqueKeyphrases = async () => {
     try {
-      const response = await axios.get(
-        `/api/Keys/GetUniqueKeyphrases/${localStorage.getItem("workCompanyID")}`
-      );
+      const response = await axios.get(`/api/Keys/GetUniqueKeyphrases`);
       setUniqueKeyphrases(response.data);
     } catch (error) {
       console.error(error);
@@ -140,9 +136,7 @@ const Search = () => {
   const fetchRequestedInsteadOptions = async () => {
     try {
       const response = await axios.get(
-        `/api/Gost/GetDataForNormativeReferences/?companyID=${localStorage.getItem(
-          "workCompanyID"
-        )}`
+        `/api/Gost/GetDataForNormativeReferences`
       );
       setRequestedInsteadOptions(response.data);
     } catch (error) {
@@ -156,7 +150,6 @@ const Search = () => {
         method: "post",
         url: `/api/Gost/GetGosts`,
         data: {
-          companyID: localStorage.getItem("workCompanyID"),
           pagination,
           filter,
         },
@@ -213,7 +206,6 @@ const Search = () => {
       method: "post",
       url: `/api/Gost/GetGosts`,
       data: {
-        companyID: localStorage.getItem("workCompanyID"),
         pagination,
         searchInFilePrompt,
       },

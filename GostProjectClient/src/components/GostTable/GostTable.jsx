@@ -255,10 +255,8 @@ const GostTable = ({ id, view, edit, add }) => {
   }, []);
 
   const getDataForNormativeReferences = () => {
-    var url = `/api/Gost/GetDataForNormativeReferences/?companyID=${localStorage.getItem(
-      "workCompanyID"
-    )}`;
-    url += edit ? `&gostID=${gost.id}` : "";
+    var url = `/api/Gost/GetDataForNormativeReferences`;
+    url += edit ? `?gostID=${gost.id}` : "";
     axios({
       method: "get",
       url: url,
@@ -981,7 +979,6 @@ const GostTable = ({ id, view, edit, add }) => {
         url: `/api/Gost/AddGost`,
         data: {
           ...formData,
-          developerId: localStorage.getItem("workCompanyID"),
           keywords: formData.keywords.split(","),
           keyphrases: formData.keyphrases.split(","),
           acceptanceLevel: Number(formData.acceptanceLevel),

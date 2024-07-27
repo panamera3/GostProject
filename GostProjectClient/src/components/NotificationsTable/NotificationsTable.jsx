@@ -10,10 +10,9 @@ const NotificationsTable = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const companyID = localStorage.getItem("workCompanyID");
     axios({
       method: "get",
-      url: `/api/Notification/GetUnreadNotifications/?companyID=${companyID}`,
+      url: `/api/Notification/GetUnreadNotifications`,
     })
       .then((notifications) => {
         setNotifications(notifications.data);

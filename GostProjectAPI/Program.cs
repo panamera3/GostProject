@@ -6,6 +6,7 @@ using GostProjectAPI.Services.Background;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.Office.Interop.Word;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.Filters;
 
@@ -32,7 +33,7 @@ namespace GostProjectAPI
 			// var nameConString = "MySqlConStringPublic";
 			var nameConString = builder.Environment.IsProduction() ? "MySqlConStringPublic" : "MySqlConString";
 			var conString = builder.Configuration.GetConnectionString(nameConString);
-			builder.Services.AddDbContext<GostDBContext>(option => option.UseMySql(conString, new MySqlServerVersion(new Version(10, 4, 24))));
+			builder.Services.AddDbContext<GostDBContext>(option => option.UseMySql(conString, new MySqlServerVersion(new System.Version(10, 4, 24))));
 
 			// Вписывать новые сервисы
 			builder.Services.AddSingleton<ICompanyCodeHasherService, SHA256CompanyCodeHasherService>();
@@ -53,6 +54,11 @@ namespace GostProjectAPI
 			builder.Services.AddScoped<NotificationService>();
 			builder.Services.AddScoped<CompanyService>();
 			builder.Services.AddScoped<KeysService>();
+			builder.Services.AddScoped<CurrentUserService>();
+
+			builder.Services.AddHttpContextAccessor();
+			builder.Services.AddScoped<ICurrentUserService, CurrentUserService>();
+
 
 			builder.Services.AddHostedService<UpdateCompanyCodeService>();
 
@@ -79,7 +85,7 @@ namespace GostProjectAPI
 					OnMessageReceived = context =>
 					{
 						context.Token = context.Request.Cookies["token"];
-						return Task.CompletedTask;
+						return System.Threading.Tasks.Task.CompletedTask;
 					}
 				};
 			});

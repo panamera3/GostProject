@@ -15,22 +15,21 @@ namespace GostProjectAPI.Services
 		private readonly GostDBContext _dbContext;
 		private readonly UserService _usersService;
 		private readonly ICompanyCodeHasherService _companyCodeHasherService;
+		private readonly CurrentUserService _currentUserService;
 
-		public CompanyService(GostDBContext dbContext, IMapper mapper, UserService userService, ICompanyCodeHasherService companyCodeHasherService)
+		public CompanyService(GostDBContext dbContext, IMapper mapper, UserService userService, ICompanyCodeHasherService companyCodeHasherService, CurrentUserService currentUserService)
 		{
 			_dbContext = dbContext;
 			_mapper = mapper;
 			_usersService = userService;
 			_companyCodeHasherService = companyCodeHasherService;
-		}
-		public async Task<List<Company>?> GetCompaniesAsync()
-		{
-			return await _dbContext.Companies.ToListAsync();
+			_currentUserService = currentUserService;
 		}
 
-		public async Task<Company?> GetCompanyAsync(uint companyID)
+		public async Task<Company?> GetCompanyAsync()
 		{
-			return await _dbContext.Companies.FirstOrDefaultAsync(c => c.ID == companyID);
+			var companyId = _currentUserService.CompanyId;
+			return await _dbContext.Companies.FirstOrDefaultAsync(c => c.ID == companyId);
 		}
 
 		public async Task<UserAddDto> AddCompanyAsync(CompanyAddDto companyAddDto)
@@ -63,8 +62,9 @@ namespace GostProjectAPI.Services
 			return newAdmin;
 		}
 
-		public async Task<Company> ResetCompanyCode(uint companyId)
+		public async Task<Company> ResetCompanyCode()
 		{
+			var companyId = _currentUserService.CompanyId;
 			var company = await _dbContext.Companies.FindAsync(companyId);
 
 			if (company == null)
@@ -77,8 +77,9 @@ namespace GostProjectAPI.Services
 			return company;
 		}
 
-		public async Task<string> GetCompanyCodeAsync(uint companyId)
+		public async Task<string> GetCompanyCodeAsync()
 		{
+			var companyId = _currentUserService.CompanyId;
 			var company = await _dbContext.Companies.FindAsync(companyId);
 
 			if (company == null)
@@ -87,8 +88,9 @@ namespace GostProjectAPI.Services
 			return company.Code;
 		}
 
-		public async Task<Company> ChangeCodeUpdateFrequencyAsync(uint companyId, byte months)
+		public async Task<Company> ChangeCodeUpdateFrequencyAsync(byte months)
 		{
+			var companyId = _currentUserService.CompanyId;
 			var oldCompany = await _dbContext.Companies.FindAsync(companyId);
 
 			if (oldCompany == null)
@@ -97,7 +99,7 @@ namespace GostProjectAPI.Services
 			oldCompany.CodeUpdateFrequencyInMonths = months;
 			oldCompany.UpdateDateCode = DateTime.Now.AddMonths(months);
 
-			await ResetCompanyCode(companyId);
+			await ResetCompanyCode();
 
 			_dbContext.Companies.Update(oldCompany);
 			await _dbContext.SaveChangesAsync();

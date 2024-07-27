@@ -18,10 +18,9 @@ const HeaderAdmin = ({ user }) => {
   const [notificationsCount, setnotificationsCount] = useState(0);
 
   useEffect(() => {
-    const companyID = localStorage.getItem("workCompanyID");
     axios({
       method: "get",
-      url: `/api/Notification/GetUnreadNotifications/?companyID=${companyID}`,
+      url: `/api/Notification/GetUnreadNotifications`,
     })
       .then((notifications) => {
         setnotificationsCount(notifications.data.length);
@@ -69,11 +68,11 @@ const HeaderAdmin = ({ user }) => {
           <a href="/home" className="a_header">
             Все документы
           </a>
+          <a href="/search">Поиск</a>
           {!user && <a href="/gostAdd">Создать документ</a>}
 
           {!user && (
             <>
-              <a href="/search">Поиск</a>
               <a href="/archive">Архив</a>
               <a href="/userProfiles">Пользователи</a>
               <a href="/activity">Активность</a>
