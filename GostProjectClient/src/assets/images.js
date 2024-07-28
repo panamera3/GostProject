@@ -10,3 +10,6 @@ export const likeIcon = "/icons/like.svg";
 export const notificationIcon = "/icons/notification.svg";
 export const notificationActiveIcon = "/icons/notificationActive.svg";
 export const userIcon = "/icons/user.svg";
+export const hintIcon = "/icons/hint.svg";
+export const alertIcon = "/icons/alert.svg";
+export const refreshIcon = "/icons/refresh.svg";

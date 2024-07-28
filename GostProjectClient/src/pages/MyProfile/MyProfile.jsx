@@ -9,7 +9,7 @@ import { toast } from "react-toastify";
 
 import { translationRolesDict } from "../../components/constants/translationRolesDict";
 import { BodyContainer } from "../../components/styles/styled_components";
-import { copyIcon } from "../../assets/images";
+import { alertIcon, copyIcon } from "../../assets/images";
 import BackLink from "../../components/BackLink/BackLink";
 
 const MyProfile = () => {
@@ -241,7 +241,7 @@ const MyProfile = () => {
                   <b>Частота обновления</b>
                   <img
                     alt="!"
-                    // src={warnImg}
+                    src={alertIcon}
                     className="warnForFrequency"
                     title="При выборе частоты обновления текущий код подключения будет обновлён"
                   />

@@ -16,6 +16,7 @@ import {
 } from "../styles/styled_components";
 import ReactSelect from "react-select";
 import Table from "../Table/Table";
+import { hintIcon } from "../../assets/images";
 
 const GostTable = ({ id, view, edit, add }) => {
   const navigate = useNavigate();
@@ -716,7 +717,7 @@ const GostTable = ({ id, view, edit, add }) => {
           )}
 
           <img
-            // src={switchImg}
+            src={switchIcon}
             alt="→"
             onClick={switchNormativeReferencesMode}
           />
@@ -780,7 +781,7 @@ const GostTable = ({ id, view, edit, add }) => {
                       <>
                         <img
                           alt="?"
-                          // src={hintImg}
+                          src={hintIcon}
                           className="hint"
                           title="Введите значения через запятую"
                         />
@@ -791,7 +792,7 @@ const GostTable = ({ id, view, edit, add }) => {
                       <>
                         <img
                           alt="?"
-                          // src={hintImg}
+                          src={hintIcon}
                           className="hint"
                           title="Для добавления ссылки на ГОСТ, которого нет в базе, нажмите кнопку для переключения режима"
                         />
@@ -896,7 +897,7 @@ const GostTable = ({ id, view, edit, add }) => {
                       <>
                         <img
                           alt="?"
-                          // src={hintImg}
+                          src={hintIcon}
                           className="hint"
                           title="Введите значения через запятую"
                         />
@@ -906,7 +907,7 @@ const GostTable = ({ id, view, edit, add }) => {
                       <>
                         <img
                           alt="?"
-                          // src={hintImg}
+                          src={hintIcon}
                           className="hint"
                           title="Для добавления ссылки на ГОСТ, которого нет в базе, нажмите кнопку для переключения режима"
                         />
