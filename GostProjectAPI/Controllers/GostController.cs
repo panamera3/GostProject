@@ -136,9 +136,9 @@ namespace GostProjectAPI.Controllers
 		}
 
 		[HttpGet]
-		public async Task<JsonResult> GetDataForNormativeReferences([FromQuery]uint companyID, uint? gostID)
+		public async Task<JsonResult> GetDataForNormativeReferences([FromQuery]uint? gostID)
 		{
-			return JSON(await _gostService.GetDataForNormativeReferencesAsync(companyID, gostID));
+			return JSON(await _gostService.GetDataForNormativeReferencesAsync(gostID));
 		}
 
 		[HttpGet("{gostID}")]

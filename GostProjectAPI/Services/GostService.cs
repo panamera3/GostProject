@@ -8,7 +8,6 @@ using GostProjectAPI.DTOModels.Gosts;
 using GostProjectAPI.Extensions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Office.Interop.Word;
-using System.ComponentModel.Design;
 using System.Data;
 using System.Linq.Expressions;
 using System.Reflection;
@@ -391,7 +390,7 @@ namespace GostProjectAPI.Services
 				if (uint.TryParse(normativeReferenceValue, out uint referenceId))
 				{
 					normativeReference.ReferenceGostId = referenceId;
-					normativeReference.ReferenceGostDesignation = null; 
+					normativeReference.ReferenceGostDesignation = null;
 				}
 				else
 				{
@@ -674,12 +673,10 @@ namespace GostProjectAPI.Services
 			return updateGostDates;
 		}
 
-		public async Task<List<DataForNormativeReference>> GetDataForNormativeReferencesAsync(uint companyID, uint? gostID)
+		public async Task<List<DataForNormativeReference>> GetDataForNormativeReferencesAsync(uint? gostID)
 		{
-			var dataForNormativeReference = await _dbContext.Gosts
-				.Where(g => g.DeveloperId == companyID)
-				.Select(g => new DataForNormativeReference { ID = g.ID, Designation = g.Designation })
-				.ToListAsync();
+			var dataForNormativeReference = (await GetGostsAsync())
+				.Select(g => new DataForNormativeReference { ID = g.ID, Designation = g.Designation }).ToList();
 
 			if (gostID.HasValue)
 			{

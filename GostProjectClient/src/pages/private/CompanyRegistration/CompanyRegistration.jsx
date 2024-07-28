@@ -4,7 +4,10 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { toast } from "react-toastify";
 import UserRole from "../../../types/user/userRole";
-import { BtnBlue, BtnMidGray } from "../../../components/styles/styled_components";
+import {
+  BtnBlue,
+  BtnMidGray,
+} from "../../../components/styles/styled_components";
 
 const CompanyRegistration = () => {
   const navigate = useNavigate();
@@ -149,7 +152,24 @@ const CompanyRegistration = () => {
 
   return (
     <>
-      <div className="company-registration-container">
+      <div
+        className={
+          currentStep == 1
+            ? "company-registration-container first_step"
+            : "company-registration-container"
+        }
+      >
+        <div
+          className={
+            currentStep !== 2
+              ? "back_container second-step step-hidden"
+              : "back_container second-step"
+          }
+        >
+          <p id="back" onClick={handlePrevStep}>
+            Назад
+          </p>
+        </div>
         <div className="company-registration-title">
           <h1>Хранилище ГОСТов</h1>
           <p>Регистрация</p>
@@ -181,9 +201,7 @@ const CompanyRegistration = () => {
                 ref={emailCompanyRegistrationInputRef}
                 placeholder="Электронная почта"
               />
-              <BtnBlue onClick={handleNextStep}>
-                Далее
-              </BtnBlue>
+              <BtnBlue onClick={handleNextStep}>Далее</BtnBlue>
             </div>
             <div
               className={
@@ -224,12 +242,7 @@ const CompanyRegistration = () => {
                 ref={confirmPasswordCompanyRegistrationInputRef}
                 placeholder="Подтверждение пароля"
               />
-              <BtnMidGray onClick={handlePrevStep}>
-                Назад
-              </BtnMidGray>
-              <BtnBlue type="submit">
-                Зарегистрироваться
-              </BtnBlue>
+              <BtnBlue type="submit">Зарегистрироваться</BtnBlue>
             </div>
           </div>
         </form>

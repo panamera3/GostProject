@@ -3,7 +3,6 @@ import HeaderUser from "../../components/Header/HeaderUser";
 import HeaderAdmin from "../../components/HeaderAdmin/HeaderAdmin";
 import "./MyProfile.css";
 import axios from "axios";
-import { useSearchParams } from "react-router-dom";
 import { CopyToClipboard } from "react-copy-to-clipboard";
 import { toast } from "react-toastify";
 

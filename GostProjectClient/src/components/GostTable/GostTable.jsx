@@ -83,7 +83,7 @@ const GostTable = ({ id, view, edit, add }) => {
       }
     }
     if (gost) {
-      if (add || edit) {
+      if (edit) {
         getDataForNormativeReferences();
       }
     }
@@ -239,6 +239,9 @@ const GostTable = ({ id, view, edit, add }) => {
 
       fetchData();
     }
+    if (add) {
+      getDataForNormativeReferences();
+    }
   }, []);
 
   useEffect(() => {
@@ -295,7 +298,7 @@ const GostTable = ({ id, view, edit, add }) => {
       (item) =>
         !selectedItems.some(
           (selected) =>
-            selected.id === item.id || selected.designation === item.designation
+            selected.id == item.id || selected.designation == item.designation
         )
     )
     .map((item) => ({
@@ -819,7 +822,7 @@ const GostTable = ({ id, view, edit, add }) => {
                     alignItems: "center",
                   }}
                 >
-                  <p>Текущий файл: </p>
+                  <p>Текущий файл:</p>
                   {gostFile && (
                     <a href={`${gostFile.path}`}>
                       {gostFile.path.split("/").pop()}

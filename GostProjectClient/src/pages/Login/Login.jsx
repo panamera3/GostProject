@@ -53,7 +53,9 @@ const Login = () => {
       })
       .catch((error) => {
         console.log(error);
-        toast.error("Неверный логин и/или пароль");
+        if (error.response.status === 401)
+          toast.error("Неверный логин и/или пароль");
+        else toast.error("Возникла ошибка. Попробуйте войти ещё раз позднее.");
       });
   };
 
@@ -110,7 +112,7 @@ const Login = () => {
                   type="login"
                   ref={usernameLoginInputRef}
                   placeholder="Логин"
-                    isInvalid={!fieldValidity.username}
+                  isInvalid={!fieldValidity.username}
                 />
                 <div style={{ position: "relative" }}>
                   <Input
