@@ -34,7 +34,7 @@ namespace GostProjectAPI.Services.Background
 			using (var scope = _scopeFactory.CreateScope())
 			{
 				var dbContext = scope.ServiceProvider.GetRequiredService<GostDBContext>();
-				var companyCodeHasherService = scope.ServiceProvider.GetRequiredService<ICompanyCodeHasherService>();
+				var _companyCodeHasherService = scope.ServiceProvider.GetRequiredService<ICompanyCodeHasherService>();
 
 				var companiesToUpdate = await dbContext.Companies
 					.Where(c => c.UpdateDateCode <= DateTime.Now)
@@ -42,7 +42,7 @@ namespace GostProjectAPI.Services.Background
 
 				foreach (var company in companiesToUpdate)
 				{
-					company.Code = companyCodeHasherService.Encode(16); // Генерация нового кода
+					company.Code = _companyCodeHasherService.Encode(16); // Генерация нового кода
 					company.UpdateDateCode = DateTime.Now.AddMonths(company.CodeUpdateFrequencyInMonths); // Обновление даты следующего обновления
 				}
 

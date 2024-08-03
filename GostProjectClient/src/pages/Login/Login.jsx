@@ -49,6 +49,7 @@ const Login = () => {
         localStorage.setItem("workCompanyID", user.data.workCompanyID);
         localStorage.setItem("role", userRole);
         localStorage.setItem("isConfirmed", user.data.isConfirmed);
+        localStorage.setItem("refreshToken", user.data.refreshToken);
         navigate("/home");
       })
       .catch((error) => {

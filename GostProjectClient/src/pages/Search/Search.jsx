@@ -15,6 +15,7 @@ import {
   BtnDarkGray,
 } from "../../components/styles/styled_components";
 import BackLink from "../../components/BackLink/BackLink";
+import { hintIcon } from "../../assets/images";
 
 const Search = () => {
   const navigate = useNavigate();
@@ -467,6 +468,11 @@ const Search = () => {
                   id="text"
                   name="searchText"
                   placeholder="Введите текст"
+                />
+                <img
+                  src={hintIcon}
+                  alt="?"
+                  title={`Чтобы упростить поиск в документе, вы можете вводить только корень слова. Например, вместо полного слова "Труба" просто напишите "Труб". Это поможет вам найти все слова, которые начинаются с этого корня, включая разные окончания.`}
                 />
                 <BtnBlue type="submit">Применить</BtnBlue>
               </div>

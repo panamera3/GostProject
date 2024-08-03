@@ -7,6 +7,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using Microsoft.EntityFrameworkCore;
 using GostProjectAPI.DTOModels.Auth;
+using System.Security.Cryptography;
 
 namespace GostProjectAPI.Services.Auth
 {
@@ -16,13 +17,15 @@ namespace GostProjectAPI.Services.Auth
         private readonly GostDBContext _dbContext;
         private readonly IMapper _mapper;
         private readonly IOptions<AuthOptions> _authOptions;
+		private readonly TokenEncryptionService _tokenEncryptionService;
 
-        public AuthService(IPasswordHasherService passwordEncoder, GostDBContext dbContext, IMapper mapper, IOptions<AuthOptions> authOptions)
+		public AuthService(IPasswordHasherService passwordEncoder, GostDBContext dbContext, IMapper mapper, IOptions<AuthOptions> authOptions, TokenEncryptionService tokenEncryptionService)
         {
             _passwordHasher = passwordEncoder;
             _dbContext = dbContext;
             _mapper = mapper;
             _authOptions = authOptions;
+			_tokenEncryptionService = tokenEncryptionService;
         }
 
         public async Task<SignedInUser?> AuthenticateAsync(UserAuthDto userAuthDto)
@@ -46,7 +49,11 @@ namespace GostProjectAPI.Services.Auth
 
             signedInUser.Token = token;
 
-            return signedInUser;
+			var refreshToken = GenerateRefreshToken();
+			await SaveRefreshTokenToDatabase(uint.Parse(signedInUser.ID), refreshToken);
+			signedInUser.RefreshToken = refreshToken;
+
+			return signedInUser;
         }
 
 		private ClaimsIdentity GetIdentity(User user)
@@ -61,8 +68,6 @@ namespace GostProjectAPI.Services.Auth
 
 			return new ClaimsIdentity(claims, "Token", ClaimsIdentity.DefaultNameClaimType, ClaimsIdentity.DefaultRoleClaimType);
 		}
-
-
 
 		private string GenerateJWT(ClaimsIdentity identity)
         {
@@ -79,6 +84,25 @@ namespace GostProjectAPI.Services.Auth
 
             return new JwtSecurityTokenHandler().WriteToken(jwt);
         }
+        
+        private string GenerateRefreshToken()
+        {
+			var randomNumber = new byte[32];
+			using var rng = RandomNumberGenerator.Create();
+			rng.GetBytes(randomNumber);
+			return Convert.ToBase64String(randomNumber);
+		}
+
+		private async Task SaveRefreshTokenToDatabase(uint userId, string refreshToken)
+		{
+			var user = await _dbContext.Users.FindAsync(userId);
+			if (user != null)
+			{
+				user.RefreshToken = _tokenEncryptionService.Encrypt(refreshToken);
+				user.RefreshTokenExpiry = DateTime.UtcNow.AddDays(30);
+				await _dbContext.SaveChangesAsync();
+			}
+		}
 
 		public async Task<(bool userExists, bool companyExists)> CheckUserAndCompanyAsync(ExistingUserDto existingUserDto)
 		{
@@ -86,6 +110,38 @@ namespace GostProjectAPI.Services.Auth
 			var company = await _dbContext.Companies.FindAsync(existingUserDto.CompanyId);
 
 			return (user != null, company != null);
+		}
+
+		public async Task<(string accessToken, string refreshToken)> RefreshTokenAsync(string refreshToken)
+		{
+			var encryptedToken = _dbContext.Users.Where(u => u.RefreshTokenExpiry > DateTime.UtcNow).Select(u => u.RefreshToken).FirstOrDefault();
+
+			if (encryptedToken == null)
+			{
+				return (null, null);
+			}
+
+			var decryptedToken = _tokenEncryptionService.Decrypt(encryptedToken);
+			refreshToken = refreshToken.Replace("%3D", "=");
+
+			if (decryptedToken != refreshToken)
+			{
+				return (null, null);
+			}
+
+			var user = await _dbContext.Users.FirstOrDefaultAsync(u => u.RefreshToken == encryptedToken);
+
+			if (user == null)
+			{
+				return (null, null);
+			}
+
+			var identity = GetIdentity(user);
+			var newAccessToken = GenerateJWT(identity);
+			var newRefreshToken = GenerateRefreshToken();
+			await SaveRefreshTokenToDatabase(user.ID, newRefreshToken);
+
+			return (newAccessToken, newRefreshToken);
 		}
 	}
 }

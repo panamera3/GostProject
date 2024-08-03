@@ -5,8 +5,8 @@ using GostProjectAPI.Services.Auth;
 using GostProjectAPI.Services.Background;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
-using Microsoft.Office.Interop.Word;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.Filters;
 
@@ -55,6 +55,8 @@ namespace GostProjectAPI
 			builder.Services.AddScoped<CompanyService>();
 			builder.Services.AddScoped<KeysService>();
 			builder.Services.AddScoped<CurrentUserService>();
+
+			builder.Services.AddScoped<TokenEncryptionService>();
 
 			builder.Services.AddHttpContextAccessor();
 			builder.Services.AddScoped<ICurrentUserService, CurrentUserService>();

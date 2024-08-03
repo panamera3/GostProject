@@ -128,6 +128,7 @@ const CompanyRegistration = () => {
             localStorage.setItem("id", newUser.data.id);
             localStorage.setItem("workCompanyID", newUser.data.workCompanyID);
             localStorage.setItem("isConfirmed", newUser.data.isConfirmed);
+            localStorage.setItem("refreshToken", newUser.data.refreshToken);
             localStorage.setItem("role", "Admin");
 
             navigate("/myProfile");

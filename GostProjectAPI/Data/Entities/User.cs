@@ -46,5 +46,8 @@ namespace GostProjectAPI.Data.Entities
 
         [Description("Номер телефона")]
         public string? PhoneNumber { get; set; }
-    }
+
+		public string RefreshToken { get; set; }
+		public DateTime RefreshTokenExpiry { get; set; }
+	}
 }

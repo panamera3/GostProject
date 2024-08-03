@@ -5,6 +5,8 @@ using GostProjectAPI.Services;
 using GostProjectAPI.Services.Auth;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Swashbuckle.AspNetCore.Filters;
 
 namespace GostProjectAPI.Controllers
 {
@@ -19,7 +21,7 @@ namespace GostProjectAPI.Controllers
 		private readonly CompanyService _companyService;
 		private readonly IMapper _mapper;
 		private readonly IWebHostEnvironment _env;
-		private readonly CookieOptions _cookieOptions;
+		private readonly CookieOptions _accessTokenCookieOptions;
 
 		public AuthController(AuthService authService, UserService usersService, NotificationService notificationsService, IMapper mapper, CompanyService companyService, IWebHostEnvironment env)
 		{
@@ -29,7 +31,8 @@ namespace GostProjectAPI.Controllers
 			_notificationsService = notificationsService;
 			_companyService = companyService;
 			_env = env;
-			_cookieOptions = new CookieOptions
+
+			_accessTokenCookieOptions = new CookieOptions
 			{
 				SameSite = _env.IsDevelopment() ? SameSiteMode.None : SameSiteMode.Unspecified,
 				Secure = _env.IsDevelopment(),
@@ -50,7 +53,7 @@ namespace GostProjectAPI.Controllers
 					if (signedInUser != null)
 					{
 						// Установка куки с токеном
-						Response.Cookies.Append("token", signedInUser.Token, _cookieOptions);
+						Response.Cookies.Append("token", signedInUser.Token, _accessTokenCookieOptions);
 
 						return Ok(signedInUser);
 					}
@@ -74,7 +77,7 @@ namespace GostProjectAPI.Controllers
 			}
 
 			// Установка куки с токеном
-			Response.Cookies.Append("token", signedInUser.Token, _cookieOptions);
+			Response.Cookies.Append("token", signedInUser.Token, _accessTokenCookieOptions);
 
 			return Ok(signedInUser);
 		}
@@ -104,7 +107,7 @@ namespace GostProjectAPI.Controllers
 						if (signedInUser != null)
 						{
 							// Установка куки с токеном
-							Response.Cookies.Append("token", signedInUser.Token, _cookieOptions);
+							Response.Cookies.Append("token", signedInUser.Token, _accessTokenCookieOptions);
 
 							return Ok(signedInUser);
 						}
@@ -146,6 +149,21 @@ namespace GostProjectAPI.Controllers
 			{
 				return StatusCode(500, "Произошла ошибка на сервере. Пожалуйста, попробуйте позже.");
 			}
+		}
+
+		[HttpPost]
+		public async Task<IActionResult> RefreshToken([FromBody] RefreshTokenDto refreshTokenDto)
+		{
+			var (accessToken, refreshToken) = await _authService.RefreshTokenAsync(refreshTokenDto.RefreshToken);
+
+			if (accessToken == null || refreshToken == null)
+			{
+				return Unauthorized();
+			}
+
+			Response.Cookies.Append("token", accessToken, _accessTokenCookieOptions);
+
+			return Ok(new { accessToken, refreshToken });
 		}
 	}
 }

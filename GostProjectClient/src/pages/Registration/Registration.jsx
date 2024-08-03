@@ -104,6 +104,7 @@ const Registration = () => {
               );
               localStorage.setItem("id", user.data.id);
               localStorage.setItem("workCompanyID", user.data.WorkCompanyID);
+              localStorage.setItem("refreshToken", user.data.refreshToken);
               localStorage.setItem("role", userRole);
               navigate("/home");
             } else {

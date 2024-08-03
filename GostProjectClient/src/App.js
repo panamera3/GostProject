@@ -25,7 +25,11 @@ import { GlobalStyle } from "./components/styles/styled_components";
 
 function App() {
   useEffect(() => {
-    if (localStorage.getItem("id") && localStorage.getItem("workCompanyID")) {
+    const userId = localStorage.getItem("id");
+    const workCompanyID = localStorage.getItem("workCompanyID");
+    const refreshToken = localStorage.getItem("refreshToken");
+
+    if (userId && workCompanyID) {
       const controller = new AbortController();
       const signal = controller.signal;
       let reloadTimeout;
@@ -41,49 +45,74 @@ function App() {
           await axios.post(
             "/api/Auth/CheckUserAndCompany",
             {
-              userId: localStorage.getItem("id"),
-              companyId: localStorage.getItem("workCompanyID"),
+              userId: userId,
+              companyId: workCompanyID,
             },
             { signal }
           );
         } catch (error) {
-          if (error.response) {
-            if (error.response.status === 401) {
-              localStorage.clear();
-              document.cookie = "token=;";
-              toast.error(
-                "Срок действия аутентификации истёк. Будет произведён выход из аккаунта, просьба перезайти в аккаунт заново."
-              );
-              reloadAfterError();
-            }
-            if (error.response.status === 404) {
-              localStorage.clear();
-              document.cookie = "token=;";
-              toast.error(
-                "Пользователь или компания не найдены. Будет произведён выход из аккаунта."
-              );
-              reloadAfterError();
-            } else if (error.response.status === 400) {
-              localStorage.clear();
-              document.cookie = "token=;";
-              toast.error(
-                "Что-то пошло не так. Будет произведён выход из аккаунта."
-              );
-              reloadAfterError();
-            } else if (error.response.status.toString().startsWith("5")) {
-              toast.error(
-                "Произошла ошибка на сервере. Пожалуйста, попробуйте позже."
-              );
-            } else if (error.response.status.toString().startsWith("4")) {
-              toast.error(
-                "Произошла ошибка на клиенте. Пожалуйста, попробуйте позже."
-              );
-            }
+          handleFetchError(error);
+        }
+      };
+
+      const refreshAccessToken = async () => {
+        try {
+          const response = await fetch("/api/Auth/RefreshToken", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            credentials: "include",
+            body: JSON.stringify({ RefreshToken: refreshToken }),
+          });
+
+          if (!response.ok) {
+            handleTokenRefreshError();
+          } else {
+            const data = await response.json();
+            localStorage.setItem("refreshToken", data.refreshToken);
+          }
+        } catch (error) {
+          console.error(error);
+        }
+      };
+
+      const handleFetchError = (error) => {
+        if (error.response) {
+          if (error.response.status === 404 || error.response.status === 400) {
+            localStorage.clear();
+            document.cookie = "token=;";
+            toast.error(
+              "Пользователь или компания не найдены. Будет произведён выход из аккаунта."
+            );
+            reloadAfterError();
+          } else if (error.response.status === 401) {
+            window.location.reload();
+          } else if (error.response.status.toString().startsWith("5")) {
+            toast.error(
+              "Произошла ошибка на сервере. Пожалуйста, попробуйте позже."
+            );
+          } else if (error.response.status.toString().startsWith("4")) {
+            toast.error(
+              "Произошла ошибка на клиенте. Пожалуйста, попробуйте позже."
+            );
+          } else {
+            window.location.reload();
           }
         }
       };
 
+      const handleTokenRefreshError = () => {
+        localStorage.clear();
+        document.cookie = "token=;";
+        toast.error(
+          "Что-то пошло не так. Будет произведён выход из аккаунта, просьба перезайти в аккаунт заново."
+        );
+        reloadAfterError();
+      };
+
       fetchData();
+      refreshAccessToken();
 
       return () => {
         controller.abort();
