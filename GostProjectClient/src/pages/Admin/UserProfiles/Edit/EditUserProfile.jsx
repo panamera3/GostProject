@@ -65,6 +65,12 @@ const EditUserProfile = () => {
   const submitHandler = (event) => {
     event.preventDefault();
 
+    var roleFromForm = formData.role == 1 ? UserRole.Admin : UserRole.Standart;
+    var newRole =
+      localStorage.getItem("id") == params.id
+        ? localStorage.getItem("role")
+        : roleFromForm;
+
     axios({
       method: "put",
       url: `/api/User/EditUser`,
@@ -73,7 +79,7 @@ const EditUserProfile = () => {
         fullname: formData.fullname,
         login: formData.login,
         department: formData.department,
-        role: formData.role == 1 ? UserRole.Admin : UserRole.Standart,
+        role: newRole,
         phoneNumber: formData.phoneNumber,
       },
     })
@@ -98,7 +104,7 @@ const EditUserProfile = () => {
       <HeaderAdmin />
       <BodyContainer>
         <div className="activities_container">
-          <BackLink/>
+          <BackLink />
         </div>
 
         <form onSubmit={submitHandler}>

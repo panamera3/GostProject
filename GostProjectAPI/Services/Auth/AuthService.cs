@@ -85,7 +85,7 @@ namespace GostProjectAPI.Services.Auth
             return new JwtSecurityTokenHandler().WriteToken(jwt);
         }
         
-        private string GenerateRefreshToken()
+        public string GenerateRefreshToken()
         {
 			var randomNumber = new byte[32];
 			using var rng = RandomNumberGenerator.Create();

@@ -32,7 +32,7 @@ namespace GostProjectAPI.Services
 			return await _dbContext.Companies.FirstOrDefaultAsync(c => c.ID == companyId);
 		}
 
-		public async Task<UserAddDto> AddCompanyAsync(CompanyAddDto companyAddDto)
+		public async Task<(UserAddDto, Company)> AddCompanyAsync(CompanyAddDto companyAddDto)
 		{
 			var isCompanyExistByPSRN = await _dbContext.Companies.AnyAsync(c => c.PSRN == companyAddDto.PSRN);
 			if (isCompanyExistByPSRN)
@@ -50,7 +50,7 @@ namespace GostProjectAPI.Services
 			);
 
 			if (company == null)
-				return null;
+				return (null, null);
 
 			await _dbContext.Companies.AddAsync(company);
 			await _dbContext.SaveChangesAsync();
@@ -59,7 +59,14 @@ namespace GostProjectAPI.Services
 			var newAdmin = _mapper.Map<UserAddDto>(companyAddDto);
 			newAdmin.CompanyCode = company.Code;
 			
-			return newAdmin;
+			return (newAdmin, company);
+		}
+
+		public async Task<bool> TryDeleteCompanyAsync(Company company)
+		{
+			_dbContext.Companies.Remove(company);
+			await _dbContext.SaveChangesAsync();
+			return true;
 		}
 
 		public async Task<Company> ResetCompanyCode()

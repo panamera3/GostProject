@@ -15,14 +15,18 @@ namespace GostProjectAPI.Services
 		private readonly IPasswordHasherService _passwordHasher;
 		private readonly IOptions<AuthOptions> _authOptions;
 		private readonly CurrentUserService _currentUserService;
+		private readonly TokenEncryptionService _tokenEncryptionService;
+		private readonly AuthService _authService;
 
-		public UserService(IPasswordHasherService passwordEncoder, GostDBContext dbContext, IMapper mapper, IOptions<AuthOptions> authOptions, CurrentUserService currentUserService)
+		public UserService(IPasswordHasherService passwordEncoder, GostDBContext dbContext, IMapper mapper, IOptions<AuthOptions> authOptions, CurrentUserService currentUserService, TokenEncryptionService tokenEncryptionService, AuthService authService)
 		{
 			_passwordHasher = passwordEncoder;
 			_dbContext = dbContext;
 			_mapper = mapper;
 			_authOptions = authOptions;
 			_currentUserService = currentUserService;
+			_tokenEncryptionService = tokenEncryptionService;
+			_authService = authService;
 		}
 
 		public async Task<User?> AddUserAsync(UserAddDto userDTO)
@@ -47,6 +51,10 @@ namespace GostProjectAPI.Services
 			user.WorkCompanyID = company.ID;
 			user.Department = (user.Department != null && user.Department != "") ? user.Department : "Нет отдела";
 
+			var newRefreshToken = _authService.GenerateRefreshToken();
+			user.RefreshToken = _tokenEncryptionService.Encrypt(newRefreshToken);
+			user.RefreshTokenExpiry = DateTime.UtcNow.AddDays(30);
+
 			await _dbContext.Users.AddAsync(user);
 			await _dbContext.SaveChangesAsync();
 
@@ -57,7 +65,7 @@ namespace GostProjectAPI.Services
 		public async Task<List<User>?> GetUsersAsync()
 		{
 			var companyId = _currentUserService.CompanyId;
-			return await _dbContext.Users.Where(u => u.WorkCompanyID == companyId).ToListAsync();
+			return await _dbContext.Users.Where(u => u.WorkCompanyID == companyId).Where(u => u.IsConfirmed).ToListAsync();
 		}
 
 		public async Task<User?> GetUserAsync(uint userID)
@@ -72,7 +80,7 @@ namespace GostProjectAPI.Services
 
 			if (!string.IsNullOrEmpty(filterUsers.Fullname))
 			{
-				var fullNameParts = filterUsers.Fullname.Split(' ');
+				var fullNameParts = filterUsers.Fullname.Split(' ').Select(part => part.ToLower()).ToArray();
 				users = users.Where(u =>
 					(fullNameParts.Length == 1 &&
 					 (u.LastName.ToLower().Contains(fullNameParts[0]) ||

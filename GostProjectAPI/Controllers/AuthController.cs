@@ -1,4 +1,5 @@
-﻿using GostProjectAPI.DTOModels.Auth;
+﻿using GostProjectAPI.Data.Entities;
+using GostProjectAPI.DTOModels.Auth;
 using GostProjectAPI.DTOModels.Company;
 using GostProjectAPI.DTOModels.Users;
 using GostProjectAPI.Services;
@@ -86,9 +87,10 @@ namespace GostProjectAPI.Controllers
 		public async Task<IActionResult> RegisterCompany([FromBody] CompanyAddDto companyAddDto)
 		{
 			UserAddDto? newAdmin = null;
+			Company? newCompany = null;
 			try
 			{
-				newAdmin = await _companyService.AddCompanyAsync(companyAddDto);
+				(newAdmin, newCompany) = await _companyService.AddCompanyAsync(companyAddDto);
 			}
 			catch (Exception ex)
 			{
@@ -121,6 +123,7 @@ namespace GostProjectAPI.Controllers
 			}
 			catch (Exception ex)
 			{
+				await _companyService.TryDeleteCompanyAsync(newCompany);
 				return BadRequest(new { error = ex.Message });
 			}
 		}

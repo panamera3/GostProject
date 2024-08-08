@@ -119,7 +119,7 @@ const Registration = () => {
             }
           })
           .catch((error) => {
-            console.log(error);
+            toast.error(error.response.data.error);
           });
       } else {
         toast.error("Пароли не совпадают");
