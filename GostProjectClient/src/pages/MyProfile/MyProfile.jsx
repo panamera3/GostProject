@@ -236,7 +236,7 @@ const MyProfile = () => {
                 </CopyToClipboard>
               </div>
               <div className="profile-frequency-container">
-                <p>
+                <div>
                   <b>Частота обновления</b>
                   <img
                     alt="!"
@@ -244,7 +244,7 @@ const MyProfile = () => {
                     className="warnForFrequency"
                     title="При выборе частоты обновления текущий код подключения будет обновлён"
                   />
-                </p>
+                </div>
                 <select onChange={handleFrequencyChange}>
                   {renderFrequencyOptions()}
                 </select>

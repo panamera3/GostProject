@@ -62,10 +62,25 @@ namespace GostProjectAPI.Services
 			return user;
 		}
 
+		public async Task<List<UserResponseDto>?> GetUsersResponseAsync()
+		{
+			var companyId = _currentUserService.CompanyId;
+			var users = await _dbContext.Users.Where(u => u.WorkCompanyID == companyId).Where(u => u.IsConfirmed).ToListAsync();
+			var userResponseDtos = _mapper.Map<List<UserResponseDto>>(users);
+			return userResponseDtos;
+		}
+
+		public async Task<UserResponseDto?> GetUserResponseAsync(uint userID)
+		{
+			var users = await GetUsersResponseAsync();
+			return users?.FirstOrDefault(u => u.ID == userID);
+		}
+
 		public async Task<List<User>?> GetUsersAsync()
 		{
 			var companyId = _currentUserService.CompanyId;
-			return await _dbContext.Users.Where(u => u.WorkCompanyID == companyId).Where(u => u.IsConfirmed).ToListAsync();
+			var users = await _dbContext.Users.Where(u => u.WorkCompanyID == companyId).Where(u => u.IsConfirmed).ToListAsync();
+			return users;
 		}
 
 		public async Task<User?> GetUserAsync(uint userID)
@@ -74,9 +89,9 @@ namespace GostProjectAPI.Services
 			return users?.FirstOrDefault(u => u.ID == userID);
 		}
 
-		public async Task<List<User>?> FilterUsersAsync(FilterUsers filterUsers)
+		public async Task<List<UserResponseDto>?> FilterUsersAsync(FilterUsers filterUsers)
 		{
-			var users = await GetUsersAsync();
+			var users = await GetUsersResponseAsync();
 
 			if (!string.IsNullOrEmpty(filterUsers.Fullname))
 			{
@@ -124,9 +139,9 @@ namespace GostProjectAPI.Services
 
 			if (userEditDto.Login != null)
 			{
-				var isPhoneNumberExist = await _dbContext.Users.AnyAsync(u => u.Login == userEditDto.PhoneNumber);
-				if (isPhoneNumberExist)
-					throw new Exception("Такой номер телефона уже существует");
+				var isLoginExists = await _dbContext.Users.AnyAsync(u => u.Login == userEditDto.Login);
+				if (isLoginExists)
+					throw new Exception("Такой логин уже занят");
 				oldUser.Login = userEditDto.Login;
 			}
 

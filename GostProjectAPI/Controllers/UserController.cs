@@ -18,13 +18,13 @@ namespace GostProjectAPI.Controllers
         [HttpGet]
         public async Task<JsonResult> GetUsers()
         {
-            return JSON(await _usersService.GetUsersAsync());
+            return JSON(await _usersService.GetUsersResponseAsync());
         }
 
         [HttpGet("{userID}")]
         public async Task<JsonResult> GetUser(uint userID)
         {
-            return JSON(await _usersService.GetUserAsync(userID));
+            return JSON(await _usersService.GetUserResponseAsync(userID));
 		}
 
 		[HttpPost]

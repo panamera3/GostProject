@@ -67,3 +67,12 @@
 #editMyProfile{
   font-weight: 600;
 }
+
+.warnForFrequency {
+  height: 25px;
+}
+
+.profile-frequency-container > div {
+  display: flex;
+  align-items: center;
+}
