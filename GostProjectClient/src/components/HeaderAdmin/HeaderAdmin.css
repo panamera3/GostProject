@@ -42,9 +42,7 @@ img:hover {
 }
 
 .main_modal_content.profile {
-  position: fixed;
   right: 0%;
-  top: 6em;
 }
 
 .modalProfile {
@@ -72,9 +70,7 @@ img:hover {
 }
 
 .main_modal_content.notification {
-  position: fixed;
   right: 6em;
-  top: 6em;
 }
 
 .modalNotification {
@@ -93,8 +89,61 @@ img:hover {
   display: inline-block;
 }
 
-.navigation-container{
+.navigation-container {
   display: flex;
-    justify-content: space-evenly;
-    flex-wrap: wrap;
+  justify-content: space-evenly;
+  flex-wrap: wrap;
+}
+
+.main_modal_content.profile,
+.main_modal_content.notification {
+  position: fixed;
+  top: 6em;
+}
+
+.phone_nav {
+  position: fixed;
+  width: 100%;
+  top: 0;
+  right: 0;
+  display: flex !important;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  background-color: #004696;
+}
+
+.phone_nav > * {
+  padding: 1em;
+}
+
+.menu_icon {
+  display: none;
+}
+
+.close_navigation_icon {
+  position: fixed;
+  top: 0;
+  left: 0;
+}
+
+@media (max-width: 700px) {
+  .main_modal_content.profile,
+  .main_modal_content.notification {
+    right: 0;
+  }
+
+  .header a,
+  .header p {
+    margin: 0.1em;
+  }
+
+  .menu_icon {
+    display: block;
+  }
+
+  .navigation-container {
+    display: none;
+  }
 }

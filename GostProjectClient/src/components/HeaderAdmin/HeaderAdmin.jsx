@@ -4,6 +4,8 @@ import { useRef, useState, useEffect } from "react";
 import Modal from "../Modal/Modal";
 import axios from "axios";
 import {
+  closeIcon,
+  menuIcon,
   notificationActiveIcon,
   notificationIcon,
   userIcon,
@@ -16,6 +18,11 @@ const HeaderAdmin = ({ user }) => {
   const [isModalOpen, setModalOpen] = useState(false);
   const [isModalNotificationOpen, setModalNotificationOpen] = useState(false);
   const [notificationsCount, setnotificationsCount] = useState(0);
+
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const toggleMenu = () => {
+    setIsMenuOpen((prevState) => !prevState);
+  };
 
   useEffect(() => {
     axios({
@@ -64,7 +71,21 @@ const HeaderAdmin = ({ user }) => {
   return (
     <>
       <div className="header" ref={header}>
-        <div className="navigation-container">
+        <img
+          alt="menu"
+          className="menu_icon"
+          src={menuIcon}
+          onClick={toggleMenu}
+        />
+        <div
+          className={`navigation-container ${isMenuOpen ? "phone_nav" : ""}`}
+        >
+          <img
+            alt="X"
+            className="close_navigation_icon"
+            src={closeIcon}
+            onClick={toggleMenu}
+          />
           <a href="/home" className="a_header">
             Все документы
           </a>

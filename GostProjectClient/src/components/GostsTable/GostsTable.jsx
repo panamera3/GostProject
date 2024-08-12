@@ -298,7 +298,20 @@ const GostsTable = ({ favourites, archiveGosts, searchGosts }) => {
               </select>
             </div>
           )}
-
+          <div className="pageSize">
+            <p>Показывать по: </p>
+            <select
+              id="selectPageSize"
+              value={pageSize}
+              onChange={(e) => handlePageSizeChange(parseInt(e.target.value))}
+            >
+              <option value="10">10</option>
+              <option value="25">25</option>
+              <option value="50">50</option>
+              <option value="100">100</option>
+            </select>
+            <p>элементов</p>
+          </div>
           <Table
             className="gostsTable"
             headers={[
@@ -320,19 +333,6 @@ const GostsTable = ({ favourites, archiveGosts, searchGosts }) => {
             itemsCountPerPage={pagination.pageSize}
             onChange={handlePageChange}
           />
-          <div className="pageSize">
-            <p>Показывать по: </p>
-            <select
-              id="selectPageSize"
-              value={pageSize}
-              onChange={(e) => handlePageSizeChange(parseInt(e.target.value))}
-            >
-              <option value="10">10</option>
-              <option value="25">25</option>
-              <option value="50">50</option>
-              <option value="100">100</option>
-            </select>
-          </div>
         </div>
       )}
     </>

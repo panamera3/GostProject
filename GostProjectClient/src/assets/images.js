@@ -13,3 +13,5 @@ export const userIcon = "/icons/user.svg";
 export const hintIcon = "/icons/hint.svg";
 export const alertIcon = "/icons/alert.svg";
 export const refreshIcon = "/icons/refresh.svg";
+export const menuIcon = "/icons/menu.svg";
+export const closeIcon = "/icons/close.svg";

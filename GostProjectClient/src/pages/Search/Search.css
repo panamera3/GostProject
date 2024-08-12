@@ -67,3 +67,12 @@ form {
   font-size: 16px;
   padding: 0.5em;
 }
+
+@media (max-width: 700px) {
+  .form_search_container_without_keys {
+    flex-direction: column;
+  }
+  .form_search_container_without_keys > div {
+    width: 100%;
+  }
+}

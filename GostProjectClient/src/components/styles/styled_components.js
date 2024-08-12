@@ -76,6 +76,10 @@ const Button = styled.button`
   &:hover {
     cursor: pointer;
   }
+
+  @media (max-width: 700px){
+  width: 90%;
+  }
 `;
 
 const Input = styled.input`
@@ -91,10 +95,20 @@ const Input = styled.input`
     border-color: red;
     background-color: #ffcdd2;
   `}
+
+  @media (max-width: 700px) {
+    margin: 1em 0;
+  }
 `;
 
 const BodyContainer = styled.div`
   padding: 8em 5em;
+
+  @media (max-width: 700px) {
+    padding: 0;
+    padding-top: 8em;
+    padding-bottom: 1em;
+  }
 `;
 
 const BtnBlue = styled(Button)`

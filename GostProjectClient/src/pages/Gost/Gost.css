@@ -13,9 +13,15 @@
 }
 
 .activities_container p:hover {
-    cursor: pointer;
+  cursor: pointer;
 }
 
 .activities_container div > *:not(:last-child) {
   margin-right: 2em;
+}
+
+@media (max-width: 700px) {
+  .activities_container {
+    flex-wrap: wrap;
+  }
 }
