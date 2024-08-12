@@ -112,9 +112,9 @@ namespace GostProjectAPI.Services.Auth
 			return (user != null, company != null);
 		}
 
-		public async Task<(string accessToken, string refreshToken)> RefreshTokenAsync(string refreshToken)
+		public async Task<(string accessToken, string refreshToken)> RefreshTokenAsync(RefreshTokenDto refreshToken)
 		{
-			var encryptedToken = _dbContext.Users.Where(u => u.RefreshTokenExpiry > DateTime.UtcNow).Select(u => u.RefreshToken).FirstOrDefault();
+			var encryptedToken = _dbContext.Users.Where(u => u.RefreshTokenExpiry > DateTime.UtcNow && u.ID == refreshToken.UserID).Select(u => u.RefreshToken).FirstOrDefault();
 
 			if (encryptedToken == null)
 			{
@@ -122,9 +122,10 @@ namespace GostProjectAPI.Services.Auth
 			}
 
 			var decryptedToken = _tokenEncryptionService.Decrypt(encryptedToken);
-			refreshToken = refreshToken.Replace("%3D", "=");
 
-			if (decryptedToken != refreshToken)
+			var userRefreshToken = refreshToken.RefreshToken.Replace("%3D", "=");
+
+			if (decryptedToken != userRefreshToken)
 			{
 				return (null, null);
 			}

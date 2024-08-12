@@ -157,7 +157,7 @@ namespace GostProjectAPI.Controllers
 		[HttpPost]
 		public async Task<IActionResult> RefreshToken([FromBody] RefreshTokenDto refreshTokenDto)
 		{
-			var (accessToken, refreshToken) = await _authService.RefreshTokenAsync(refreshTokenDto.RefreshToken);
+			var (accessToken, refreshToken) = await _authService.RefreshTokenAsync(refreshTokenDto);
 
 			if (accessToken == null || refreshToken == null)
 			{

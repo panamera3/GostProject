@@ -63,7 +63,10 @@ function App() {
               "Content-Type": "application/json",
             },
             credentials: "include",
-            body: JSON.stringify({ RefreshToken: refreshToken }),
+            body: JSON.stringify({
+              UserID: localStorage.getItem("id"),
+              RefreshToken: refreshToken,
+            }),
           });
 
           if (!response.ok) {
