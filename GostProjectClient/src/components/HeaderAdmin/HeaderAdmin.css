@@ -126,6 +126,7 @@ img:hover {
   position: fixed;
   top: 0;
   left: 0;
+  display: none;
 }
 
 @media (max-width: 700px) {
@@ -145,5 +146,9 @@ img:hover {
 
   .navigation-container {
     display: none;
+  }
+
+  .close_navigation_icon{
+    display: block;
   }
 }

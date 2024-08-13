@@ -77,8 +77,8 @@ const Button = styled.button`
     cursor: pointer;
   }
 
-  @media (max-width: 700px){
-  width: 90%;
+  @media (max-width: 700px) {
+    width: 90%;
   }
 `;
 
@@ -103,6 +103,7 @@ const Input = styled.input`
 
 const BodyContainer = styled.div`
   padding: 8em 5em;
+  padding-bottom: 2em;
 
   @media (max-width: 700px) {
     padding: 0;
